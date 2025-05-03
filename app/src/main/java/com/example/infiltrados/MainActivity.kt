@@ -3,45 +3,55 @@ package com.example.infiltrados
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.infiltrados.ui.theme.InfiltradosTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.infiltrados.services.GameManager
+import com.example.infiltrados.ui.main.LobbyScreen
+import com.example.infiltrados.ui.main.PlayerInputScreen
+import com.example.infiltrados.ui.main.WordRevealScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            InfiltradosTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            App()
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+private fun App() {
+    val navController = rememberNavController()
+    var gameManager: GameManager? by remember { mutableStateOf(null) }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    InfiltradosTheme {
-        Greeting("Android")
+    NavHost(navController = navController, startDestination = "lobby") {
+
+        composable("lobby") { LobbyScreen(navController) }
+
+        composable("input") {
+            PlayerInputScreen(navController) { names ->
+                gameManager = GameManager(
+                    playerNames = names,
+                    wordPair = "gato" to "tigre", // Palabras fijas por ahora
+                    numUndercover = 1,
+                    includeMrWhite = true
+                )
+            }
+        }
+
+        composable("reveal") { backStackEntry ->
+            WordRevealScreen(
+                players = gameManager!!.players,
+                gameManager = gameManager!!
+            )
+        }
+
+
     }
 }
