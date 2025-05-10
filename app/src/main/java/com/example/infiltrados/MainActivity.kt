@@ -12,8 +12,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.infiltrados.services.GameManager
+import com.example.infiltrados.ui.main.DiscussionScreen
 import com.example.infiltrados.ui.main.LobbyScreen
 import com.example.infiltrados.ui.main.PlayerInputScreen
+import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
 
 class MainActivity : ComponentActivity() {
@@ -47,7 +49,25 @@ private fun App() {
 
         composable("reveal") { backStackEntry ->
             WordRevealScreen(
+                navController = navController,
                 players = gameManager!!.players,
+                gameManager = gameManager!!
+            )
+        }
+
+        composable("discussion") { backStackEntry ->
+            val players = gameManager!!.players
+            DiscussionScreen(
+                navController = navController,
+                players = players
+            )
+        }
+
+        composable("vote") { backStackEntry ->
+            val players = gameManager!!.players
+            VotationScreen(
+                navController = navController,
+                players = players,
                 gameManager = gameManager!!
             )
         }
