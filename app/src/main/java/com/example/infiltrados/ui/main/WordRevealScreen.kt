@@ -1,6 +1,7 @@
 package com.example.infiltrados.ui.main
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,11 +19,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.infiltrados.models.Player
 import com.example.infiltrados.services.GameManager
 
 @Composable
 fun WordRevealScreen(
+    navController: NavController,
     players: List<Player>,
     gameManager: GameManager
 ) {
@@ -42,6 +45,7 @@ fun WordRevealScreen(
         Text("Turno de:", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
         Text(currentPlayer.name, style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Rol: ${currentPlayer.role}", style = MaterialTheme.typography.headlineSmall)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -62,7 +66,8 @@ fun WordRevealScreen(
                     if (currentIndex < players.size - 1) {
                         currentIndex++
                     } else {
-                        println("Todos los jugadores vieron sus roles.")
+                        Log.i("GameManager", "Todos los jugadores vieron sus roles.")
+                        navController.navigate("discussion")
                     }
                 }
             ) {
