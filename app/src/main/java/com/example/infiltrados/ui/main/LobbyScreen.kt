@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.ui.res.stringResource
+import com.example.infiltrados.R
 
 @Composable
 fun LobbyScreen(navController: NavController) {
@@ -23,7 +25,7 @@ fun LobbyScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "¡Bienvenidos a Infiltrados!",
+            text = stringResource(R.string.greeting),
             style = MaterialTheme.typography.headlineMedium
         )
         Button(
@@ -31,7 +33,7 @@ fun LobbyScreen(navController: NavController) {
                 navController.navigate("input")
             }
         ) {
-            Text("Comenzar juego")
+            Text(stringResource(R.string.begin))
         }
     }
 
