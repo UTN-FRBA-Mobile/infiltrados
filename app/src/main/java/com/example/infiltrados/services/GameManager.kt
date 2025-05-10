@@ -40,4 +40,29 @@ class GameManager(
             Role.MR_WHITE -> "" // No tiene palabra
         }
     }
+
+    fun getActivePlayers(): List<Player> {
+        return players.filter { !it.isEliminated }
+    }
+
+    fun eliminatePlayer(player: Player) {
+        player.isEliminated = true
+    }
+
+    fun isMrWhiteGuessCorrect(word: String): Boolean {
+        return word == wordPair.first
+    }
+
+    fun getWinners(): List<Player> {
+        val undercoverPlayers = players.filter { it.role == Role.UNDERCOVER && !it.isEliminated }
+        val citizens = players.filter { it.role == Role.CIUDADANO && !it.isEliminated }
+        val mrWhites = players.filter { it.role == Role.MR_WHITE && !it.isEliminated }
+
+        return when {
+            undercoverPlayers.isEmpty() -> citizens // Ganaron los ciudadanos
+            citizens.isEmpty() -> undercoverPlayers // Ganaron los infiltrados
+            else -> emptyList() // Nadie ha ganado aún
+        }
+    }
+
 }

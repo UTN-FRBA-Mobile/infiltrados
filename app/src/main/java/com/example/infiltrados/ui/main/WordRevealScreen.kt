@@ -45,6 +45,7 @@ fun WordRevealScreen(
         Text("Turno de:", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
         Text(currentPlayer.name, style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Rol: ${currentPlayer.role}", style = MaterialTheme.typography.headlineSmall)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -65,7 +66,6 @@ fun WordRevealScreen(
                     if (currentIndex < players.size - 1) {
                         currentIndex++
                     } else {
-                        println("Todos los jugadores vieron sus roles.")
                         Log.i("GameManager", "Todos los jugadores vieron sus roles.")
                         navController.navigate("discussion")
                     }

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.infiltrados.models.Player
+import com.example.infiltrados.models.Role
 import com.example.infiltrados.services.GameManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,11 +95,36 @@ fun VotationScreen(
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = {
-                //TODO: Implementar logica en el game manegar
-                navController.navigate("reveal")
+                if(selectedPlayer != null) {
+                    processPlayerElimination(selectedPlayer!!, gameManager, navController)
+                } else {
+                    Log.e("VotationScreen", "No se seleccionó ningún jugador")
+                }
             }
         ) {
             Text("Eliminar")
         }
     }
+}
+
+fun processPlayerElimination(
+    selectedPlayer: Player,
+    gameManager: GameManager,
+    navController: NavController
+) {
+    gameManager.eliminatePlayer(selectedPlayer)
+
+    //TODO: Agregar logica para eliminar por tipo de jugador
+    if(selectedPlayer.role == Role.UNDERCOVER) {
+        Log.d("VotationScreen", "Un infiltrado fue eliminado: ${selectedPlayer.name}")
+        navController.navigate("reveal")
+    } else if (selectedPlayer.role == Role.CIUDADANO) {
+        Log.d("VotationScreen", "El jugador ${selectedPlayer.name} fue eliminado")
+        navController.navigate("reveal")
+    }
+    else if (selectedPlayer.role == Role.MR_WHITE) {
+        Log.d("VotationScreen", "Mr white ${selectedPlayer.name} fue eliminado")
+        navController.navigate("mr_white_guess")
+    }
+
 }
