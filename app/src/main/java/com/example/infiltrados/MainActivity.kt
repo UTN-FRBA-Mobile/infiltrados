@@ -8,10 +8,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.infiltrados.services.GameManager
+import com.example.infiltrados.services.WordLoader
 import com.example.infiltrados.ui.main.DiscussionScreen
 import com.example.infiltrados.ui.main.EndGameScreen
 import com.example.infiltrados.ui.main.LobbyScreen
@@ -33,21 +35,27 @@ class MainActivity : ComponentActivity() {
 private fun App() {
     val navController = rememberNavController()
     var gameManager: GameManager? by remember { mutableStateOf(null) }
-
+    val context = LocalContext.current
     NavHost(navController = navController, startDestination = "lobby") {
 
         composable("lobby") { LobbyScreen(navController) }
 
         composable("input") {
-            PlayerInputScreen(navController) { names ->
+            PlayerInputScreen(navController) { names, numUndercover, includeMrWhite ->
+                // Cargar las palabras desde el archivo JSOn
+                val wordPairs = WordLoader.loadWordPairs(context)
+                val selectedWordPair = wordPairs.random()
+
+
                 gameManager = GameManager(
                     playerNames = names,
-                    wordPair = "gato" to "tigre", // Palabras fijas por ahora
-                    numUndercover = 1,
-                    includeMrWhite = true
+                    wordPair = selectedWordPair.word1 to selectedWordPair.word2,
+                    numUndercover = numUndercover,
+                    includeMrWhite = includeMrWhite
                 )
             }
         }
+
 
         composable("reveal") { backStackEntry ->
             WordRevealScreen(
