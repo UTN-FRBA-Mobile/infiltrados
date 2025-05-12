@@ -1,5 +1,7 @@
 package com.example.infiltrados.ui.main
 
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.material3.Switch
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,8 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun PlayerInputScreen(navController: NavController, onSubmitPlayers: (List<String>) -> Unit) {
+fun PlayerInputScreen(
+    navController: NavController,
+    onSubmitPlayers: (List<String>, Int, Boolean) -> Unit
+) {
     var playerNames by remember { mutableStateOf(listOf("")) }
+    var numUndercover by remember { mutableStateOf(1) } // Número de undercovers
+    var includeMrWhite by remember { mutableStateOf(true) } // Si incluye a Mr. White
 
     fun updateName(index: Int, newName: String) {
         playerNames = playerNames.toMutableList().also {
@@ -95,11 +102,38 @@ fun PlayerInputScreen(navController: NavController, onSubmitPlayers: (List<Strin
             Text("Agregar jugador")
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Campo para número de undercovers
+        OutlinedTextField(
+            value = numUndercover.toString(),
+            onValueChange = { numUndercover = it.toIntOrNull() ?: 1 }, // Asegurarse de que sea un número válido
+            label = { Text("Número de Undercover") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Campo para incluir o no a Mr. White
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Incluir a Mr. White")
+            Spacer(modifier = Modifier.width(8.dp))
+            Switch(
+                checked = includeMrWhite,
+                onCheckedChange = { includeMrWhite = it }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
         Button(
             onClick = {
                 val players = playerNames.map { it.trim() }.filter { it.isNotEmpty() }
                 if (players.size >= 3) {
-                    onSubmitPlayers(players)
+                    onSubmitPlayers(players, numUndercover, includeMrWhite)
                     navController.navigate("reveal")
                 }
             },
