@@ -45,7 +45,7 @@ fun WordRevealScreen(
         Text("Turno de:", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
         Text(currentPlayer.name, style = MaterialTheme.typography.headlineMedium)
-        Text(text = "Rol: ${currentPlayer.role}", style = MaterialTheme.typography.headlineSmall)
+
 
         Spacer(modifier = Modifier.height(32.dp))
 
