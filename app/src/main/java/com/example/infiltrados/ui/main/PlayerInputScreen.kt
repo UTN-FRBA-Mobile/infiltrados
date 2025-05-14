@@ -32,30 +32,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+
+
 @Composable
 fun PlayerInputScreen(
     navController: NavController,
     onSubmitPlayers: (List<String>, Int, Boolean) -> Unit
 ) {
     var playerNames by remember { mutableStateOf(listOf("")) }
-    var numUndercover by remember { mutableStateOf(1) } // Número de undercovers
-    var includeMrWhite by remember { mutableStateOf(true) } // Si incluye a Mr. White
+    var numUndercover by remember { mutableStateOf(1) }
+    var includeMrWhite by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     fun updateName(index: Int, newName: String) {
-        playerNames = playerNames.toMutableList().also {
-            it[index] = newName
-        }
+        playerNames = playerNames.toMutableList().also { it[index] = newName }
     }
-
-    fun addPlayer() {
-        playerNames = playerNames + ""
-    }
-
+    fun addPlayer() { playerNames = playerNames + "" }
     fun removePlayer(index: Int) {
         if (playerNames.size > 1) {
-            playerNames = playerNames.toMutableList().also {
-                it.removeAt(index)
-            }
+            playerNames = playerNames.toMutableList().also { it.removeAt(index) }
         }
     }
 
@@ -65,79 +65,108 @@ fun PlayerInputScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
-            "Ingrese los nombres de los jugadores", style = MaterialTheme.typography.headlineMedium,
+            "Ingrese los nombres de los jugadores",
+            style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
+        Spacer(Modifier.height(32.dp))
 
-        Spacer(modifier = Modifier.height(40.dp))
-
-        playerNames.forEachIndexed { index, name ->
+        // Lista de inputs de nombres
+        playerNames.forEachIndexed { idx, name ->
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { updateName(index, it) },
-                    placeholder = { Text("Jugador ${index + 1}") },
+                    onValueChange = { updateName(idx, it) },
+                    placeholder = { Text("Jugador ${idx + 1}") },
                     modifier = Modifier.weight(1f),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                IconButton(onClick = { removePlayer(index) }) {
+                Spacer(Modifier.width(8.dp))
+                IconButton(onClick = { removePlayer(idx) }) {
                     Icon(Icons.Default.Delete, contentDescription = "Eliminar jugador")
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = { addPlayer() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Spacer(Modifier.height(16.dp))
+        Button(onClick = { addPlayer() }, Modifier.fillMaxWidth()) {
             Text("Agregar jugador")
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(Modifier.height(24.dp))
 
-        // Campo para número de undercovers
+        // Input de número de undercovers
         OutlinedTextField(
             value = numUndercover.toString(),
-            onValueChange = { numUndercover = it.toIntOrNull() ?: 1 }, // Asegurarse de que sea un número válido
+            onValueChange = { numUndercover = it.toIntOrNull() ?: numUndercover },
             label = { Text("Número de Undercover") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
 
-        // Campo para incluir o no a Mr. White
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        // Switch Mr. White
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Incluir a Mr. White")
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(Modifier.width(8.dp))
             Switch(
                 checked = includeMrWhite,
                 onCheckedChange = { includeMrWhite = it }
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
 
+        // Mostrar error si hay alguno
+        errorMessage?.let { msg ->
+            Text(
+                msg,
+                color = Color.Red,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        // Botón para comenzar el juego con validación
+        val validPlayers = playerNames.map { it.trim() }.filter { it.isNotEmpty() }
         Button(
             onClick = {
-                val players = playerNames.map { it.trim() }.filter { it.isNotEmpty() }
-                if (players.size >= 3) {
-                    onSubmitPlayers(players, numUndercover, includeMrWhite)
+                // Recalcular totales
+                val total = validPlayers.size
+                val mrWhiteCount = if (includeMrWhite) 1 else 0
+                val under = numUndercover
+                val enemies = under + mrWhiteCount
+                val citizens = total - enemies
+
+                // Validaciones
+                errorMessage = when {
+                    total < 3 ->
+                        "Necesitás al menos 3 jugadores."
+                    enemies < 1 ->
+                        "Debe haber al menos 1 rol enemigo (Undercover o Mr. White)."
+                    citizens < 2 ->
+                        "Debe haber al menos 2 ciudadanos."
+                    enemies >= total ->
+                        "Los enemigos no pueden ser igual o más que el total de jugadores."
+                    else -> null
+                }
+
+                // Si pasó validación, envía datos y navega
+                if (errorMessage == null) {
+                    onSubmitPlayers(validPlayers, under, includeMrWhite)
                     navController.navigate("reveal")
                 }
             },
-            enabled = playerNames.count { it.trim().isNotEmpty() } >= 3,
+            enabled = validPlayers.size >= 3,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Comenzar juego")
