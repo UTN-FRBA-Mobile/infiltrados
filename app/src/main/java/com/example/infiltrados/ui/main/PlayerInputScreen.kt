@@ -37,6 +37,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Add
 
 @Composable
 fun PlayerInputScreen(
@@ -44,8 +46,8 @@ fun PlayerInputScreen(
     onSubmitPlayers: (List<String>, Int, Boolean) -> Unit
 ) {
     var playerNames by remember { mutableStateOf(listOf("")) }
-    var numUndercover by remember { mutableStateOf(1) } // Número de undercovers
-    var includeMrWhite by remember { mutableStateOf(true) } // Si incluye a Mr. White
+    var numUndercover by remember { mutableStateOf(1) }
+    var includeMrWhite by remember { mutableStateOf(true) }
 
     fun updateName(index: Int, newName: String) {
         playerNames = playerNames.toMutableList().also {
@@ -71,18 +73,20 @@ fun PlayerInputScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
-            "Ingrese los nombres de los jugadores", style = MaterialTheme.typography.headlineMedium,
+            "Ingrese los nombres de los jugadores",
+            style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // Lista de jugadores
         playerNames.forEachIndexed { index, name ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
                     value = name,
@@ -99,8 +103,6 @@ fun PlayerInputScreen(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
         Button(
             onClick = { addPlayer() },
             modifier = Modifier.fillMaxWidth()
@@ -110,18 +112,24 @@ fun PlayerInputScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Campo para número de undercovers
-        OutlinedTextField(
-            value = numUndercover.toString(),
-            onValueChange = { numUndercover = it.toIntOrNull() ?: 1 }, // Asegurarse de que sea un número válido
-            label = { Text("Número de Undercover") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
+        // Selector de cantidad de Undercover con botones
+        Text("Cantidad de Undercover", style = MaterialTheme.typography.bodyLarge)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            IconButton(onClick = { if (numUndercover > 0) numUndercover-- }) {
+                Icon(Icons.Default.Remove, contentDescription = "Disminuir undercover")
+            }
+            Text(numUndercover.toString(), modifier = Modifier.padding(horizontal = 8.dp))
+            IconButton(onClick = { numUndercover++ }) {
+                Icon(Icons.Default.Add, contentDescription = "Aumentar undercover")
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo para incluir o no a Mr. White
+        // Switch para incluir a Mr. White
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -135,18 +143,27 @@ fun PlayerInputScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Botón de iniciar juego con validación mejorada
         Button(
             onClick = {
                 val players = playerNames.map { it.trim() }.filter { it.isNotEmpty() }
-                if (players.size >= 3) {
+                val numCitizens = players.size - numUndercover - if (includeMrWhite) 1 else 0
+                val validEnemies = numUndercover > 0 || includeMrWhite
+                if (players.size >= 3 && validEnemies && numCitizens >= 2) {
                     onSubmitPlayers(players, numUndercover, includeMrWhite)
                     navController.navigate("reveal")
                 }
             },
-            enabled = playerNames.count { it.trim().isNotEmpty() } >= 3,
+            enabled = run {
+                val players = playerNames.map { it.trim() }.filter { it.isNotEmpty() }
+                val numCitizens = players.size - numUndercover - if (includeMrWhite) 1 else 0
+                val validEnemies = numUndercover > 0 || includeMrWhite
+                players.size >= 3 && validEnemies && numCitizens >= 2
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Comenzar juego")
         }
+
     }
 }
