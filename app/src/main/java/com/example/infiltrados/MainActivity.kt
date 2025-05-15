@@ -18,6 +18,7 @@ import com.example.infiltrados.ui.main.DiscussionScreen
 import com.example.infiltrados.ui.main.EndGameScreen
 import com.example.infiltrados.ui.main.LobbyScreen
 import com.example.infiltrados.ui.main.MrWhiteGuessScreen
+import com.example.infiltrados.ui.main.PlayerEliminatedScreen
 import com.example.infiltrados.ui.main.PlayerInputScreen
 import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
@@ -94,6 +95,13 @@ private fun App() {
                 navController = navController,
                 gameManager = gameManager!!,
                 players = gameManager!!.players
+            )
+        }
+
+        composable("player_eliminated") {
+            PlayerEliminatedScreen(
+                navController = navController,
+                gameManager = gameManager!!
             )
         }
     }

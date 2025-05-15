@@ -1,12 +1,10 @@
 package com.example.infiltrados.ui.main
 
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -78,7 +76,6 @@ fun VotationScreen(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(8.dp)
             ) {
                 players.forEach { player ->
@@ -96,9 +93,12 @@ fun VotationScreen(
         Button(
             onClick = {
                 if(selectedPlayer != null) {
-                    processPlayerElimination(selectedPlayer!!, gameManager, navController)
-                } else {
-                    Log.e("VotationScreen", "No se seleccionó ningún jugador")
+                    gameManager.lastEliminated = selectedPlayer
+                    if(selectedPlayer!!.role == Role.MR_WHITE) {
+                        navController.navigate("mr_white_guess")
+                    } else {
+                        navController.navigate("player_eliminated")
+                    }
                 }
             }
         ) {
@@ -107,24 +107,4 @@ fun VotationScreen(
     }
 }
 
-fun processPlayerElimination(
-    selectedPlayer: Player,
-    gameManager: GameManager,
-    navController: NavController
-) {
-    gameManager.eliminatePlayer(selectedPlayer)
 
-    //TODO: Agregar logica para eliminar por tipo de jugador
-    if(selectedPlayer.role == Role.UNDERCOVER) {
-        Log.d("VotationScreen", "Un infiltrado fue eliminado: ${selectedPlayer.name}")
-        navController.navigate("reveal")
-    } else if (selectedPlayer.role == Role.CIUDADANO) {
-        Log.d("VotationScreen", "El jugador ${selectedPlayer.name} fue eliminado")
-        navController.navigate("reveal")
-    }
-    else if (selectedPlayer.role == Role.MR_WHITE) {
-        Log.d("VotationScreen", "Mr white ${selectedPlayer.name} fue eliminado")
-        navController.navigate("mr_white_guess")
-    }
-
-}
