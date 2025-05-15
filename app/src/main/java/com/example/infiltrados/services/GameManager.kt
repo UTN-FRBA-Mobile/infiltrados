@@ -7,7 +7,8 @@ class GameManager(
     private val playerNames: List<String>,
     private val wordPair: Pair<String, String>, // Ej: ("gato", "tigre")
     private val numUndercover: Int = 1,
-    private val includeMrWhite: Boolean = true
+    private val includeMrWhite: Boolean = true,
+    var lastEliminated: Player? = null
 ) {
     val players: List<Player>
 
@@ -45,24 +46,49 @@ class GameManager(
         return players.filter { !it.isEliminated }
     }
 
-    fun eliminatePlayer(player: Player) {
-        player.isEliminated = true
+    fun getUndercoverActivePlayers(): List<Player> {
+        return players.filter { it.role == Role.UNDERCOVER && !it.isEliminated }
+    }
+
+    fun getCitizensActivePlayers(): List<Player> {
+        return players.filter { it.role == Role.CIUDADANO && !it.isEliminated }
+    }
+
+    fun eliminatePlayer(player: Player?) {
+        player?.isEliminated = true
     }
 
     fun isMrWhiteGuessCorrect(word: String): Boolean {
         return word == wordPair.first
     }
 
-    fun getWinners(): List<Player> {
+    fun isMrWhiteActive(): Boolean {
+        return players.any { it.role == Role.MR_WHITE && !it.isEliminated }
+    }
+
+    fun mrWhiteWin() {
+        players.forEach { it.isEliminated = true }
+        players.find { it.role == Role.MR_WHITE }?.isEliminated = false
+    }
+
+    fun isGameOver(): Boolean {
+        val undercoverPlayers = getUndercoverActivePlayers()
+        val citizens = getCitizensActivePlayers()
+        //TODO: Implementar correctamente
+        return (undercoverPlayers.isEmpty() || citizens.isEmpty()) && !isMrWhiteActive()
+    }
+
+    fun getWinners(): String {
         val undercoverPlayers = players.filter { it.role == Role.UNDERCOVER && !it.isEliminated }
         val citizens = players.filter { it.role == Role.CIUDADANO && !it.isEliminated }
-        val mrWhites = players.filter { it.role == Role.MR_WHITE && !it.isEliminated }
 
+        //TODO: Implementar correctamente
         return when {
-            undercoverPlayers.isEmpty() -> citizens // Ganaron los ciudadanos
-            citizens.isEmpty() -> undercoverPlayers // Ganaron los infiltrados
-            else -> emptyList() // Nadie ha ganado aún
-        }
+            undercoverPlayers.isEmpty() && !isMrWhiteActive() -> Role.CIUDADANO// Ganaron los ciudadanos
+            citizens.isEmpty() && !isMrWhiteActive() -> Role.UNDERCOVER // Ganaron los infiltrados
+            citizens.isEmpty() && undercoverPlayers.isEmpty() -> Role.MR_WHITE // Ganó Mr White
+            else -> "" // Nadie ha ganado aún
+        }.toString()
     }
 
 }

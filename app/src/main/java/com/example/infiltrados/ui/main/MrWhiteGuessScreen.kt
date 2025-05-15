@@ -55,11 +55,14 @@ fun MrWhiteGuessScreen(
         Button(
             onClick = {
                 if(gameManager.isMrWhiteGuessCorrect(word_guess)) {
-                    Log.d("MrWhiteGuessScreen", "No adivinaste la palabra.")
+                    //gana mrwhite
+                    Log.d("MrWhiteGuessScreen", "MrWhite adivinó la palabra.")
+                    gameManager.mrWhiteWin()
+                    navController.navigate("end_game")
                 } else {
-                    Log.d("MrWhiteGuessScreen", "No adivinaste la palabra.")
+                    Log.d("MrWhiteGuessScreen", "MrWhite no adivinó la palabra.")
+                    navController.navigate("player_eliminated")
                 }
-                navController.navigate("end_game")
             }
         ) {
             Text("Adivinar")
