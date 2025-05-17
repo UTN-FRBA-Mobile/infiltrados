@@ -1,4 +1,5 @@
 package com.example.infiltrados
+import android.util.Log
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -42,11 +43,10 @@ private fun App() {
         composable("lobby") { LobbyScreen(navController) }
 
         composable("input") {
-            PlayerInputScreen(navController) { names, numUndercover, includeMrWhite ->
-                // Cargar las palabras desde el archivo JSOn
-                val wordPairs = WordLoader.loadWordPairs(context)
+            PlayerInputScreen(navController) { names, numUndercover, includeMrWhite, spanish ->
+                Log.d("DEBUG", "Idioma recibido en callback: $spanish")
+                val wordPairs = WordLoader.loadWordPairs(context, spanish)
                 val selectedWordPair = wordPairs.random()
-
 
                 gameManager = GameManager(
                     playerNames = names,
@@ -56,6 +56,7 @@ private fun App() {
                 )
             }
         }
+
 
 
         composable("reveal") { backStackEntry ->
