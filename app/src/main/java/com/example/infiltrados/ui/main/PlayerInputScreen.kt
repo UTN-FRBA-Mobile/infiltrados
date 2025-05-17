@@ -1,53 +1,39 @@
 package com.example.infiltrados.ui.main
 
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.material3.Switch
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.Image
+import android.util.Log
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.infiltrados.R
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.Add
 
 @Composable
 fun PlayerInputScreen(
     navController: NavController,
-    onSubmitPlayers: (List<String>, Int, Boolean) -> Unit
+    onSubmitPlayers: (List<String>, Int, Boolean, Boolean) -> Unit
 ) {
     var playerNames by remember { mutableStateOf(listOf("")) }
     var numUndercover by remember { mutableStateOf(1) }
     var includeMrWhite by remember { mutableStateOf(true) }
+    var spanish by remember { mutableStateOf(true) }
 
     fun updateName(index: Int, newName: String) {
         playerNames = playerNames.toMutableList().also {
@@ -78,6 +64,32 @@ fun PlayerInputScreen(
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Selector de idioma
+        Text("Idioma", style = MaterialTheme.typography.bodyLarge)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_spain),
+                contentDescription = "Español",
+                modifier = Modifier
+                    .size(48.dp)
+                    .border(2.dp, if (spanish) Color.Blue else Color.Transparent, CircleShape)
+                    .clickable { spanish = true }
+            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_us),
+                contentDescription = "Inglés",
+                modifier = Modifier
+                    .size(48.dp)
+                    .border(2.dp, if (!spanish) Color.Blue else Color.Transparent, CircleShape)
+                    .clickable { spanish = false }
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -112,7 +124,7 @@ fun PlayerInputScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Selector de cantidad de Undercover con botones
+        // Selector de cantidad de Undercover
         Text("Cantidad de Undercover", style = MaterialTheme.typography.bodyLarge)
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -130,9 +142,7 @@ fun PlayerInputScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Switch para incluir a Mr. White
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Incluir a Mr. White")
             Spacer(modifier = Modifier.width(8.dp))
             Switch(
@@ -143,14 +153,15 @@ fun PlayerInputScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Botón de iniciar juego con validación mejorada
+        // Botón de iniciar juego
         Button(
             onClick = {
                 val players = playerNames.map { it.trim() }.filter { it.isNotEmpty() }
                 val numCitizens = players.size - numUndercover - if (includeMrWhite) 1 else 0
                 val validEnemies = numUndercover > 0 || includeMrWhite
                 if (players.size >= 3 && validEnemies && numCitizens >= 2) {
-                    onSubmitPlayers(players, numUndercover, includeMrWhite)
+                    Log.d("DEBUG", "Idioma seleccionado al enviar: $spanish")
+                    onSubmitPlayers(players, numUndercover, includeMrWhite, spanish)
                     navController.navigate("reveal")
                 }
             },
@@ -164,6 +175,5 @@ fun PlayerInputScreen(
         ) {
             Text("Comenzar juego")
         }
-
     }
 }
