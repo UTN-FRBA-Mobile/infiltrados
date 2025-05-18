@@ -24,6 +24,8 @@ import com.example.infiltrados.ui.main.PlayerInputScreen
 import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
 import com.example.infiltrados.ui.main.RulesScreen
+import com.example.infiltrados.ui.main.SplashScreen
+
 
 
 class MainActivity : ComponentActivity() {
@@ -40,7 +42,7 @@ private fun App() {
     val navController = rememberNavController()
     var gameManager: GameManager? by remember { mutableStateOf(null) }
     val context = LocalContext.current
-    NavHost(navController = navController, startDestination = "lobby") {
+    NavHost(navController = navController, startDestination = "splash") {
 
         composable("lobby") { LobbyScreen(navController) }
 
@@ -110,6 +112,10 @@ private fun App() {
 
         composable("rules") {
             RulesScreen(navController)
+        }
+
+        composable("splash") {
+            SplashScreen(navController)
         }
 
     }
