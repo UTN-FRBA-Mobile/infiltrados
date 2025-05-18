@@ -23,6 +23,8 @@ import com.example.infiltrados.ui.main.PlayerEliminatedScreen
 import com.example.infiltrados.ui.main.PlayerInputScreen
 import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
+import com.example.infiltrados.ui.main.RulesScreen
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,5 +107,10 @@ private fun App() {
                 gameManager = gameManager!!
             )
         }
+
+        composable("rules") {
+            RulesScreen(navController)
+        }
+
     }
 }

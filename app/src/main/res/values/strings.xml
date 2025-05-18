@@ -3,4 +3,25 @@
     <string name="greeting">¡Bienvenidos a Infiltrados!</string>
     <string name="begin">"Comenzar juego"</string>
 
+    <string name="rules_title">Reglas del juego</string>
+    <string name="rules_back">Volver</string>
+
+    <string name="rules_objective_title">Objetivo del juego:</string>
+    <string name="rules_objective_text">Descubrir a los Undercover y al Mr. White antes de que ellos ganen.</string>
+
+    <string name="rules_step1_title">1. Palabras</string>
+    <string name="rules_step1_text">Cada jugador recibe una palabra. Los civiles comparten una palabra, los Undercover tienen una parecida, y el Mr. White no recibe palabra.</string>
+
+    <string name="rules_step2_title">2. Pistas</string>
+    <string name="rules_step2_text">Cada jugador da una pista con una sola palabra relacionada a la suya, sin revelar demasiado.</string>
+
+    <string name="rules_step3_title">3. Votación</string>
+    <string name="rules_step3_text">Luego todos votan quién creen que es el impostor. El más votado es eliminado.</string>
+
+    <string name="rules_step4_title">4. Fin del juego</string>
+    <string name="rules_step4_text">El juego termina si solo quedan impostores o si son eliminados.</string>
+
+    <string name="rules_tips_title">Consejos</string>
+    <string name="rules_tips_text">No digas tu palabra exacta. Sé estratégico. Mr. White puede ganar si adivina la palabra al ser eliminado.</string>
+
 </resources>
