@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">infiltrados</string>
     <string name="greeting">¡Bienvenidos a Infiltrados!</string>
-    <string name="begin">"Comenzar juego"</string>
+    <string name="begin">Comenzar juego</string>
+    <string name="view_rules">"Ver reglas"</string>
 
     <string name="rules_title">Reglas del juego</string>
     <string name="rules_back">Volver</string>

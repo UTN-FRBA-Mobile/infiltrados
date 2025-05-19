@@ -40,7 +40,7 @@ fun LobbyScreen(navController: NavController) {
                 navController.navigate("rules")
             }
         ) {
-            Text("Ver reglas")
+            Text(stringResource(R.string.view_rules))
         }
 
     }
