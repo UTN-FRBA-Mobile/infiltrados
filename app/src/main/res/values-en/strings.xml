@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">infiltrados</string>
+    <string name="greeting">Welcome to Infiltrados!</string>
+    <string name="begin">Start Game</string>
+    <string name="view_rules">"View rules"</string>
+
+    <string name="rules_title">Game Rules</string>
+    <string name="rules_back">Back</string>
+
+    <string name="rules_objective_title">Game Objective:</string>
+    <string name="rules_objective_text">Find and eliminate the Undercover players and Mr. White before they win.</string>
+
+    <string name="rules_step1_title">1. Words</string>
+    <string name="rules_step1_text">Each player receives a word. Civilians share the same word, Undercover players have a similar one, and Mr. White receives no word.</string>
+
+    <string name="rules_step2_title">2. Clues</string>
+    <string name="rules_step2_text">Each player gives a one-word clue related to their word, without revealing it directly.</string>
+
+    <string name="rules_step3_title">3. Voting</string>
+    <string name="rules_step3_text">Then all players vote on who they believe is the impostor. The player with the most votes is eliminated.</string>
+
+    <string name="rules_step4_title">4. End of the Game</string>
+    <string name="rules_step4_text">The game ends if only impostors remain or they are eliminated.</string>
+
+    <string name="rules_tips_title">Tips</string>
+    <string name="rules_tips_text">Do not say your exact word. Be strategic. Mr. White can win by correctly guessing the civilians word when eliminated.</string>
+</resources>
+

@@ -35,6 +35,14 @@ fun LobbyScreen(navController: NavController) {
         ) {
             Text(stringResource(R.string.begin))
         }
+        Button(
+            onClick = {
+                navController.navigate("rules")
+            }
+        ) {
+            Text(stringResource(R.string.view_rules))
+        }
+
     }
 
 }
