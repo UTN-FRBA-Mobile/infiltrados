@@ -8,15 +8,21 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.infiltrados.R
+import com.example.infiltrados.backend.GameRecord
 
 @Composable
 fun LobbyScreen(navController: NavController) {
+    val viewModel = viewModel<LobbyViewModel>()
+    val gameRecord = viewModel.game.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,11 +36,28 @@ fun LobbyScreen(navController: NavController) {
         )
         Button(
             onClick = {
+                viewModel.getAppwriteGame()
+            }
+        ) {
+            Text("query api")
+        }
+
+        Button(
+            onClick = {
+                viewModel.getLiveGame()
+            }
+        ) {
+            Text("live")
+        }
+
+        Button(
+            onClick = {
                 navController.navigate("input")
             }
         ) {
             Text(stringResource(R.string.begin))
         }
+        Text(gameRecord.value.toString())
         Button(
             onClick = {
                 navController.navigate("rules")
@@ -43,6 +66,8 @@ fun LobbyScreen(navController: NavController) {
             Text(stringResource(R.string.view_rules))
         }
 
+
+        Text(gameRecord.value.toString())
     }
 
 }
