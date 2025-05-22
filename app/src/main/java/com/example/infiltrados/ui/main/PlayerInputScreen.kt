@@ -16,6 +16,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,6 +36,7 @@ fun PlayerInputScreen(
     var numUndercover by remember { mutableStateOf(1) }
     var includeMrWhite by remember { mutableStateOf(true) }
     var spanish by remember { mutableStateOf(true) }
+    val grayscaleFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
 
     fun updateName(index: Int, newName: String) {
         playerNames = playerNames.toMutableList().also {
@@ -78,16 +81,16 @@ fun PlayerInputScreen(
                 contentDescription = "Español",
                 modifier = Modifier
                     .size(48.dp)
-                    .border(2.dp, if (spanish) Color.Blue else Color.Transparent, CircleShape)
-                    .clickable { spanish = true }
+                    .clickable { spanish = true },
+                colorFilter = if (spanish) null else grayscaleFilter
             )
             Image(
                 painter = painterResource(id = R.drawable.ic_us),
                 contentDescription = "Inglés",
                 modifier = Modifier
                     .size(48.dp)
-                    .border(2.dp, if (!spanish) Color.Blue else Color.Transparent, CircleShape)
-                    .clickable { spanish = false }
+                    .clickable { spanish = false },
+                colorFilter = if (!spanish) null else grayscaleFilter
             )
         }
 

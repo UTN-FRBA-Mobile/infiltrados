@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.infiltrados.models.Player
@@ -57,7 +58,8 @@ fun WordRevealScreen(
             val word = gameManager.getWordForPlayer(currentPlayer)
             Text(
                 text = if (word.isNotEmpty()) "Tu palabra es:\n$word" else "No tenés palabra, improvisá!",
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(24.dp))
             Button(
