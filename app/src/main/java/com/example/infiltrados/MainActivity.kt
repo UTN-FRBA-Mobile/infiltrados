@@ -61,8 +61,6 @@ private fun App() {
             }
         }
 
-
-
         composable("reveal") { backStackEntry ->
             WordRevealScreen(
                 navController = navController,
