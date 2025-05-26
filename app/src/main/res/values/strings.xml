@@ -40,4 +40,15 @@
     <string name="discussion_instruction">Describí la palabra en el orden indicado</string>
     <string name="start_voting">Comenzar votación</string>
 
+    <string name="word_reveal_title">Revelar palabra</string>
+    <string name="word_reveal_prompt">%1$s, esta es tu palabra</string>
+    <string name="word_reveal_show">Mostrar palabra</string>
+    <string name="word_reveal_empty">No tenés palabra, ¡improvisá!</string>
+    <string name="word_reveal_next">Siguiente jugador</string>
+
+    <string name="votation_title">Votación</string>
+    <string name="votation_prompt">¡Hora de votar!</string>
+    <string name="votation_instruction">Votá al jugador que creés que es el infiltrado</string>
+    <string name="votation_select_label">Seleccionar jugador</string>
+    <string name="votation_eliminate">Eliminar</string>
 </resources>

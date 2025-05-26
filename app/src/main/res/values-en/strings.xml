@@ -40,5 +40,17 @@
     <string name="discussion_instruction">Describe the word in the indicated order</string>
     <string name="start_voting">Start Voting</string>
 
+    <string name="word_reveal_title">Word Reveal</string>
+    <string name="word_reveal_prompt">%1$s, here is your word</string>
+    <string name="word_reveal_show">Show word</string>
+    <string name="word_reveal_empty">You have no word. Improvise!</string>
+    <string name="word_reveal_next">Next player</string>
+
+    <string name="votation_title">Voting</string>
+    <string name="votation_prompt">Time to vote!</string>
+    <string name="votation_instruction">Vote for the player you think is the undercover</string>
+    <string name="votation_select_label">Select player</string>
+    <string name="votation_eliminate">Eliminate</string>
+
 </resources>
 
