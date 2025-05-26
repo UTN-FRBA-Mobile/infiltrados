@@ -2,7 +2,6 @@ package com.example.infiltrados.ui.main
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -20,7 +19,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -183,16 +181,24 @@ fun LanguageFlag(current: Boolean, target: Boolean, onClick: () -> Unit) {
     val imageRes = if (target) R.drawable.ic_spain else R.drawable.ic_us
     val selected = current == target
 
-    Image(
-        painter = painterResource(id = imageRes),
-        contentDescription = if (target) "Español" else "English",
+    Card(
         modifier = Modifier
-            .size(48.dp)
-            .border(
-                width = 2.dp,
-                color = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
-                shape = CircleShape
+            .size(56.dp)
+            .clickable { onClick() },
+        shape = CircleShape,
+        border = if (selected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
+        elevation = CardDefaults.cardElevation(defaultElevation = if (selected) 6.dp else 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = if (target) "Español" else "English",
+                modifier = Modifier.size(32.dp)
             )
-            .clickable { onClick() }
-    )
+        }
+    }
 }
