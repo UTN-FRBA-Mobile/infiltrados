@@ -24,5 +24,16 @@
 
     <string name="rules_tips_title">Tips</string>
     <string name="rules_tips_text">Do not say your exact word. Be strategic. Mr. White can win by correctly guessing the civilians word when eliminated.</string>
+
+    <string name="game_setup_title">Game Setup</string>
+    <string name="language_label">Language</string>
+    <string name="players_label">Players</string>
+    <string name="add_player">Add Player</string>
+    <string name="undercover_label">Number of Undercover</string>
+    <string name="include_mr_white">Include Mr. White?</string>
+    <string name="start_game">Start Game</string>
+    <string name="invalid_config">There must be at least 3 players, with at least 2 civilians.</string>
+    <string name="player_hint">Player %1$d</string>
+
 </resources>
 
