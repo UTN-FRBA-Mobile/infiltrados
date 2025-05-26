@@ -25,4 +25,31 @@
     <string name="rules_tips_title">Consejos</string>
     <string name="rules_tips_text">No digas tu palabra exacta. Sé estratégico. Mr. White puede ganar si adivina la palabra al ser eliminado.</string>
 
+    <string name="game_setup_title">Configuración del juego</string>
+    <string name="language_label">Idioma</string>
+    <string name="players_label">Jugadores</string>
+    <string name="add_player">Agregar jugador</string>
+    <string name="undercover_label">Cantidad de Undercover</string>
+    <string name="include_mr_white">¿Incluir a Mr. White?</string>
+    <string name="start_game">Comenzar juego</string>
+    <string name="invalid_config">Debe haber al menos 3 jugadores, con 2 civiles como mínimo.</string>
+    <string name="player_hint">Jugador %1$d</string>
+
+    <string name="discussion_title">Discusión</string>
+    <string name="discussion_prompt">¡Hora de describir la palabra!</string>
+    <string name="discussion_instruction">Describí la palabra en el orden indicado</string>
+    <string name="start_voting">Comenzar votación</string>
+
+    <string name="word_reveal_title">Revelar palabra</string>
+    <string name="word_reveal_prompt">%1$s, esta es tu palabra</string>
+    <string name="word_reveal_show">Mostrar palabra</string>
+    <string name="word_reveal_empty">No tenés palabra, ¡improvisá!</string>
+    <string name="word_reveal_next">Siguiente jugador</string>
+
+    <string name="votation_title">Votación</string>
+    <string name="votation_prompt">¡Hora de votar!</string>
+    <string name="votation_instruction">Votá al jugador que creés que es el infiltrado</string>
+    <string name="votation_select_label">Seleccionar jugador</string>
+    <string name="votation_eliminate">Eliminar</string>
 </resources>
+
