@@ -24,5 +24,33 @@
 
     <string name="rules_tips_title">Tips</string>
     <string name="rules_tips_text">Do not say your exact word. Be strategic. Mr. White can win by correctly guessing the civilians word when eliminated.</string>
+
+    <string name="game_setup_title">Game Setup</string>
+    <string name="language_label">Language</string>
+    <string name="players_label">Players</string>
+    <string name="add_player">Add Player</string>
+    <string name="undercover_label">Number of Undercover</string>
+    <string name="include_mr_white">Include Mr. White?</string>
+    <string name="start_game">Start Game</string>
+    <string name="invalid_config">There must be at least 3 players, with at least 2 civilians.</string>
+    <string name="player_hint">Player %1$d</string>
+
+    <string name="discussion_title">Discussion</string>
+    <string name="discussion_prompt">Time to describe the word!</string>
+    <string name="discussion_instruction">Describe the word in the indicated order</string>
+    <string name="start_voting">Start Voting</string>
+
+    <string name="word_reveal_title">Word Reveal</string>
+    <string name="word_reveal_prompt">%1$s, here is your word</string>
+    <string name="word_reveal_show">Show word</string>
+    <string name="word_reveal_empty">You have no word. Improvise!</string>
+    <string name="word_reveal_next">Next player</string>
+
+    <string name="votation_title">Voting</string>
+    <string name="votation_prompt">Time to vote!</string>
+    <string name="votation_instruction">Vote for the player you think is the undercover</string>
+    <string name="votation_select_label">Select player</string>
+    <string name="votation_eliminate">Eliminate</string>
+
 </resources>
 
