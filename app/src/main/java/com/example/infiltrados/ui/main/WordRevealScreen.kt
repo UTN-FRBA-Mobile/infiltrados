@@ -42,6 +42,7 @@ fun WordRevealScreen(
     players: List<Player>,
     gameManager: GameManager
 ) {
+    // Estado para llevar el índice actual
     var currentIndex by remember { mutableStateOf(0) }
     var revealed by remember { mutableStateOf(false) }
 
