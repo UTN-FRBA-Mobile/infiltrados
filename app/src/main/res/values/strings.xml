@@ -35,4 +35,9 @@
     <string name="invalid_config">Debe haber al menos 3 jugadores, con 2 civiles como mínimo.</string>
     <string name="player_hint">Jugador %1$d</string>
 
+    <string name="discussion_title">Discusión</string>
+    <string name="discussion_prompt">¡Hora de describir la palabra!</string>
+    <string name="discussion_instruction">Describí la palabra en el orden indicado</string>
+    <string name="start_voting">Comenzar votación</string>
+
 </resources>
