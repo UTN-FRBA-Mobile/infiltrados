@@ -1,4 +1,4 @@
-# Mr. White - Juego de deducción social
+# Mr. White 
 
 **Mr. White** es un juego de roles ocultos pensado para jugar en grupo. Cada partida ofrece una experiencia de deducción, engaño y estrategia, donde los jugadores deben usar su ingenio para descubrir quiénes mienten... o para ocultar su verdadera identidad.
 
