@@ -12,7 +12,7 @@ Al comenzar una partida, a cada jugador se le asigna un rol secreto:
 
 En cada ronda, los jugadores dan una pista relacionada con su palabra, tratando de no ser descubiertos. Luego se vota para eliminar a alguien que parezca sospechoso. El juego avanza hasta que se cumpla alguna de las condiciones de victoria.
 
-## 🏁 Condiciones de victoria
+## Condiciones de victoria
 
 - **Gana Mr. White** si:
   - Es eliminado y adivina correctamente la palabra secreta.
@@ -25,7 +25,7 @@ En cada ronda, los jugadores dan una pista relacionada con su palabra, tratando 
   - Eliminan a todos los Undercover y a Mr. White.
   - Al menos un ciudadano sigue en juego.
 
-## 👥 Sobre el proyecto
+## Sobre el proyecto
 
 Este proyecto recrea digitalmente el clásico juego de mesa adaptado al entorno móvil. El objetivo fue crear una experiencia fluida, entretenida y accesible para disfrutar partidas rápidas entre amigos.
 
