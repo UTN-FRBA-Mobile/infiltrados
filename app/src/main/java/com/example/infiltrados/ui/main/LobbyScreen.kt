@@ -7,22 +7,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.infiltrados.R
-import com.example.infiltrados.backend.GameRecord
+import com.example.infiltrados.ui.main.components.ServerTestPanel
+
 
 @Composable
 fun LobbyScreen(navController: NavController) {
-    val viewModel = viewModel<LobbyViewModel>()
-    val gameRecord = viewModel.game.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,21 +36,7 @@ fun LobbyScreen(navController: NavController) {
             text = stringResource(R.string.greeting),
             style = MaterialTheme.typography.headlineMedium
         )
-        Button(
-            onClick = {
-                viewModel.getAppwriteGame()
-            }
-        ) {
-            Text("query api")
-        }
 
-        Button(
-            onClick = {
-                viewModel.getLiveGame()
-            }
-        ) {
-            Text("live")
-        }
 
         Button(
             onClick = {
@@ -57,7 +45,6 @@ fun LobbyScreen(navController: NavController) {
         ) {
             Text(stringResource(R.string.begin))
         }
-        Text(gameRecord.value.toString())
         Button(
             onClick = {
                 navController.navigate("rules")
@@ -66,8 +53,7 @@ fun LobbyScreen(navController: NavController) {
             Text(stringResource(R.string.view_rules))
         }
 
-
-        Text(gameRecord.value.toString())
+        ServerTestPanel()
     }
 
 }
