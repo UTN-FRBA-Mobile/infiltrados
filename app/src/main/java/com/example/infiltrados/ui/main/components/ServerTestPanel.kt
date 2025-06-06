@@ -46,7 +46,5 @@ fun ServerTestPanel() {
     ) {
         Text("createGame")
     }
-
-    Text(gameRecord.value.toString())
     Text(gameRecord.value.toString())
 }

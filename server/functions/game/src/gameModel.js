@@ -27,7 +27,7 @@ export default class GameModel {
       }
     );
 
-    return game;
+    return game.$id;
   }
 
   async join(gameId, player) {
