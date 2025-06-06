@@ -72,23 +72,40 @@ class GameManager(
     }
 
     fun isGameOver(): Boolean {
-        val undercoverPlayers = getUndercoverActivePlayers()
-        val citizens = getCitizensActivePlayers()
-        //TODO: Implementar correctamente
-        return (undercoverPlayers.isEmpty() || citizens.isEmpty()) && !isMrWhiteActive()
+        val activePlayers = getActivePlayers()
+        val activeRoles = activePlayers.map { it.role }
+
+        val mrWhiteAlive = activeRoles.contains(Role.MR_WHITE)
+        val undercoverAlive = activeRoles.contains(Role.UNDERCOVER)
+        val citizensAlive = activeRoles.contains(Role.CIUDADANO)
+
+        if (activePlayers.size == 1 && activeRoles.contains(Role.MR_WHITE)) return true
+
+
+        if (undercoverAlive && !mrWhiteAlive && !citizensAlive) return true
+
+
+        if (!undercoverAlive && !mrWhiteAlive && citizensAlive) return true
+
+        return false
     }
+
 
     fun getWinners(): String {
-        val undercoverPlayers = players.filter { it.role == Role.UNDERCOVER && !it.isEliminated }
-        val citizens = players.filter { it.role == Role.CIUDADANO && !it.isEliminated }
+        val activePlayers = getActivePlayers()
+        val activeRoles = activePlayers.map { it.role }
 
-        //TODO: Implementar correctamente
+        val mrWhiteAlive = activeRoles.contains(Role.MR_WHITE)
+        val undercoverAlive = activeRoles.contains(Role.UNDERCOVER)
+        val citizensAlive = activeRoles.contains(Role.CIUDADANO)
+
         return when {
-            undercoverPlayers.isEmpty() && !isMrWhiteActive() -> Role.CIUDADANO// Ganaron los ciudadanos
-            citizens.isEmpty() && !isMrWhiteActive() -> Role.UNDERCOVER // Ganaron los infiltrados
-            citizens.isEmpty() && undercoverPlayers.isEmpty() -> Role.MR_WHITE // Ganó Mr White
-            else -> "" // Nadie ha ganado aún
-        }.toString()
+            activePlayers.size == 1 && activeRoles.contains(Role.MR_WHITE) -> Role.MR_WHITE.toString()
+            undercoverAlive && !mrWhiteAlive && !citizensAlive -> Role.UNDERCOVER.toString()
+            !undercoverAlive && !mrWhiteAlive && citizensAlive -> Role.CIUDADANO.toString()
+            else -> ""
+        }
     }
+
 
 }
