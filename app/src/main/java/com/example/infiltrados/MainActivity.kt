@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.infiltrados.backend.Appwrite
 import com.example.infiltrados.services.GameManager
 import com.example.infiltrados.services.WordLoader
 import com.example.infiltrados.ui.main.DiscussionScreen
@@ -31,6 +32,9 @@ import com.example.infiltrados.ui.main.SplashScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Appwrite.init(applicationContext)
+
         setContent {
             App()
         }
