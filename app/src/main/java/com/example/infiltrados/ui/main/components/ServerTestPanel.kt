@@ -14,7 +14,7 @@ import com.example.infiltrados.ui.main.ServerTestViewModel
 fun ServerTestPanel() {
     val viewModel = viewModel<ServerTestViewModel>()
     val gameRecord = viewModel.game.collectAsState()
-    var gameId = remember { mutableStateOf("1voVj") }
+    var gameId = remember { mutableStateOf("") }
 
     TextField(
         value = gameId.value,
@@ -41,7 +41,7 @@ fun ServerTestPanel() {
 
     Button(
         onClick = {
-            viewModel.createGame()
+            viewModel.createGame("alguien")
         }
     ) {
         Text("createGame")
