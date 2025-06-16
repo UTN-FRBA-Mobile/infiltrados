@@ -20,13 +20,15 @@ import com.example.infiltrados.ui.main.DiscussionScreen
 import com.example.infiltrados.ui.main.EndGameScreen
 import com.example.infiltrados.ui.main.LobbyScreen
 import com.example.infiltrados.ui.main.MrWhiteGuessScreen
+import com.example.infiltrados.ui.main.online.OnlineInputScreen
 import com.example.infiltrados.ui.main.PlayerEliminatedScreen
 import com.example.infiltrados.ui.main.PlayerInputScreen
 import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
 import com.example.infiltrados.ui.main.RulesScreen
 import com.example.infiltrados.ui.main.SplashScreen
-
+import com.example.infiltrados.ui.main.online.OnlineJoinScreen
+import com.example.infiltrados.ui.main.online.OnlineLobbyScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -65,7 +67,36 @@ private fun App() {
             }
         }
 
+        composable("online_input") { backStackEntry ->
+            OnlineInputScreen(navController) { names, numUndercover, includeMrWhite, spanish, code ->
+                Log.d("DEBUG", "Idioma recibido en callback: $spanish")
+                val wordPairs = WordLoader.loadWordPairs(context, spanish)
+                val selectedWordPair = wordPairs.random()
 
+                gameManager = GameManager(
+                    playerNames = names,
+                    wordPair = selectedWordPair.word1 to selectedWordPair.word2,
+                    numUndercover = numUndercover,
+                    includeMrWhite = includeMrWhite,
+                    code = code
+                )
+            }
+        }
+
+        composable("online_lobby") {
+            OnlineLobbyScreen(
+                navController = navController,
+                gameManager = gameManager!!
+            )
+        }
+
+        composable("join_game") { backStackEntry ->
+            OnlineJoinScreen(
+                navController = navController
+            ) { _gameManager ->
+                gameManager = _gameManager
+            }
+        }
 
         composable("reveal") { backStackEntry ->
             WordRevealScreen(

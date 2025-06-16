@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">infiltrados</string>
     <string name="greeting">Welcome to Infiltrados!</string>
+
     <string name="begin">Start Game</string>
+    <string name="begin_online">Start Online Game</string>
+    <string name="join_game">Join Online Game</string>
+
     <string name="view_rules">"View rules"</string>
 
     <string name="rules_title">Game Rules</string>

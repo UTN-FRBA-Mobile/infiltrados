@@ -6,9 +6,10 @@ import com.example.infiltrados.models.Role
 class GameManager(
     private val playerNames: List<String>,
     private val wordPair: Pair<String, String>, // Ej: ("gato", "tigre")
-    private val numUndercover: Int = 1,
-    private val includeMrWhite: Boolean = true,
-    var lastEliminated: Player? = null
+    val numUndercover: Int = 1,
+    val includeMrWhite: Boolean = true,
+    var lastEliminated: Player? = null,
+    val code: String = ""
 ) {
     val players: List<Player>
 

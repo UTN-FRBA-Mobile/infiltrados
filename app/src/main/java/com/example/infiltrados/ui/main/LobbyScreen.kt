@@ -37,7 +37,6 @@ fun LobbyScreen(navController: NavController) {
             style = MaterialTheme.typography.headlineMedium
         )
 
-
         Button(
             onClick = {
                 navController.navigate("input")
@@ -45,6 +44,23 @@ fun LobbyScreen(navController: NavController) {
         ) {
             Text(stringResource(R.string.begin))
         }
+
+        Button(
+            onClick = {
+                navController.navigate("online_input")
+            }
+        ) {
+            Text(stringResource(R.string.begin_online))
+        }
+
+        Button(
+            onClick = {
+                navController.navigate("join_game")
+            }
+        ) {
+            Text(stringResource(R.string.join_game))
+        }
+
         Button(
             onClick = {
                 navController.navigate("rules")
@@ -53,7 +69,6 @@ fun LobbyScreen(navController: NavController) {
             Text(stringResource(R.string.view_rules))
         }
 
-        ServerTestPanel()
     }
 
 }
