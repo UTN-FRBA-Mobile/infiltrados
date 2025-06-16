@@ -32,9 +32,6 @@ import com.example.infiltrados.ui.main.SplashScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Appwrite.init(applicationContext)
-
         setContent {
             App()
         }
