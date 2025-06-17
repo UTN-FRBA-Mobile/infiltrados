@@ -2,6 +2,7 @@
     <string name="app_name">infiltrados</string>
     <string name="greeting">Welcome to Infiltrados!</string>
     <string name="begin">Start Game</string>
+    <string name="join_game">Join game</string>
     <string name="view_rules">"View rules"</string>
 
     <string name="rules_title">Game Rules</string>

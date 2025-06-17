@@ -1,11 +1,26 @@
 package com.example.infiltrados.ui.main
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -14,13 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.infiltrados.R
 import kotlinx.coroutines.delay
-import androidx.compose.foundation.background
 
 
 @Composable
 fun SplashScreen(navController: NavController) {
-    val isDark = isSystemInDarkTheme()
-
     LaunchedEffect(Unit) {
         delay(2500)
         navController.navigate("lobby") {
@@ -39,14 +51,14 @@ fun SplashScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val logoRes = if (isDark) R.drawable.logo_dark else R.drawable.logo_light
+            val logoRes = R.drawable.logo_infiltrados
             Image(
                 painter = painterResource(id = logoRes),
                 contentDescription = "Logo Infiltrados",
-                modifier = Modifier.size(180.dp)
+                modifier = Modifier.size(320.dp)
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             DotsLoadingAnimation()
         }
@@ -79,7 +91,10 @@ fun DotsLoadingAnimation() {
                 modifier = Modifier
                     .size(12.dp)
                     .graphicsLayer { this.alpha = alpha.value }
-                    .background(MaterialTheme.colorScheme.primary, shape = MaterialTheme.shapes.small)
+                    .background(
+                        MaterialTheme.colorScheme.primary,
+                        shape = MaterialTheme.shapes.small
+                    )
             )
         }
     }
