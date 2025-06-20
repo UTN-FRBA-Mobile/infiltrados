@@ -57,7 +57,6 @@ fun LobbyScreen(navController: NavController) {
     ) {
 
         LanguageSelector { selectedLanguage ->
-            // acá podés guardar el idioma elegido en Preferences, ViewModel, etc.
             Log.d("Idioma", "Elegiste: $selectedLanguage")
         }
 
@@ -154,10 +153,10 @@ fun LanguageSelector(
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White,
-                contentColor = Color.Transparent // la imagen maneja el color
+                contentColor = Color.Transparent
             ),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
-            contentPadding = PaddingValues(4.dp), // ajusta el padding interno
+            contentPadding = PaddingValues(4.dp),
             modifier = Modifier.size(48.dp)
         ) {
             Image(
