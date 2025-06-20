@@ -31,34 +31,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.infiltrados.R
-import com.example.infiltrados.ui.main.components.ServerTestPanel
+import com.example.infiltrados.ui.components.GameButton
+import com.example.infiltrados.ui.components.ServerTestPanel
 
 @Composable
 fun LobbyScreen(navController: NavController) {
 
-    val gradient = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFFBA68C8),
-            Color(0xFF5a1366)
-        )
-    )
-
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(brush = gradient)
+        modifier = Modifier.fillMaxSize()
+            .background(Color(0xFFFAF5FB))
     ) {
-
-        LanguageSelector { selectedLanguage ->
-            Log.d("Idioma", "Elegiste: $selectedLanguage")
-        }
+        Image(
+            painter = painterResource(id = R.drawable.fondo_app_2),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize(), // 👈 solo para testeo
+            alpha = 1f
+        )
 
         Column(
             modifier = Modifier
@@ -76,22 +73,19 @@ fun LobbyScreen(navController: NavController) {
                     .padding(bottom = 20.dp)
             )
 
-            LobbyButton(
+             GameButton(
                 text = stringResource(R.string.begin),
-                navController = navController,
-                destination = "input"
+                 onClick = { navController.navigate("input") }
             )
 
-            LobbyButton(
+            GameButton(
                 text = stringResource(R.string.join_game),
-                navController = navController,
-                destination = "lobby"
+                onClick = { navController.navigate("lobby") }
             )
 
-            LobbyButton(
+            GameButton(
                 text = stringResource(R.string.view_rules),
-                navController = navController,
-                destination = "rules"
+                onClick = { navController.navigate("rules") }
             )
 
             ServerTestPanel()
@@ -127,86 +121,5 @@ fun LobbyButton(
             text = text,
             style = MaterialTheme.typography.bodyLarge
         )
-    }
-}
-
-@Composable
-fun LanguageSelector(
-    onLanguageSelected: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var currentLanguage by remember { mutableStateOf("es") }
-
-    val currentFlag = when (currentLanguage) {
-        "en" -> R.drawable.ic_us
-        "es" -> R.drawable.ic_spain
-        else -> R.drawable.ic_spain
-    }
-
-    Box(
-        modifier = Modifier
-            .padding(12.dp, top = 48.dp)
-            .wrapContentSize(Alignment.TopStart)
-    ) {
-        Button(
-            onClick = { expanded = true },
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Transparent
-            ),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
-            contentPadding = PaddingValues(4.dp),
-            modifier = Modifier.size(48.dp)
-        ) {
-            Image(
-                painter = painterResource(id = currentFlag),
-                contentDescription = "Idioma actual",
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            DropdownMenuItem(
-                onClick = {
-                    currentLanguage = "es"
-                    onLanguageSelected("es")
-                    expanded = false
-                },
-                text = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_spain),
-                            contentDescription = "Español",
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Español")
-                    }
-                }
-            )
-            DropdownMenuItem(
-                onClick = {
-                    currentLanguage = "en"
-                    onLanguageSelected("en")
-                    expanded = false
-                },
-                text = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_us),
-                            contentDescription = "English",
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("English")
-                    }
-                }
-            )
-        }
     }
 }
