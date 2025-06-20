@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.ui.text.google.fonts)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

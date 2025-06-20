@@ -53,5 +53,16 @@
     <string name="votation_select_label">Select player</string>
     <string name="votation_eliminate">Eliminate</string>
 
+    <string name="join_game_title">Join a Game</string>
+    <string name="join_game_input_label">Game Code</string>
+    <string name="join_game_input_placeholder">Enter the code</string>
+    <string name="join_game_button">Join</string>
+    <string name="join_game_qr_button">Scan QR</string>
+    <string name="back">Back</string>
+
+    <string name="select_game_mode">Choose a game mode</string>
+    <string name="play_online">Play Online</string>
+    <string name="play_offline">Play on Same Device</string>
+
 </resources>
 

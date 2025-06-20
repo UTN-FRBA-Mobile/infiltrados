@@ -52,5 +52,18 @@
     <string name="votation_instruction">Votá al jugador que creés que es el infiltrado</string>
     <string name="votation_select_label">Seleccionar jugador</string>
     <string name="votation_eliminate">Eliminar</string>
+
+    <string name="join_game_title">Unirse a un juego</string>
+    <string name="join_game_input_label">Código del juego</string>
+    <string name="join_game_input_placeholder">Ingresá el código</string>
+    <string name="join_game_button">Unirse</string>
+    <string name="join_game_qr_button">Escanear QR</string>
+    <string name="back">Volver</string>
+
+    <string name="select_game_mode">Elegí un modo de juego</string>
+    <string name="play_online">Jugar Online</string>
+    <string name="play_offline">Jugar en Mismo Dispositivo</string>
+
+
 </resources>
 

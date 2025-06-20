@@ -39,87 +39,41 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.infiltrados.R
 import com.example.infiltrados.ui.components.GameButton
+import com.example.infiltrados.ui.components.InfiltradosBackground
 import com.example.infiltrados.ui.components.ServerTestPanel
 
 @Composable
 fun LobbyScreen(navController: NavController) {
-
-    Box(
-        modifier = Modifier.fillMaxSize()
-            .background(Color(0xFFFAF5FB))
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.fondo_app_2),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize(), // 👈 solo para testeo
-            alpha = 1f
-        )
-
+    InfiltradosBackground {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(32.dp),
+                .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Spacer(modifier = Modifier.height(32.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.logo_infiltrados),
+                painter = painterResource(R.drawable.logo_infiltrados),
                 contentDescription = stringResource(R.string.greeting),
                 modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .padding(bottom = 20.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
             )
 
-             GameButton(
-                text = stringResource(R.string.begin),
-                 onClick = { navController.navigate("input") }
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                GameButton(text = stringResource(R.string.begin), onClick = { navController.navigate("game_selection") })
+                GameButton(text = stringResource(R.string.join_game), onClick = { navController.navigate("join_game") })
+                GameButton(text = stringResource(R.string.view_rules), onClick = { navController.navigate("rules") })
 
-            GameButton(
-                text = stringResource(R.string.join_game),
-                onClick = { navController.navigate("lobby") }
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            GameButton(
-                text = stringResource(R.string.view_rules),
-                onClick = { navController.navigate("rules") }
-            )
-
-            ServerTestPanel()
+                ServerTestPanel()
+            }
         }
-    }
-
-}
-
-@Composable
-fun LobbyButton(
-    text: String,
-    navController: NavController,
-    destination: String
-) {
-    Button(
-        onClick = { navController.navigate(destination) },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF8c68b8),
-            contentColor = Color.White
-        ),
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier
-            .fillMaxWidth(0.7f)
-            .height(80.dp)
-            .padding(vertical = 8.dp)
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(16.dp),
-                clip = false
-            )
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
