@@ -2,8 +2,11 @@
     <string name="app_name">infiltrados</string>
     <string name="greeting">¡Bienvenidos a Infiltrados!</string>
     <string name="begin">Comenzar juego</string>
+    <string name="begin_description">Iniciá una nueva partida en tu dispositivo o invitá a otros jugadores</string>
     <string name="join_game">Unirse a juego</string>
+    <string name="join_game_description">Unite a una partida iniciada a través de un código</string>
     <string name="view_rules">"Ver reglas"</string>
+    <string name="view_rules_description">Conocé cómo jugar antes de empezar</string>">
 
     <string name="rules_title">Reglas del juego</string>
     <string name="rules_back">Volver</string>
@@ -60,9 +63,11 @@
     <string name="join_game_qr_button">Escanear QR</string>
     <string name="back">Volver</string>
 
-    <string name="select_game_mode">Elegí un modo de juego</string>
+    <string name="choose_game_mode">Elegí un modo de juego</string>
     <string name="play_online">Jugar Online</string>
-    <string name="play_offline">Jugar en Mismo Dispositivo</string>
+    <string name="play_online_desc">Invitá a tus amigos con un código QR y jueguen a distancia</string>
+    <string name="play_offline">Jugar en este Dispositivo</string>
+    <string name="play_offline_desc">Pasá el dispositivo entre jugadores y jugá sin conexión</string>
 
 
 </resources>

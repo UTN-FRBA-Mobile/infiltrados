@@ -4,66 +4,62 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.infiltrados.ui.components.GameButton
 import com.example.infiltrados.ui.components.InfiltradosBackground
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.material3.*
+import androidx.compose.foundation.Image
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.infiltrados.R
+import com.example.infiltrados.ui.components.GameTitle
+import com.example.infiltrados.ui.components.OptionCard
 
 @Composable
-fun GameSelectionScreen(
-    onSelectOnline: () -> Unit,
-    onSelectOffline: () -> Unit
-) {
-    var pressedOnline by remember { mutableStateOf(false) }
-    var pressedOffline by remember { mutableStateOf(false) }
-
-    val scaleOnline by animateFloatAsState(
-        targetValue = if (pressedOnline) 0.97f else 1f,
-        label = "onlineScale"
-    )
-
-    val scaleOffline by animateFloatAsState(
-        targetValue = if (pressedOffline) 0.97f else 1f,
-        label = "offlineScale"
-    )
-
+fun GameSelectionScreen(navController: NavController) {
     InfiltradosBackground {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp, vertical = 64.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(36.dp)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = stringResource(R.string.select_game_mode),
-                style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onBackground
+            Spacer(Modifier.height(16.dp))
+
+            // Título principal animado o divertido
+            GameTitle(
+                text = stringResource(R.string.choose_game_mode),
+                modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            GameButton(
-                text = stringResource(R.string.play_online),
-                onClick = {
-                    pressedOnline = true
-                    onSelectOnline()
-                },
-                modifier = Modifier.scale(scaleOnline)
+            // Ilustración o animación divertida
+            Image(
+                painter = painterResource(id = R.drawable.detective), // ilustración simpática
+                contentDescription = null,
+                modifier = Modifier
+                    .height(180.dp)
+                    .padding(vertical = 8.dp)
             )
 
-            GameButton(
-                text = stringResource(R.string.play_offline),
-                onClick = {
-                    pressedOffline = true
-                    onSelectOffline()
-                },
-                modifier = Modifier.scale(scaleOffline)
-            )
+            // Card para Jugar en Mismo Dispositivo
+            OptionCard(
+                title = stringResource(R.string.play_offline),
+                description = stringResource(R.string.play_offline_desc),
+                icon = Icons.Default.PlayArrow
+            ){ navController.navigate("input") }
+
+            // Card para Jugar Online
+            OptionCard(
+                title = stringResource(R.string.play_online),
+                description = stringResource(R.string.play_online_desc),
+                icon = Icons.Default.Wifi
+            ){ navController.navigate("insertPlayers") }
+
+
+            Spacer(Modifier.height(24.dp))
         }
     }
 }

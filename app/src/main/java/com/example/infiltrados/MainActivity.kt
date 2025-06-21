@@ -139,9 +139,8 @@ private fun App() {
 
             composable("game_selection") {
                 GameSelectionScreen(
-                    onSelectOnline = { navController.navigate("show_game_code") },
-                    onSelectOffline = { navController.navigate("input") }
-                )
+                    navController = navController
+                    )
             }
 
 

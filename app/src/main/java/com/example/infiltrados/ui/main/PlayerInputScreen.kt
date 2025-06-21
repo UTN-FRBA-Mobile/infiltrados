@@ -1,3 +1,4 @@
+
 package com.example.infiltrados.ui.main
 
 import androidx.compose.foundation.BorderStroke
@@ -10,21 +11,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PersonAdd
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.infiltrados.R
+import com.example.infiltrados.ui.components.GameButton
+import com.example.infiltrados.ui.components.GameTitle
+import com.example.infiltrados.ui.components.InfiltradosBackground
+import com.example.infiltrados.ui.theme.infiltradosTextFieldColors
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,135 +36,125 @@ fun PlayerInputScreen(
     navController: NavController,
     onSubmitPlayers: (List<String>, Int, Boolean, Boolean) -> Unit
 ) {
-    var playerNames by remember { mutableStateOf(listOf("")) }
+    var players by remember { mutableStateOf(listOf<Pair<String, Int>>()) }
     var numUndercover by remember { mutableStateOf(1) }
     var includeMrWhite by remember { mutableStateOf(true) }
     var spanish by remember { mutableStateOf(true) }
+    var showDialog by remember { mutableStateOf(false) }
+    var newName by remember { mutableStateOf("") }
 
-    fun updateName(index: Int, newName: String) {
-        playerNames = playerNames.toMutableList().also {
-            it[index] = newName
-        }
-    }
-
-    fun addPlayer() {
-        playerNames = playerNames + ""
-    }
-
-    fun removePlayer(index: Int) {
-        if (playerNames.size > 1) {
-            playerNames = playerNames.toMutableList().also {
-                it.removeAt(index)
-            }
-        }
-    }
-
-    val validPlayers = playerNames.map { it.trim() }.filter { it.isNotEmpty() }
+    val validPlayers = players.map { it.first.trim() }.filter { it.isNotEmpty() }
     val numCitizens = validPlayers.size - numUndercover - if (includeMrWhite) 1 else 0
     val canStart = validPlayers.size >= 3 && (numUndercover > 0 || includeMrWhite) && numCitizens >= 2
 
-    // Topbar con el volver
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.game_setup_title)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.rules_back))
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        // Para tener scroll vertical si hay muchos jugadores
+    InfiltradosBackground {
         Column(
             modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = 20.dp, vertical = 16.dp)
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+                .fillMaxSize()
+                .padding(horizontal = 24.dp, vertical = 32.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Selector de idioma
-            Text(text = stringResource(R.string.language_label), style = MaterialTheme.typography.titleMedium)
+            GameTitle(
+                text = stringResource(R.string.game_setup_title),
+                modifier = Modifier
+            )
+
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 LanguageFlag(spanish, true) { spanish = true }
                 LanguageFlag(spanish, false) { spanish = false }
             }
-            // Lista de jugadores
-            Text(text = stringResource(R.string.players_label), style = MaterialTheme.typography.titleMedium)
+
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                playerNames.forEachIndexed { index, name ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        OutlinedTextField(
-                            value = name,
-                            onValueChange = { updateName(index, it) },
-                            label = { Text(stringResource(R.string.player_hint, index + 1)) },
-                            leadingIcon = {
-                                Icon(Icons.Default.Person, contentDescription = null)
-                            },
-                            modifier = Modifier.weight(1f),
-                            singleLine = true
-                        )
-                        IconButton(onClick = { removePlayer(index) }) {
-                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.rules_back))
+                GameTitle(
+                    text = stringResource(R.string.players_label),
+                    modifier = Modifier
+                )
+
+                players.forEachIndexed { index, (name) ->
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                Spacer(Modifier.width(16.dp))
+                                Text(
+                                    text = name,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            IconButton(onClick = {
+                                players = players.toMutableList().also { it.removeAt(index) }
+                            }) {
+                                Icon(Icons.Default.Delete, contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.tertiary)
+                            }
                         }
                     }
                 }
 
-                OutlinedButton(
-                    onClick = { addPlayer() },
-                    modifier = Modifier.align(Alignment.Start),
-                    shape = RoundedCornerShape(50),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                GameButton(
+                    text = stringResource(R.string.add_player),
+                    onClick = { showDialog = true },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                GameTitle(
+                    text = stringResource(R.string.undercover_label),
+                    modifier = Modifier
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Icon(Icons.Default.PersonAdd, contentDescription = null)
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.add_player))
+                    IconButton(onClick = { if (numUndercover > 0) numUndercover-- }) {
+                        Icon(Icons.Default.Remove, contentDescription = null,
+                            tint = MaterialTheme.colorScheme.tertiary)
+                    }
+                    Text(numUndercover.toString(), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.tertiary)
+                    IconButton(onClick = { numUndercover++ }) {
+                        Icon(Icons.Default.Add, contentDescription = null,
+                            tint = MaterialTheme.colorScheme.tertiary)
+                    }
                 }
             }
-            // Selector de cantidad de Undercover
-            Text(text = stringResource(R.string.undercover_label), style = MaterialTheme.typography.titleMedium)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                IconButton(onClick = { if (numUndercover > 0) numUndercover-- }) {
-                    Icon(Icons.Default.Remove, contentDescription = null)
-                }
-                Text(numUndercover.toString(), style = MaterialTheme.typography.bodyLarge)
-                IconButton(onClick = { numUndercover++ }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                }
-            }
-            // Switch para incluir a Mr. White
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.include_mr_white))
-                Switch(
-                    checked = includeMrWhite,
-                    onCheckedChange = { includeMrWhite = it }
-                )
+                Text(stringResource(R.string.include_mr_white), color = MaterialTheme.colorScheme.onBackground)
+                Switch(checked = includeMrWhite, onCheckedChange = { includeMrWhite = it })
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-            // Botón de iniciar juego
-            Button(
+            GameButton(
+                text = stringResource(R.string.start_game),
                 onClick = {
                     onSubmitPlayers(validPlayers, numUndercover, includeMrWhite, spanish)
                     navController.navigate("reveal")
                 },
-                enabled = canStart,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(24.dp)
-            ) {
-                Text(stringResource(R.string.start_game))
-            }
+                modifier = Modifier.fillMaxWidth(),
+                enabled = canStart
+            )
 
             if (!canStart) {
                 Text(
@@ -171,10 +165,44 @@ fun PlayerInputScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                if (newName.isNotBlank()) {
+                                    val iconId = Random.nextInt(1, 6)
+                                    players = players + (newName.trim() to iconId)
+                                    newName = ""
+                                    showDialog = false
+                                }
+                            }
+                        ) {
+                            Text("Aceptar")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDialog = false }) {
+                            Text("Cancelar")
+                        }
+                    },
+                    title = { Text("Nuevo jugador") },
+                    text = {
+                        OutlinedTextField(
+                            value = newName,
+                            onValueChange = { newName = it },
+                            label = { Text("Nombre del jugador") },
+                            singleLine = true,
+                            colors = infiltradosTextFieldColors()
+                        )
+                    }
+                )
+            }
         }
     }
 }
-
 
 @Composable
 fun LanguageFlag(current: Boolean, target: Boolean, onClick: () -> Unit) {
@@ -202,3 +230,7 @@ fun LanguageFlag(current: Boolean, target: Boolean, onClick: () -> Unit) {
         }
     }
 }
+
+
+
+

@@ -14,9 +14,9 @@ val bodyFontFamily = FontFamily(
     Font(R.font.fredoka, FontWeight.Bold)
 )
 
-// Fuente para títulos (Orbitron)
+// Fuente para títulos (Bebas)
 val displayFontFamily = FontFamily(
-    Font(R.font.orbitron, FontWeight.Normal)
+    Font(R.font.bebas_neue, FontWeight.Normal)
 )
 
 val AppTypography = Typography(
