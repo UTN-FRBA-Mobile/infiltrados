@@ -64,6 +64,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation("io.appwrite:sdk-for-android:7.0.1")
+    implementation ("com.airbnb.android:lottie-compose:6.0.0")
+    implementation ("androidx.media:media:1.6.0")
+
 
 
 }
