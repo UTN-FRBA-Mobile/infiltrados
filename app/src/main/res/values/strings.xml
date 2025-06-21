@@ -51,5 +51,8 @@
     <string name="votation_instruction">Votá al jugador que creés que es el infiltrado</string>
     <string name="votation_select_label">Seleccionar jugador</string>
     <string name="votation_eliminate">Eliminar</string>
+    <string name="create_online">Crear juego online</string>
+    <string name="ready">Listo</string>
+    <string name="pick_name">Ingresa tu nombre</string>
 </resources>
 

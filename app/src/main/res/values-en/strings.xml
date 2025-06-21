@@ -51,6 +51,9 @@
     <string name="votation_instruction">Vote for the player you think is the undercover</string>
     <string name="votation_select_label">Select player</string>
     <string name="votation_eliminate">Eliminate</string>
+    <string name="create_online">Create online game</string>
+    <string name="ready">Ready</string>
+    <string name="pick_name">Input your name</string>
 
 </resources>
 
