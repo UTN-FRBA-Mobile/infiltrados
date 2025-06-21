@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -43,7 +44,7 @@ android {
 
 dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
-    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -63,6 +64,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation("io.appwrite:sdk-for-android:7.0.1")
-
-
 }
