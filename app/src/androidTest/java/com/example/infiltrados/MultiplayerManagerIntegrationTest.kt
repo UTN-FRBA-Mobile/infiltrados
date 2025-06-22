@@ -7,6 +7,9 @@ import com.example.infiltrados.services.MultiplayerGameManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 
 import org.junit.Test
@@ -37,7 +40,7 @@ class MultiplayerManagerIntegrationTest {
 
         assertEquals("testHost", gameManager.game.players[0])
         //clean up
-        AppwriteService.deleteGame(gameManager.game.id)
+        Appwrite.deleteGame(gameManager.game.id)
     }
 
     @Test

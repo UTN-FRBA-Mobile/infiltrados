@@ -1,5 +1,4 @@
 package com.example.infiltrados
-
 import android.util.Log
 
 import android.os.Bundle
@@ -15,21 +14,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.infiltrados.backend.Appwrite
 import com.example.infiltrados.services.GameManager
 import com.example.infiltrados.services.WordLoader
 import com.example.infiltrados.ui.main.DiscussionScreen
 import com.example.infiltrados.ui.main.EndGameScreen
 import com.example.infiltrados.ui.main.LobbyScreen
 import com.example.infiltrados.ui.main.MrWhiteGuessScreen
-import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 import com.example.infiltrados.ui.main.PlayerEliminatedScreen
 import com.example.infiltrados.ui.main.PlayerInputScreen
 import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
 import com.example.infiltrados.ui.main.RulesScreen
 import com.example.infiltrados.ui.main.SplashScreen
-import com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen.OnlineLobbyScreen
-import kotlinx.serialization.Serializable
 
 
 @Serializable
