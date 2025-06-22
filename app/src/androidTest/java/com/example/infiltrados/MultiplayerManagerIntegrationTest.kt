@@ -8,6 +8,7 @@ import com.example.infiltrados.services.GameManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 
@@ -40,6 +41,23 @@ class MultiplayerManagerIntegrationTest {
         assertEquals("testHost", gameManager.game.players[0])
         //clean up
         Appwrite.deleteGame(gameManager.game.id)
-
     }
+
+    @Test
+    fun testUpdateGame() = runTest {
+        val gameManager = MultiplayerGameManager.createGame(
+            "testHost",
+            CoroutineScope(Dispatchers.IO)
+        ).await()
+
+        var updated = gameManager.kickPlayer("testHost").await()
+        assertEquals(0, updated.players.size)
+        delay(1000)
+        assertEquals(0, gameManager.game.players.size)
+
+        //clean up
+        Appwrite.deleteGame(gameManager.game.id)
+    }
+
+
 }

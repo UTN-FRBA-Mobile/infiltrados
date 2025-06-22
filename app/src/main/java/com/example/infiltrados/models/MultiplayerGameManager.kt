@@ -36,6 +36,9 @@ class MultiplayerGameManager(
                 e
             )
         }
+        .onEach {
+            Log.d("MultiplayerGameManager", "MultiplayerGameManager: GameRecord updated: $it")
+        }
         .stateIn(
             scope = scope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -77,10 +80,10 @@ class MultiplayerGameManager(
         return game.players
     }
 
-    fun kickPlayer(playerName: String) {
+    fun kickPlayer(playerName: String): Deferred<GameRecord> {
         val newPlayers = game.players.filter { it != playerName }
         val updated = game.copy(players = newPlayers)
-        scope.launch {
+        return scope.async(Dispatchers.IO) {
             Appwrite.updateGame(updated)
         }
     }

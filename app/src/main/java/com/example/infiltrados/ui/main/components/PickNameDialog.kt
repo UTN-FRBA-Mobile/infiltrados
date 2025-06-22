@@ -29,7 +29,7 @@ fun PickNameDialog(
     onDismissRequest: () -> Unit,
     onConfirmation: (name: String) -> Unit,
 ) {
-    var name by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("ads") }
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
         // Draw a rectangle shape with rounded corners inside the dialog

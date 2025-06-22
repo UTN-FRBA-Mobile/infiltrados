@@ -7,23 +7,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.infiltrados.R
+import com.example.infiltrados.ui.main.components.PickNameDialog
 import com.example.infiltrados.ui.main.components.ServerTestPanel
 
 
 @Composable
-fun LobbyScreen(navController: NavController) {
+fun LobbyScreen(navController: NavController, onCreateMPGame: (name: String) -> Unit) {
+    var isNameDialogOpen by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -37,7 +38,6 @@ fun LobbyScreen(navController: NavController) {
             style = MaterialTheme.typography.headlineMedium
         )
 
-
         Button(
             onClick = {
                 navController.navigate("input")
@@ -45,6 +45,22 @@ fun LobbyScreen(navController: NavController) {
         ) {
             Text(stringResource(R.string.begin))
         }
+
+        Button(
+            onClick = { isNameDialogOpen = true }
+        ) {
+            Text(stringResource(R.string.create_online))
+        }
+
+        if (isNameDialogOpen) {
+            PickNameDialog(
+                onDismissRequest = { isNameDialogOpen = false },
+                onConfirmation = { name ->
+                    isNameDialogOpen = false
+                    onCreateMPGame(name)
+                })
+        }
+
         Button(
             onClick = {
                 navController.navigate("rules")
@@ -52,8 +68,6 @@ fun LobbyScreen(navController: NavController) {
         ) {
             Text(stringResource(R.string.view_rules))
         }
-
-        ServerTestPanel()
     }
 
 }
