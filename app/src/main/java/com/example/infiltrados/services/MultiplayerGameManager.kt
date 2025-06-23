@@ -1,8 +1,6 @@
 package com.example.infiltrados.services
 
 import android.util.Log
-import com.example.infiltrados.backend.Appwrite
-import com.example.infiltrados.backend.GameRecord
 import com.example.infiltrados.models.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred

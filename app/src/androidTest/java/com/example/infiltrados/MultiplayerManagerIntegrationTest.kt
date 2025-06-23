@@ -40,7 +40,7 @@ class MultiplayerManagerIntegrationTest {
 
         assertEquals("testHost", gameManager.game.players[0])
         //clean up
-        Appwrite.deleteGame(gameManager.game.id)
+        AppwriteService.deleteGame(gameManager.game.id)
     }
 
     @Test
