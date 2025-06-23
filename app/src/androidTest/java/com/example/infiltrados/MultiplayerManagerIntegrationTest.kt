@@ -2,7 +2,7 @@ package com.example.infiltrados
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.infiltrados.backend.Appwrite
+import com.example.infiltrados.services.AppwriteService
 import com.example.infiltrados.services.MultiplayerGameManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +25,7 @@ class MultiplayerManagerIntegrationTest {
 
     @Before // This method will run before each test
     fun setup() {
-        Appwrite.init(InstrumentationRegistry.getInstrumentation().targetContext)
+        AppwriteService.init(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
     @Test
@@ -37,7 +37,7 @@ class MultiplayerManagerIntegrationTest {
 
         assertEquals("testHost", gameManager.game.players[0])
         //clean up
-        Appwrite.deleteGame(gameManager.game.id)
+        AppwriteService.deleteGame(gameManager.game.id)
     }
 
     @Test
@@ -53,7 +53,7 @@ class MultiplayerManagerIntegrationTest {
         assertEquals(0, gameManager.game.players.size)
 
         //clean up
-        Appwrite.deleteGame(gameManager.game.id)
+        AppwriteService.deleteGame(gameManager.game.id)
     }
 
 

@@ -1,8 +1,6 @@
 package com.example.infiltrados.services
 
 import android.util.Log
-import com.example.infiltrados.backend.Appwrite
-import com.example.infiltrados.backend.GameRecord
 import com.example.infiltrados.models.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -53,8 +51,8 @@ class MultiplayerGameManager(
             scope: CoroutineScope
         ): Deferred<MultiplayerGameManager> {
             return scope.async(Dispatchers.IO) {
-                val createdGame = Appwrite.createGame(hostName)
-                val gameSuscription = Appwrite.subscribe(createdGame.id)
+                val createdGame = AppwriteService.createGame(hostName)
+                val gameSuscription = AppwriteService.subscribe(createdGame.id)
                 MultiplayerGameManager(hostName, true, createdGame, gameSuscription, scope)
             }
         }
@@ -65,8 +63,8 @@ class MultiplayerGameManager(
             scope: CoroutineScope
         ): Deferred<MultiplayerGameManager> {
             return scope.async {
-                val game = Appwrite.getGame(gameId)
-                val gameSuscription = Appwrite.subscribe(gameId)
+                val game = AppwriteService.getGame(gameId)
+                val gameSuscription = AppwriteService.subscribe(gameId)
                 MultiplayerGameManager(playerName, false, game!!, gameSuscription, scope)
             }
         }
@@ -82,7 +80,7 @@ class MultiplayerGameManager(
         val newPlayers = game.players.filter { it != playerName }
         val updated = game.copy(players = newPlayers)
         return scope.async(Dispatchers.IO) {
-            Appwrite.updateGame(updated)
+            AppwriteService.updateGame(updated)
         }
     }
 

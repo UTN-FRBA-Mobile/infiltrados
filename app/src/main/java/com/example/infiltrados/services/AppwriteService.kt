@@ -1,4 +1,4 @@
-package com.example.infiltrados.backend
+package com.example.infiltrados.services
 
 import android.content.Context
 import android.util.Log
@@ -24,7 +24,7 @@ data class GameRecord(
     val state: String
 )
 
-object Appwrite {
+object AppwriteService {
     lateinit var client: Client
     lateinit var realtime: Realtime
     lateinit var databases: Databases
