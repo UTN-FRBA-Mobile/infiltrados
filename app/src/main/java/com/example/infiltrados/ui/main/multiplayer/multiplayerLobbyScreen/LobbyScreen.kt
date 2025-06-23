@@ -1,4 +1,4 @@
-package com.example.infiltrados.ui.main.multiplayerLobbyScreen
+package com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,18 +10,15 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.infiltrados.R
-import com.example.infiltrados.ui.main.MultiplayerGameViewModel
+import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 import com.example.infiltrados.ui.main.components.ButtonWithLoading
-import com.example.infiltrados.ui.main.components.ServerTestPanel
 
 
 @Composable
@@ -41,6 +38,8 @@ fun OnlineLobbyScreen(
     }
 
     var gameManager = multiplayerGameViewModel.gameManager!!
+    val gameRecord by multiplayerGameViewModel.game.collectAsState()
+    val players = gameRecord?.players ?: emptyList()
 
 
     Column(
@@ -52,9 +51,10 @@ fun OnlineLobbyScreen(
     ) {
         Text(stringResource(R.string.players_label), style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(24.dp))
-        PlayerList(gameManager.getPlayers(), gameManager.isHost) { gameManager.kickPlayer(it) }
+        PlayerList(players, gameManager.isHost) { gameManager.kickPlayer(it) }
 
-        ServerTestPanel()
+        Spacer(Modifier.height(24.dp))
+        //ServerTestPanel(multiplayerGameViewModel)
         Spacer(Modifier.weight(1f))
         ButtonWithLoading(
             stringResource(R.string.begin),

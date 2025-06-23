@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.infiltrados.ui.main.MultiplayerGameViewModel
+import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 
 @Composable
 fun ServerTestPanel(viewModel: MultiplayerGameViewModel) {

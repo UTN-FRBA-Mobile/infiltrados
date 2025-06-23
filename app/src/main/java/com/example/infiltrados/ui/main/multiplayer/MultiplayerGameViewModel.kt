@@ -1,4 +1,4 @@
-package com.example.infiltrados.ui.main
+package com.example.infiltrados.ui.main.multiplayer
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -7,16 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.infiltrados.backend.GameRecord
-import com.example.infiltrados.models.MultiplayerGameManager
-import kotlinx.coroutines.Dispatchers
+import com.example.infiltrados.services.MultiplayerGameManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-
 
 class MultiplayerGameViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
@@ -40,7 +37,7 @@ class MultiplayerGameViewModel : ViewModel() {
         isLoading = true
         viewModelScope.launch {
             gameManager =
-                MultiplayerGameManager.createGame(name, scope = viewModelScope).await()
+                MultiplayerGameManager.Factory.createGame(name, scope = viewModelScope).await()
             isLoading = false
             gameManager!!.gameRecordFlow.onEach { newGameRecord ->
                 _game.value = newGameRecord

@@ -1,8 +1,9 @@
-package com.example.infiltrados.models
+package com.example.infiltrados.services
 
 import android.util.Log
 import com.example.infiltrados.backend.Appwrite
 import com.example.infiltrados.backend.GameRecord
+import com.example.infiltrados.models.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -11,11 +12,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 data class GameState(
     val players: List<Player>

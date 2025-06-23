@@ -3,13 +3,10 @@ package com.example.infiltrados
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.infiltrados.backend.Appwrite
-import com.example.infiltrados.models.MultiplayerGameManager
-import com.example.infiltrados.services.GameManager
+import com.example.infiltrados.services.MultiplayerGameManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 
 import org.junit.Test

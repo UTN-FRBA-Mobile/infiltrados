@@ -1,4 +1,4 @@
-package com.example.infiltrados.ui.main.multiplayerLobbyScreen
+package com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
