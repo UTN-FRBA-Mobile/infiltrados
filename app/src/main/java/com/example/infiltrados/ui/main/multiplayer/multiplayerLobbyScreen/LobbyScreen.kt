@@ -14,31 +14,35 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.infiltrados.R
-import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
+import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.ButtonWithLoading
+import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
+import com.example.infiltrados.ui.main.multiplayer.ObserveMultiplayerPhase
 
 
 @Composable
 fun OnlineLobbyScreen(
-    multiplayerGameViewModel: MultiplayerGameViewModel,
-    onStartGame: () -> Unit,
-    onBackToLobby: () -> Unit
+    mpViewModel: MultiplayerGameViewModel,
+    onBackToLobby: () -> Unit,
+    onNavigateToPhase: (MultiplayerPhase) -> Unit
 ) {
-    if (multiplayerGameViewModel.gameManager == null && !multiplayerGameViewModel.isLoading) {
+    if (mpViewModel.gameManager == null && !mpViewModel.isLoading) {
         onBackToLobby()
         return
     }
 
-    if (multiplayerGameViewModel.isLoading) {
+    if (mpViewModel.isLoading) {
         CircularProgressIndicator()
         return
     }
 
-    var gameManager = multiplayerGameViewModel.gameManager!!
-    val gameRecord by multiplayerGameViewModel.game.collectAsState()
+    ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
+
+
+    val gameRecord by mpViewModel.game.collectAsState()
     val players = gameRecord?.players ?: emptyList()
 
 
@@ -51,16 +55,15 @@ fun OnlineLobbyScreen(
     ) {
         Text(stringResource(R.string.players_label), style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(24.dp))
-        PlayerList(players, gameManager.isHost) { gameManager.kickPlayer(it) }
+        PlayerList(players, mpViewModel.isHost) { mpViewModel.removePlayer(it) }
 
         Spacer(Modifier.height(24.dp))
         //ServerTestPanel(multiplayerGameViewModel)
         Spacer(Modifier.weight(1f))
         ButtonWithLoading(
             stringResource(R.string.begin),
-            multiplayerGameViewModel.isLoading,
-            onStartGame
-        )
+            mpViewModel.isLoading
+        ) { mpViewModel.startGame() }
     }
 
 }
