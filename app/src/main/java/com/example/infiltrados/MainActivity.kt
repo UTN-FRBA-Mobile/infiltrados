@@ -1,4 +1,5 @@
 package com.example.infiltrados
+
 import android.util.Log
 
 import android.os.Bundle
@@ -12,29 +13,34 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.infiltrados.backend.Appwrite
 import com.example.infiltrados.services.GameManager
 import com.example.infiltrados.services.WordLoader
 import com.example.infiltrados.ui.main.DiscussionScreen
 import com.example.infiltrados.ui.main.EndGameScreen
 import com.example.infiltrados.ui.main.LobbyScreen
 import com.example.infiltrados.ui.main.MrWhiteGuessScreen
+import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 import com.example.infiltrados.ui.main.PlayerEliminatedScreen
 import com.example.infiltrados.ui.main.PlayerInputScreen
 import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
 import com.example.infiltrados.ui.main.RulesScreen
 import com.example.infiltrados.ui.main.SplashScreen
+import com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen.OnlineLobbyScreen
+import kotlinx.serialization.Serializable
 
 
+@Serializable
+object MultiplayerRoutes
+
+@Serializable
+object OnlineLobby
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Appwrite.init(applicationContext)
-
         setContent {
             App()
         }
@@ -46,9 +52,30 @@ private fun App() {
     val navController = rememberNavController()
     var gameManager: GameManager? by remember { mutableStateOf(null) }
     val context = LocalContext.current
+
+    val mpViewModel = MultiplayerGameViewModel()
+
     NavHost(navController = navController, startDestination = "splash") {
 
-        composable("lobby") { LobbyScreen(navController) }
+        composable("lobby") {
+            LobbyScreen(navController, onCreateMPGame = { name ->
+
+                mpViewModel.createGame(name)
+                navController.navigate(route = OnlineLobby)
+            })
+        }
+
+        // MP
+        navigation<MultiplayerRoutes>(startDestination = OnlineLobby) {
+            composable<OnlineLobby> {
+                OnlineLobbyScreen(
+                    mpViewModel,
+                    onStartGame = { Log.d("DEBUG", "Game started") },
+                    onBackToLobby = { navController.navigate("lobby") }
+                )
+            }
+        }
+
 
         composable("input") {
             PlayerInputScreen(navController) { names, numUndercover, includeMrWhite, spanish ->

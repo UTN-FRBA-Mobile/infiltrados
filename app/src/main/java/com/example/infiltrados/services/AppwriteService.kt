@@ -1,4 +1,4 @@
-package com.example.infiltrados.backend
+package com.example.infiltrados.services
 
 import android.content.Context
 import android.util.Log
@@ -24,7 +24,7 @@ data class GameRecord(
     val state: String
 )
 
-object Appwrite {
+object AppwriteService {
     lateinit var client: Client
     lateinit var realtime: Realtime
     lateinit var databases: Databases
@@ -53,7 +53,7 @@ object Appwrite {
             method = ExecutionMethod.POST,
             path = "create",
             body = mapOf("hostPlayer" to playerName).toJson()
-            )
+        )
 
         val gameId = Json.decodeFromString<String>(execution.responseBody)
 
@@ -76,25 +76,28 @@ object Appwrite {
             )
             Log.d("Appwrite", result.data.toString())
             return result.data
-        } catch (e: AppwriteException){
-            Log.d("Appwrite","Exception while retieving game with id: $id",e)
+        } catch (e: AppwriteException) {
+            Log.d("Appwrite", "Exception while retieving game with id: $id", e)
             return null
         }
 
     }
 
-    fun subscribe(id:String): Flow<GameRecord> {
-        Log.d("Subscribe","starting callback flow")
+    fun subscribe(id: String): Flow<GameRecord> {
+        Log.d("Subscribe", "starting callback flow")
         val flow = callbackFlow {
             try {
                 val subscription =
-                    realtime.subscribe("databases.$databaseId.collections.$gamesColId.documents.$id", payloadType = GameRecord::class.java, callback = {it ->
-                        // Callback will be executed on all account events.
-                        Log.d("Realtime", it.payload.toString())
-                        trySend(it.payload)
-                    })
+                    realtime.subscribe(
+                        "databases.$databaseId.collections.$gamesColId.documents.$id",
+                        payloadType = GameRecord::class.java,
+                        callback = { it ->
+                            // Callback will be executed on all account events.
+                            Log.d("Realtime", it.payload.toString())
+                            trySend(it.payload)
+                        })
                 awaitClose {
-                    Log.d("Realtime","Closing subscription")
+                    Log.d("Realtime", "Closing subscription")
                     subscription.close()
                 }
             } catch (e: Exception) {
@@ -102,6 +105,24 @@ object Appwrite {
             }
         }
         return flow
+    }
+
+    suspend fun updateGame(game: GameRecord): GameRecord {
+        Log.d("Appwrite", "Updating game with ID: ${game.id}")
+        val updated = databases.updateDocument(
+            databaseId,
+            gamesColId,
+            game.id,
+            game.toJson(),
+            nestedType = GameRecord::class.java
+        )
+
+        return updated.data
+    }
+
+    // for integration testing purposes
+    suspend fun deleteGame(id: String) {
+        databases.deleteDocument(databaseId, gamesColId, id)
     }
 
 }
