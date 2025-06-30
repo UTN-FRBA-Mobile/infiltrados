@@ -54,6 +54,9 @@
     <string name="create_online">Create online game</string>
     <string name="ready">Ready</string>
     <string name="pick_name">Input your name</string>
+    <string name="game_code">Game Code</string>
+    <string name="join_game">Join game</string>
+    <string name="join">Join</string>
 
 </resources>
 

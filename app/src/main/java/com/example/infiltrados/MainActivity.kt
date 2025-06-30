@@ -52,10 +52,13 @@ private fun App() {
 
     NavHost(navController = navController, startDestination = "splash") {
         composable("lobby") {
-            LobbyScreen(navController, onCreateMPGame = { name ->
-                mpViewModel.createGame(name)
-                navController.navigate(route = Destination.OnlineLobby)
-            })
+            LobbyScreen(
+                navController,
+                onCreateMPGame = { name ->
+                    mpViewModel.createGame(name)
+                    navController.navigate(route = Destination.OnlineLobby)
+                },
+                onJoinMPGame = { gameId, name -> mpViewModel.joinGame(gameId, name) })
         }
 
         // MP

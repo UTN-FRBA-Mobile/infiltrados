@@ -76,4 +76,6 @@ class MultiplayerGameViewModel : ViewModel() {
         }
 
     }
+
+    fun joinGame(gameId: String, name: String) {}
 }
