@@ -8,27 +8,46 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.infiltrados.services.GameRecord
 import com.example.infiltrados.services.MultiplayerGameManager
+import com.example.infiltrados.services.MultiplayerPhase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class MultiplayerGameViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
         private set
 
-
     var gameManager: MultiplayerGameManager? by mutableStateOf(null)
+
+    val isHost: Boolean
+        get() = gameManager?.isHost == true
 
     // This is the StateFlow exposed to the UI
     private val _game = MutableStateFlow<GameRecord?>(null)
     val game: StateFlow<GameRecord?> = _game.asStateFlow()
 
+    private val _phase = Channel<MultiplayerPhase>()
+    val phase = _phase.receiveAsFlow()
+
+    private fun getPhaseFromGameRecord(record: GameRecord?): MultiplayerPhase {
+        return record?.phase ?: MultiplayerPhase.LOBBY
+    }
 
     fun getPlayers(): List<String> {
         return gameManager!!.getPlayers()
+    }
+
+    private val gameUpdateCollector = { newGameRecord: GameRecord ->
+        Log.d("GAMERECORDFLOW", "Game record updated: $newGameRecord")
+        _game.value = newGameRecord
+        viewModelScope.launch(Dispatchers.IO) { _phase.send(getPhaseFromGameRecord(newGameRecord)) }
+        Unit
     }
 
 
@@ -39,9 +58,7 @@ class MultiplayerGameViewModel : ViewModel() {
             gameManager =
                 MultiplayerGameManager.Factory.createGame(name, scope = viewModelScope).await()
             isLoading = false
-            gameManager!!.gameRecordFlow.onEach { newGameRecord ->
-                _game.value = newGameRecord
-            }.launchIn(viewModelScope)
+            gameManager!!.gameRecordFlow.onEach(gameUpdateCollector).launchIn(viewModelScope)
         }
     }
 
@@ -49,5 +66,14 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             gameManager?.kickPlayer(name)
         }
+    }
+
+    fun startGame() {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.startGame().await()
+            isLoading = false
+        }
+
     }
 }

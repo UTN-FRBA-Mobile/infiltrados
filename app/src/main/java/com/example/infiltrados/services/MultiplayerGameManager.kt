@@ -2,6 +2,7 @@ package com.example.infiltrados.services
 
 import android.util.Log
 import com.example.infiltrados.models.Player
+import com.example.infiltrados.ui.main.Destination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,17 @@ import kotlinx.coroutines.flow.stateIn
 data class GameState(
     val players: List<Player>
 )
+
+enum class MultiplayerPhase(val destination: Destination) {
+    LOBBY(Destination.OnlineLobby),
+    REVEAL(Destination.Reveal),
+    DISCUSSION(Destination.Discussion),
+    VOTE(Destination.Vote),
+    MR_WHITE_GUESS(Destination.MrWhiteGuess),
+    END_GAME(Destination.EndGame),
+    PLAYER_ELIMINATED(Destination.PlayerEliminated)
+}
+
 
 class MultiplayerGameManager(
     val playerName: String,
@@ -76,12 +88,29 @@ class MultiplayerGameManager(
         return game.players
     }
 
-    fun kickPlayer(playerName: String): Deferred<GameRecord> {
-        val newPlayers = game.players.filter { it != playerName }
-        val updated = game.copy(players = newPlayers)
+    private fun updateGame(updatedGame: GameRecord): Deferred<GameRecord> {
         return scope.async(Dispatchers.IO) {
-            AppwriteService.updateGame(updated)
+            AppwriteService.updateGame(updatedGame)
         }
     }
 
+    fun kickPlayer(playerName: String): Deferred<GameRecord> {
+        val newPlayers = game.players.filter { it != playerName }
+        val updated = game.copy(players = newPlayers)
+        return updateGame(updated)
+    }
+
+    suspend fun startGame(): Deferred<GameRecord> {
+        // TODO Validate if it's possible to start the game
+        val updated = game.copy(phase = MultiplayerPhase.REVEAL)
+        return updateGame(updated)
+    }
+
+}
+
+object CurrentGame {
+    lateinit var manager: MultiplayerGameManager
+    fun init(gameManager: MultiplayerGameManager) {
+        manager = gameManager
+    }
 }

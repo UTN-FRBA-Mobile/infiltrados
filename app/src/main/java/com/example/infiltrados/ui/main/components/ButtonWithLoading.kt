@@ -8,9 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.infiltrados.R
 
 @Composable
 fun ButtonWithLoading(text: String, isLoading: Boolean, onClick: () -> Unit) {

@@ -21,6 +21,8 @@ data class GameRecord(
     @SerializedName("\$id")
     val id: String,
     val players: List<String>,
+    val phase: MultiplayerPhase,
+    //val currentWord: String,
     val state: String
 )
 
