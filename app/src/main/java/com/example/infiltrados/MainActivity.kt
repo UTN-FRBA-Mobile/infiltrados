@@ -26,7 +26,6 @@ import com.example.infiltrados.ui.main.MultiplayerRoutes
 import com.example.infiltrados.ui.main.PlayerEliminatedScreen
 import com.example.infiltrados.ui.main.PlayerInputScreen
 import com.example.infiltrados.ui.main.RulesScreen
-import com.example.infiltrados.ui.main.SplashScreen
 import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
 import com.example.infiltrados.ui.main.getOnNavigateToPhase
@@ -51,7 +50,7 @@ private fun App() {
 
     val mpViewModel = viewModel<MultiplayerGameViewModel>()
 
-    NavHost(navController = navController, startDestination = "splash") {
+    NavHost(navController = navController, startDestination = "lobby") {
         composable("lobby") {
             LobbyScreen(navController, onCreateMPGame = { name ->
                 mpViewModel.createGame(name)
@@ -146,10 +145,6 @@ private fun App() {
 
         composable("rules") {
             RulesScreen(navController)
-        }
-
-        composable("splash") {
-            SplashScreen(navController)
         }
 
     }
