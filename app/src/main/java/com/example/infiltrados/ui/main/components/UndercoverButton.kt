@@ -1,5 +1,6 @@
 package com.example.infiltrados.ui.main.components
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,12 +12,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.infiltrados.R
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -26,9 +29,10 @@ fun UndercoverButton(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = MaterialTheme.colorScheme.onPrimary,
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
 ) {
     Button(
+        // TODO: ver como modificar esto para que suene como el back
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
