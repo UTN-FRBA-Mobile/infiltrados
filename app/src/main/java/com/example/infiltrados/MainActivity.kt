@@ -32,12 +32,13 @@ import com.example.infiltrados.ui.main.WordRevealScreen
 import com.example.infiltrados.ui.main.getOnNavigateToPhase
 import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 import com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen.OnlineLobbyScreen
+import com.example.infiltrados.ui.theme.UndercoverTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            App()
+            UndercoverTheme { App() }
         }
     }
 }
