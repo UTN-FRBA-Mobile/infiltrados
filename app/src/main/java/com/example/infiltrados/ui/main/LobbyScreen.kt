@@ -1,12 +1,15 @@
 package com.example.infiltrados.ui.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,15 +19,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.infiltrados.R
-import com.example.infiltrados.ui.main.components.JoinGameWidget
+import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.AnimatedPulsingIcon
 import com.example.infiltrados.ui.main.components.PickNameDialog
-
+import com.example.infiltrados.ui.main.components.UndercoverButton
 
 @Composable
 fun LobbyScreen(
@@ -35,59 +41,70 @@ fun LobbyScreen(
     var isNameDialogOpen by remember { mutableStateOf(false) }
     var gameId = remember { mutableStateOf("") }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(MaterialTheme.colorScheme.background)
+            .padding(24.dp)
     ) {
-        Text(
-            text = stringResource(R.string.greeting),
-            style = MaterialTheme.typography.headlineMedium
-        )
+        AnimatedBackground()
 
-        Button(
-            onClick = {
-                navController.navigate("input")
-            }
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Text(stringResource(R.string.begin))
-        }
+            // Ícono animado + título dividido
+            AnimatedPulsingIcon(
+                painter = painterResource(id = R.drawable.ic_logo),
+                size = 96.dp
+            )
 
-        Spacer(Modifier.height(16.dp))
-        Button(
-            onClick = { isNameDialogOpen = true }
-        ) {
-            Text(stringResource(R.string.create_online))
-        }
-        Spacer(Modifier.height(8.dp))
-        JoinGameWidget { gId -> gameId.value = gId }
+            Text(
+                text = stringResource(R.string.greeting),
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
+            )
 
+            // Botones
+            UndercoverButton(
+                text = stringResource(R.string.begin),
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                onClick = { navController.navigate("input") },
+                icon = Icons.Default.PlayArrow
+            )
 
-        if (isNameDialogOpen) {
-            PickNameDialog(
-                onDismissRequest = { isNameDialogOpen = false },
-                onConfirmation = { name ->
-                    isNameDialogOpen = false
-                    if (gameId.value.isNotEmpty()) {
-                        onJoinMPGame(gameId.value, name)
-                    } else {
-                        onCreateMPGame(name)
-                    }
-                })
-        }
-        Spacer(Modifier.height(16.dp))
-        Button(
-            onClick = {
-                navController.navigate("rules")
-            }
-        ) {
-            Text(stringResource(R.string.view_rules))
+            UndercoverButton(
+                text = stringResource(R.string.create_online),
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                onClick = { isNameDialogOpen = true },
+                icon = Icons.Default.Cloud
+            )
+
+            UndercoverButton(
+                text = stringResource(R.string.view_rules),
+                backgroundColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
+                onClick = { navController.navigate("rules") },
+                icon = Icons.Default.Info
+            )
         }
     }
 
+    if (isNameDialogOpen) {
+        PickNameDialog(
+            onDismissRequest = { isNameDialogOpen = false },
+            onConfirmation = { name ->
+                isNameDialogOpen = false
+                onCreateMPGame(name)
+            }
+        )
+    }
 }
+
 
 @Preview(name = "Lobby Screen - Default View", showBackground = true)
 @Composable
