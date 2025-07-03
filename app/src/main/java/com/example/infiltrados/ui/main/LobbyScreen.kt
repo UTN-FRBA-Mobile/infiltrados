@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.infiltrados.R
 import com.example.infiltrados.ui.main.components.AnimatedBackground
 import com.example.infiltrados.ui.main.components.AnimatedPulsingIcon
+import com.example.infiltrados.ui.main.components.JoinGameWidget
 import com.example.infiltrados.ui.main.components.PickNameDialog
 import com.example.infiltrados.ui.main.components.UndercoverButton
 
@@ -39,7 +40,7 @@ fun LobbyScreen(
     onJoinMPGame: (gameId: String, name: String) -> Unit
 ) {
     var isNameDialogOpen by remember { mutableStateOf(false) }
-    var gameId = remember { mutableStateOf("") }
+    var gameId by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -80,9 +81,17 @@ fun LobbyScreen(
                 text = stringResource(R.string.create_online),
                 backgroundColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                onClick = { isNameDialogOpen = true },
+                onClick = {
+                    gameId = ""
+                    isNameDialogOpen = true
+                },
                 icon = Icons.Default.Cloud
             )
+
+            JoinGameWidget { gId ->
+                gameId = gId
+                isNameDialogOpen = true
+            }
 
             UndercoverButton(
                 text = stringResource(R.string.view_rules),
@@ -99,7 +108,11 @@ fun LobbyScreen(
             onDismissRequest = { isNameDialogOpen = false },
             onConfirmation = { name ->
                 isNameDialogOpen = false
-                onCreateMPGame(name)
+                if (gameId.isNotEmpty()) {
+                    onJoinMPGame(gameId, name)
+                } else {
+                    onCreateMPGame(name)
+                }
             }
         )
     }
@@ -115,15 +128,13 @@ fun LobbyScreenPreview_Default() {
     // a simpler fake would also work. For this example, rememberNavController is fine.
     val navController = rememberNavController()
 
-    MaterialTheme {
-        LobbyScreen(
-            navController = navController,
-            onCreateMPGame = { name ->
-                println("Preview: onCreateMPGame called with name: $name")
-            },
-            onJoinMPGame = { gameId, name ->
-                println("Preview: onJoinMPGame called with gameId: $gameId, name: $name")
-            }
-        )
-    }
+    LobbyScreen(
+        navController = navController,
+        onCreateMPGame = { name ->
+            println("Preview: onCreateMPGame called with name: $name")
+        },
+        onJoinMPGame = { gameId, name ->
+            println("Preview: onJoinMPGame called with gameId: $gameId, name: $name")
+        }
+    )
 }

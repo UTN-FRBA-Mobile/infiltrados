@@ -75,6 +75,7 @@ class MultiplayerGameManager(
             scope: CoroutineScope
         ): Deferred<MultiplayerGameManager> {
             return scope.async {
+                AppwriteService.joinGame(gameId, playerName)
                 val game = AppwriteService.getGame(gameId)
                 val gameSuscription = AppwriteService.subscribe(gameId)
                 MultiplayerGameManager(playerName, false, game!!, gameSuscription, scope)

@@ -1,21 +1,18 @@
 package com.example.infiltrados.ui.main.components
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowOutward
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.infiltrados.R
@@ -26,26 +23,43 @@ fun JoinGameWidget(
     onJoinGame: (gameId: String) -> Unit
 ) {
     var gameId by remember { mutableStateOf("") }
+    var isShowingTextfield by remember { mutableStateOf(false) }
+    var isShowingTextFieldIcon by remember { mutableStateOf(false) }
     Row {
-        TextField(
-            value = gameId,
-            onValueChange = { gameId = it },
-            label = { Text(stringResource(R.string.join_game)) },
-            placeholder = { Text(stringResource(R.string.game_code)) },
-            singleLine = true,
-            trailingIcon = {
-                Icon(
-                    Icons.Default.ArrowOutward,
-                    contentDescription = stringResource(R.string.join_game)
-                )
-            },
-        )
-        Button(
-            onClick = { onJoinGame(gameId) },
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues()
+        AnimatedVisibility(
+            visible = isShowingTextfield,
+            enter = slideInHorizontally(),
+            exit = slideOutHorizontally()
         ) {
-            Text(stringResource(R.string.join))
+            // TODO Change this to use an actual icon
+            TextFieldWithButton(
+                value = gameId,
+                onValueChange = {
+                    if (it.length <= 5) {
+                        gameId = it
+                        isShowingTextFieldIcon = gameId.length == 5
+                    }
+
+                },
+                labelText = stringResource(R.string.join_game),
+                icon = if (isShowingTextFieldIcon) "✔️" else "",
+                buttonText = stringResource(R.string.join_game),
+                buttonIcon = Icons.Default.Hub,
+                onClick = { onJoinGame(gameId) }
+            )
+        }
+        AnimatedVisibility(
+            visible = !isShowingTextfield,
+            enter = slideInHorizontally(),
+            exit = slideOutHorizontally()
+        ) {
+            UndercoverButton(
+                text = stringResource(R.string.join_game),
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                onClick = { isShowingTextfield = true },
+                icon = Icons.Default.Hub
+            )
         }
     }
 }

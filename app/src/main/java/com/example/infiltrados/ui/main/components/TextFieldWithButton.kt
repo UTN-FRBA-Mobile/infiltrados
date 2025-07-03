@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 
+//TODO Exponer KeyboardOptions y KeyboardActions para poder personalizar el teclado
 @Composable
 fun TextFieldWithButton(
     value: String,
@@ -24,7 +25,8 @@ fun TextFieldWithButton(
     icon: String,
     buttonText: String,
     buttonIcon: ImageVector,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    placeholder: String? = null
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         OutlinedTextField(
@@ -36,6 +38,7 @@ fun TextFieldWithButton(
             },
             modifier = Modifier.weight(1f),
             singleLine = true,
+            placeholder = null,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.outline,

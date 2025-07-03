@@ -22,7 +22,8 @@ data class GameRecord(
     val id: String,
     val players: List<String>,
     val phase: MultiplayerPhase,
-    //val currentWord: String,
+    val word1: String,
+    val word2: String,
     val state: String
 )
 
@@ -63,6 +64,25 @@ object AppwriteService {
         val game = getGame(gameId)
         // game no deberia ser nunca null.
         // si falla la creacion, estalla antes
+        return game!!
+    }
+
+    suspend fun joinGame(gameId: String, playerName: String): GameRecord {
+        val functions = Functions(client)
+        val execution = functions.createExecution(
+            functionId = gameFunctionId,
+            method = ExecutionMethod.POST,
+            path = "join",
+            body = mapOf("gameId" to gameId, "player" to playerName).toJson()
+        )
+
+        if (execution.responseStatusCode != 200L) {
+            throw Exception("Error joining game ${execution.responseBody}")
+        }
+
+        Log.d("Appwrite", "Created game with ID: $gameId")
+        val game = getGame(gameId)
+        // game no deberia ser nunca null.
         return game!!
     }
 

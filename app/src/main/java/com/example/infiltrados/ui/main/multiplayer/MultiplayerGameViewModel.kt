@@ -74,8 +74,22 @@ class MultiplayerGameViewModel : ViewModel() {
             gameManager!!.startGame().await()
             isLoading = false
         }
-
     }
 
-    fun joinGame(gameId: String, name: String) {}
+    fun joinGame(gameId: String, name: String) {
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                gameManager =
+                    MultiplayerGameManager.Factory.joinGame(gameId, name, viewModelScope).await()
+                gameManager!!.gameRecordFlow.onEach(gameUpdateCollector).launchIn(viewModelScope)
+            } catch (e: Exception) {
+                Log.e("MultiplayerGameViewModel", "Error joining game", e)
+                // TODO descubrir por que el try catch que esta cuando llamamos a esta funcion no captura esta excepcion
+                //throw e
+            } finally {
+                isLoading = false
+            }
+        }
+    }
 }
