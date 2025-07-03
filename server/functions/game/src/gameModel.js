@@ -22,7 +22,7 @@ export default class GameModel {
       GAMES_COLLECTION_ID,
       createRandomString(5),
       {
-        players: [hostPlayer],
+        players: [`${hostPlayer}:NADA`],
         state: '{}',
       }
     );
@@ -45,7 +45,7 @@ export default class GameModel {
       throw new Error('Player already in game');
     }
 
-    game.players.push(player);
+    game.players.push(`${player}:NADA`);
 
     const updatedGame = await this.databases.updateDocument(
       DATABASE_ID,

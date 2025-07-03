@@ -55,19 +55,25 @@ fun OnlineLobbyScreen(
     ) {
         Text(stringResource(R.string.players_label), style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(24.dp))
-        PlayerList(players, mpViewModel.isHost) { mpViewModel.removePlayer(it) }
+        PlayerList(players.map { it.name }, mpViewModel.isHost) { mpViewModel.removePlayer(it) }
 
         Spacer(Modifier.height(24.dp))
         //ServerTestPanel(multiplayerGameViewModel)
         Spacer(Modifier.weight(1f))
-        ButtonWithLoading(
-            stringResource(R.string.begin),
-            mpViewModel.isLoading
-        ) { mpViewModel.startGame() }
+        if (mpViewModel.isHost) {
+            ButtonWithLoading(
+                stringResource(R.string.begin),
+                mpViewModel.isLoading
+            ) { mpViewModel.startGame() }
+        } else {
+            Text(
+                stringResource(R.string.waiting_for_host),
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
     }
 
 }
-
 
 //@Preview
 //@Composable

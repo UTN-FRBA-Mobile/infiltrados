@@ -39,6 +39,7 @@ class GameManager(
             Role.CIUDADANO -> wordPair.first
             Role.UNDERCOVER -> wordPair.second
             Role.MR_WHITE -> "" // No tiene palabra
+            else -> "" // No debería suceder
         }
     }
 

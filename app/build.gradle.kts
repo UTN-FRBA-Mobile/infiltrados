@@ -65,4 +65,5 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.6.0")
 
     implementation("io.appwrite:sdk-for-android:7.0.1")
+    testImplementation(kotlin("test"))
 }

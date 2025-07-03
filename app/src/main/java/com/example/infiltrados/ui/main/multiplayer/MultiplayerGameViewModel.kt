@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.infiltrados.services.GameRecord
+import com.example.infiltrados.models.GameRecord
 import com.example.infiltrados.services.MultiplayerGameManager
 import com.example.infiltrados.services.MultiplayerPhase
 import kotlinx.coroutines.Dispatchers
@@ -37,10 +37,6 @@ class MultiplayerGameViewModel : ViewModel() {
 
     private fun getPhaseFromGameRecord(record: GameRecord?): MultiplayerPhase {
         return record?.phase ?: MultiplayerPhase.LOBBY
-    }
-
-    fun getPlayers(): List<String> {
-        return gameManager!!.getPlayers()
     }
 
     private val gameUpdateCollector = { newGameRecord: GameRecord ->
@@ -74,6 +70,22 @@ class MultiplayerGameViewModel : ViewModel() {
             gameManager!!.startGame().await()
             isLoading = false
         }
+    }
 
+    fun joinGame(gameId: String, name: String) {
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                gameManager =
+                    MultiplayerGameManager.Factory.joinGame(gameId, name, viewModelScope).await()
+                gameManager!!.gameRecordFlow.onEach(gameUpdateCollector).launchIn(viewModelScope)
+            } catch (e: Exception) {
+                Log.e("MultiplayerGameViewModel", "Error joining game", e)
+                // TODO descubrir por que el try catch que esta cuando llamamos a esta funcion no captura esta excepcion
+                //throw e
+            } finally {
+                isLoading = false
+            }
+        }
     }
 }
