@@ -126,7 +126,7 @@ fun PlayerInputScreen(
             // Jugadores
             Text(
                 text= stringResource(R.string.players_label),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -178,7 +178,7 @@ fun PlayerInputScreen(
             // Cantidad de undercovers
             Text(
                 text = stringResource(R.string.undercover_label),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -196,7 +196,7 @@ fun PlayerInputScreen(
                 }
                 Text(
                     text = numUndercover.toString(),
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 IconButton(onClick = {
@@ -221,7 +221,7 @@ fun PlayerInputScreen(
                 Column {
                     Text(
                         text = stringResource(R.string.include_mr_white),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
 
@@ -247,7 +247,7 @@ fun PlayerInputScreen(
             }
 
 
-            Spacer(modifier = Modifier.height(24.dp))
+           Spacer(modifier = Modifier.height(8.dp))
 
             DisabledButton(
                 text = stringResource(R.string.start_game),
