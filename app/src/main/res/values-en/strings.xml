@@ -57,6 +57,7 @@
     <string name="game_code">Game Code</string>
     <string name="join_game">Join game</string>
     <string name="join">Join</string>
+    <string name="delete_player">Remove</string>
 
 </resources>
 

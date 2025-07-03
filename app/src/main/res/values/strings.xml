@@ -57,5 +57,6 @@
     <string name="game_code">Codigo del juego</string>
     <string name="join_game">Unirse a un juego</string>
     <string name="join">Unirse</string>
+    <string name="delete_player">Eliminar</string>
 </resources>
 
