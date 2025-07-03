@@ -39,10 +39,6 @@ class MultiplayerGameViewModel : ViewModel() {
         return record?.phase ?: MultiplayerPhase.LOBBY
     }
 
-    fun getPlayers(): List<String> {
-        return gameManager!!.getPlayers()
-    }
-
     private val gameUpdateCollector = { newGameRecord: GameRecord ->
         Log.d("GAMERECORDFLOW", "Game record updated: $newGameRecord")
         _game.value = newGameRecord

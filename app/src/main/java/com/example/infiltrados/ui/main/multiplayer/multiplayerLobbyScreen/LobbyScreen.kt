@@ -55,7 +55,7 @@ fun OnlineLobbyScreen(
     ) {
         Text(stringResource(R.string.players_label), style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(24.dp))
-        PlayerList(players, mpViewModel.isHost) { mpViewModel.removePlayer(it) }
+        PlayerList(players.map { it.name }, mpViewModel.isHost) { mpViewModel.removePlayer(it) }
 
         Spacer(Modifier.height(24.dp))
         //ServerTestPanel(multiplayerGameViewModel)
