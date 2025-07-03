@@ -83,7 +83,7 @@ fun WordRevealScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "${player.name}, esta es tu palabra",
+                    text = "${player.emoji} ${player.name}, esta es tu palabra",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center

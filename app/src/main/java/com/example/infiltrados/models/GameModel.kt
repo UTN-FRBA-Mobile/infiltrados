@@ -4,7 +4,8 @@ package com.example.infiltrados.models
 data class Player(
     val name: String,         // Nombre del jugador
     val role: Role,           // Rol asignado (Ciudadano, Undercover, Mr.White)
-    var isEliminated: Boolean = false // Indica si el jugador fue eliminado
+    var isEliminated: Boolean = false, // Indica si el jugador fue eliminado
+    val emoji: String = ""
 )
 
 // Posibles roles de los jugadores
