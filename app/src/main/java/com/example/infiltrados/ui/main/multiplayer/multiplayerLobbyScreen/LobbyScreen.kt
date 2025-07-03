@@ -60,14 +60,20 @@ fun OnlineLobbyScreen(
         Spacer(Modifier.height(24.dp))
         //ServerTestPanel(multiplayerGameViewModel)
         Spacer(Modifier.weight(1f))
-        ButtonWithLoading(
-            stringResource(R.string.begin),
-            mpViewModel.isLoading
-        ) { mpViewModel.startGame() }
+        if (mpViewModel.isHost) {
+            ButtonWithLoading(
+                stringResource(R.string.begin),
+                mpViewModel.isLoading
+            ) { mpViewModel.startGame() }
+        } else {
+            Text(
+                stringResource(R.string.waiting_for_host),
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
     }
 
 }
-
 
 //@Preview
 //@Composable
