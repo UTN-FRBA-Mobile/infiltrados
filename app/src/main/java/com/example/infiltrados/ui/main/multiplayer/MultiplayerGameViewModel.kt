@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.infiltrados.services.GameRecord
+import com.example.infiltrados.models.GameRecord
 import com.example.infiltrados.services.MultiplayerGameManager
 import com.example.infiltrados.services.MultiplayerPhase
 import kotlinx.coroutines.Dispatchers

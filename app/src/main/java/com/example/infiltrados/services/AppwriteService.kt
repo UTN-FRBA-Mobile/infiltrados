@@ -2,7 +2,7 @@ package com.example.infiltrados.services
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.annotations.SerializedName
+import com.example.infiltrados.models.GameRecord
 import io.appwrite.Client
 import io.appwrite.enums.ExecutionMethod
 import io.appwrite.exceptions.AppwriteException
@@ -13,19 +13,7 @@ import io.appwrite.services.Realtime
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-
-@Serializable
-data class GameRecord(
-    @SerializedName("\$id")
-    val id: String,
-    val players: List<String>,
-    val phase: MultiplayerPhase,
-    val word1: String,
-    val word2: String,
-    val state: String
-)
 
 object AppwriteService {
     lateinit var client: Client

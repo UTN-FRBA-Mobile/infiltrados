@@ -1,6 +1,7 @@
 package com.example.infiltrados.services
 
 import android.util.Log
+import com.example.infiltrados.models.GameRecord
 import com.example.infiltrados.models.Player
 import com.example.infiltrados.ui.main.Destination
 import kotlinx.coroutines.CoroutineScope
@@ -13,10 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-
-data class GameState(
-    val players: List<Player>
-)
 
 enum class MultiplayerPhase(val destination: Destination) {
     LOBBY(Destination.OnlineLobby),
