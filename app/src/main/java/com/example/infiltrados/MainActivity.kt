@@ -98,7 +98,7 @@ private fun App() {
 
 
         composable("input") {
-            PlayerInputScreen(navController) { names, playerAvatars,numUndercover, includeMrWhite, spanish ->
+            PlayerInputScreen(navController) { names, playerAvatars, numUndercover, includeMrWhite, spanish ->
                 Log.d("DEBUG", "Idioma recibido en callback: $spanish")
                 val wordPairs = WordLoader.loadWordPairs(context, spanish)
                 val selectedWordPair = wordPairs.random()

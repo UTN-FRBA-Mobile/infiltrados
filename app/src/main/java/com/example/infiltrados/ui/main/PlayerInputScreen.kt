@@ -36,7 +36,7 @@ import com.example.infiltrados.ui.main.components.UndercoverButton
 @Composable
 fun PlayerInputScreen(
     navController: NavController,
-    onSubmitPlayers: (List<String>, Int, Boolean, Boolean) -> Unit
+    onSubmitPlayers: (List<String>, List<String>, Int, Boolean, Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val clickSound = remember { MediaPlayer.create(context, R.raw.sonido_boton) }
@@ -253,7 +253,7 @@ fun PlayerInputScreen(
                 text = stringResource(R.string.start_game),
                 onClick = {
                     clickSound.start()
-                    onSubmitPlayers(validPlayers, numUndercover, includeMrWhite, spanish)
+                    onSubmitPlayers(validPlayers, avatars, numUndercover, includeMrWhite, spanish)
                     navController.navigate("reveal")
                 },
                 icon = Icons.Default.PlayArrow,
