@@ -226,7 +226,7 @@ fun PlayerInputScreen(
                     )
 
                     Text(
-                        text = "Mr. White no conoce la palabra pero intenta adivinarla",
+                        text = stringResource(R.string.mr_white_description),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(top = 4.dp)

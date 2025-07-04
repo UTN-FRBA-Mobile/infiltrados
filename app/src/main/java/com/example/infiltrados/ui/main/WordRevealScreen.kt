@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,9 +65,9 @@ fun WordRevealScreen(
     val wordToShow = if (currentWord.isBlank()) "🤫" else currentWord
 
     val buttonText = when {
-        !revealed -> "Mostrar palabra"
-        isLastPlayer && revealed -> "¡Comenzar juego!"
-        else -> "Siguiente jugador"
+        !revealed -> stringResource(R.string.reveal_word)
+        isLastPlayer && revealed -> stringResource(R.string.start_game)
+        else -> stringResource(R.string.next_player)
     }
 
     Box(
@@ -89,7 +90,7 @@ fun WordRevealScreen(
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 Text(
-                    text = "${currentPlayer.name.replaceFirstChar { it.uppercase() }}, esta es tu palabra",
+                    text = stringResource(R.string.your_word_is, currentPlayer.name.replaceFirstChar { it.uppercase() }),
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground

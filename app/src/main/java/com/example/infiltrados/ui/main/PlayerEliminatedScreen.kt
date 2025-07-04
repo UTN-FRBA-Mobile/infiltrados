@@ -17,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.infiltrados.models.Player
@@ -26,7 +26,6 @@ import com.example.infiltrados.ui.main.components.AnimatedBackground
 import com.example.infiltrados.ui.main.components.UndercoverButton
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.infiltrados.R
@@ -56,7 +55,7 @@ fun PlayerEliminatedScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "¡Jugador eliminado!",
+                text = stringResource(R.string.player_eliminated_title),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -84,7 +83,6 @@ fun PlayerEliminatedScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Más chica
             LottieAnimation(
                 composition = composition,
                 progress = { progress },
@@ -94,7 +92,7 @@ fun PlayerEliminatedScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             UndercoverButton(
-                text = "Continuar",
+                text = stringResource(R.string.continue_button),
                 icon = Icons.Default.ArrowForward,
                 onClick = {
                     processPlayerElimination(eliminated, gameManager, navController)
@@ -103,6 +101,7 @@ fun PlayerEliminatedScreen(
         }
     }
 }
+
 
 fun processPlayerElimination(
     selectedPlayer: Player?,

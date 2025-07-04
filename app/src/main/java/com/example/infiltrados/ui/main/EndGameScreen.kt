@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -41,6 +42,7 @@ fun EndGameScreen(
         composition,
         iterations = LottieConstants.IterateForever
     )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +58,7 @@ fun EndGameScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "¡Fin del juego!",
+                text = stringResource(R.string.end_game_title),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -64,7 +66,7 @@ fun EndGameScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Ganadores: ${gameManager.getWinners()}",
+                text = stringResource(R.string.end_game_winners, gameManager.getWinners()),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -80,7 +82,7 @@ fun EndGameScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             UndercoverButton(
-                text = "Jugar de nuevo",
+                text = stringResource(R.string.play_again),
                 icon = Icons.Default.Refresh,
                 onClick = {
                     navController.navigate("lobby")

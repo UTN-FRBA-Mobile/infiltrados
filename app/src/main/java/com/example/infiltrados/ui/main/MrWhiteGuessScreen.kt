@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -64,7 +65,7 @@ fun MrWhiteGuessScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "¡Mr. White fue descubierto!",
+                text = stringResource(R.string.mr_white_title),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
@@ -73,7 +74,7 @@ fun MrWhiteGuessScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Si adivinás la palabra de los civiles, ¡ganás la partida!",
+                text = stringResource(R.string.mr_white_instruction),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
@@ -81,11 +82,10 @@ fun MrWhiteGuessScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Estilo similar al de PlayerInput
             TextField(
                 value = wordGuess,
                 onValueChange = { wordGuess = it },
-                placeholder = { Text("Escribí tu intento de palabra") },
+                placeholder = { Text(stringResource(R.string.guess_placeholder)) },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -104,7 +104,7 @@ fun MrWhiteGuessScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             DisabledButton(
-                text = "Adivinar",
+                text = stringResource(R.string.guess_button),
                 icon = Icons.Default.Check,
                 onClick = {
                     clickSound.start()
@@ -116,7 +116,7 @@ fun MrWhiteGuessScreen(
                         navController.navigate("player_eliminated")
                     }
                 },
-                enabled = wordGuess.trim().isNotEmpty() // solo si escribió algo
+                enabled = wordGuess.trim().isNotEmpty()
             )
         }
     }
