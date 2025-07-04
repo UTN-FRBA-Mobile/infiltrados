@@ -91,17 +91,53 @@ private fun App() {
                     onNavigateToPhase
                 )
             }
+
+            composable<Destination.Discussion> {
+                com.example.infiltrados.ui.main.multiplayer.DiscussionScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
+
+            composable<Destination.Vote> {
+                com.example.infiltrados.ui.main.multiplayer.VotationScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
+
+            composable<Destination.PlayerEliminated> {
+                com.example.infiltrados.ui.main.multiplayer.PlayerEliminatedScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
+
+            composable<Destination.MrWhiteGuess> {
+                com.example.infiltrados.ui.main.multiplayer.MrWhiteGuessScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
+
+            composable<Destination.EndGame> {
+                com.example.infiltrados.ui.main.multiplayer.EndGameScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
         }
 
 
         composable("input") {
-            PlayerInputScreen(navController) { names, numUndercover, includeMrWhite, spanish ->
+            PlayerInputScreen(navController) { names, playerAvatars, numUndercover, includeMrWhite, spanish ->
                 Log.d("DEBUG", "Idioma recibido en callback: $spanish")
                 val wordPairs = WordLoader.loadWordPairs(context, spanish)
                 val selectedWordPair = wordPairs.random()
 
                 gameManager = GameManager(
                     playerNames = names,
+                    playerAvatars = playerAvatars,
                     wordPair = selectedWordPair.word1 to selectedWordPair.word2,
                     numUndercover = numUndercover,
                     includeMrWhite = includeMrWhite

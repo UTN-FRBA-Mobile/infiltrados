@@ -5,6 +5,7 @@ import com.example.infiltrados.models.Role
 
 class GameManager(
     private val playerNames: List<String>,
+    private val playerAvatars: List<String>,
     private val wordPair: Pair<String, String>, // Ej: ("gato", "tigre")
     private val numUndercover: Int = 1,
     private val includeMrWhite: Boolean = true,
@@ -28,6 +29,7 @@ class GameManager(
         players = shuffledNames.mapIndexed { index, name ->
             Player(
                 name = name,
+                emoji = playerAvatars[index],
                 role = roles[index]
             )
         }
