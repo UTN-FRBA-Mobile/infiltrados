@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.infiltrados.models.GameRecord
+import com.example.infiltrados.models.Player
 import com.example.infiltrados.services.MultiplayerGameManager
 import com.example.infiltrados.services.MultiplayerPhase
 import kotlinx.coroutines.Dispatchers
@@ -88,4 +89,53 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
+    fun startDiscussion() {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.startDiscussion().await()
+            isLoading = false
+        }
+    }
+
+    fun startVoting() {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.startVoting().await()
+            isLoading = false
+        }
+    }
+
+    fun eliminatePlayer(player: Player?) {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.eliminatePlayer(player).await()
+            isLoading = false
+        }
+    }
+
+    fun mrWhiteGuess() {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.mrWhiteGuess().await()
+            isLoading = false
+        }
+    }
+
+    fun endGame() {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.endGame().await()
+            isLoading = false
+        }
+    }
+
+
+
+    fun gameContinues(): Boolean {
+        //TODO
+        return true
+    }
+
+
 }
