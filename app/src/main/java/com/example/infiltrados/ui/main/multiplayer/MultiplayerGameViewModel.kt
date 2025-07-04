@@ -35,6 +35,9 @@ class MultiplayerGameViewModel : ViewModel() {
     private val _phase = Channel<MultiplayerPhase>()
     val phase = _phase.receiveAsFlow()
 
+    private val _error = Channel<String>()
+    val error = _error.receiveAsFlow()
+
     private fun getPhaseFromGameRecord(record: GameRecord?): MultiplayerPhase {
         return record?.phase ?: MultiplayerPhase.LOBBY
     }
@@ -73,7 +76,7 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
     fun joinGame(gameId: String, name: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             isLoading = true
             try {
                 gameManager =
@@ -81,8 +84,7 @@ class MultiplayerGameViewModel : ViewModel() {
                 gameManager!!.gameRecordFlow.onEach(gameUpdateCollector).launchIn(viewModelScope)
             } catch (e: Exception) {
                 Log.e("MultiplayerGameViewModel", "Error joining game", e)
-                // TODO descubrir por que el try catch que esta cuando llamamos a esta funcion no captura esta excepcion
-                //throw e
+                _error.send("Error joining game: ${e.message}")
             } finally {
                 isLoading = false
             }
