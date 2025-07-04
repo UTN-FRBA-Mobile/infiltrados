@@ -57,9 +57,9 @@ fun PlayerEliminatedScreen(
             Button(
                 onClick = {
                     if (mpViewModel.gameContinues())
-                        onNavigateToPhase(MultiplayerPhase.DISCUSSION)
+                        mpViewModel.startDiscussion()
                     else
-                        onNavigateToPhase(MultiplayerPhase.END_GAME)
+                        mpViewModel.endGame()
                 }
             ) {
                 Text("Continuar")

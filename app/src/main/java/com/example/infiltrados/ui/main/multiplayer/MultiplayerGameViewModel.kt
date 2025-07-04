@@ -106,6 +106,22 @@ class MultiplayerGameViewModel : ViewModel() {
         }
     }
 
+    fun eliminatePlayer(player: Player?) {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.eliminatePlayer(player).await()
+            isLoading = false
+        }
+    }
+
+    fun mrWhiteGuess() {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.mrWhiteGuess().await()
+            isLoading = false
+        }
+    }
+
     fun endGame() {
         viewModelScope.launch {
             isLoading = true
@@ -114,21 +130,7 @@ class MultiplayerGameViewModel : ViewModel() {
         }
     }
 
-    fun eliminatePlayer(player: Player) {
-        viewModelScope.launch {
-            isLoading = true
-            gameManager!!.eliminatePlayer(player).await()
-            isLoading = false
-        }
-    }
 
-    fun votation(){
-        viewModelScope.launch {
-            isLoading = true
-            gameManager!!.startVoting().await()
-            isLoading = false
-        }
-    }
 
     fun gameContinues(): Boolean {
         //TODO

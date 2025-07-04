@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,11 @@ fun DiscussionScreen(
     onNavigateToPhase: (MultiplayerPhase) -> Unit
 ) {
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
+
+    if (mpViewModel.isLoading) {
+        CircularProgressIndicator()
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -85,7 +91,7 @@ fun DiscussionScreen(
 
             Button(
                 //TODO: Hacer que solo el host acepte la votación
-                onClick = { onNavigateToPhase(MultiplayerPhase.VOTE) },
+                onClick = { mpViewModel.startVoting() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

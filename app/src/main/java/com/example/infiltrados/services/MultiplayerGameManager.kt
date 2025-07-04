@@ -155,12 +155,17 @@ class MultiplayerGameManager(
         return !getActivePlayers().contains(player)
     }
 
+    fun mrWhiteGuess(): Deferred<GameRecord> {
+        val updated = game.copy(phase = MultiplayerPhase.MR_WHITE_GUESS)
+        return updateGame(updated)
+    }
+
     fun endGame(): Deferred<GameRecord> {
         val updated = game.copy(phase = MultiplayerPhase.END_GAME)
         return updateGame(updated)
     }
 
-    fun eliminatePlayer(player: Player): Deferred<GameRecord> {
+    fun eliminatePlayer(player: Player?): Deferred<GameRecord> {
         //TODO: Agregar logica para eliminar al jugador
         val updated = game.copy(phase = MultiplayerPhase.PLAYER_ELIMINATED)
         return updateGame(updated)

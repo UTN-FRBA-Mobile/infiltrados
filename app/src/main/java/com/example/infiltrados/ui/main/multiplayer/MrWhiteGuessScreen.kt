@@ -71,9 +71,7 @@ fun MrWhiteGuessScreen(
                 Button(
                     onClick = {
                         if(mpViewModel.game.value?.word1 == word_guess) {
-                            //gana mrwhite
-                            Log.d("MrWhiteGuessScreen", "MrWhite adivinó la palabra.")
-                            onNavigateToPhase(MultiplayerPhase.END_GAME)
+                            mpViewModel.endGame()
                         } else {
                             mpViewModel.eliminatePlayer(player)
                         }
