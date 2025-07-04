@@ -11,18 +11,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.infiltrados.R
 import com.example.infiltrados.models.Player
 import com.example.infiltrados.services.GameManager
 import com.example.infiltrados.ui.main.components.AnimatedBackground
@@ -34,9 +36,11 @@ fun EndGameScreen(
     gameManager: GameManager,
     players: List<Player>
 ) {
-    val composition = rememberLottieComposition(LottieCompositionSpec.Asset("confetti.json")).value
-    val progress = animateLottieCompositionAsState(composition).value
-
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = LottieConstants.IterateForever
+    )
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -53,7 +57,7 @@ fun EndGameScreen(
         ) {
             Text(
                 text = "¡Fin del juego!",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
 
@@ -69,8 +73,8 @@ fun EndGameScreen(
 
             LottieAnimation(
                 composition = composition,
-                progress = progress,
-                modifier = Modifier.size(200.dp)
+                progress = { progress },
+                modifier = Modifier.size(180.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))

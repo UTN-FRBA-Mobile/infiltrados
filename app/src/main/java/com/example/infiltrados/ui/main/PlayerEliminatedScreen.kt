@@ -57,7 +57,7 @@ fun PlayerEliminatedScreen(
         ) {
             Text(
                 text = "¡Jugador eliminado!",
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
 
@@ -71,7 +71,7 @@ fun PlayerEliminatedScreen(
 
             Text(
                 text = eliminated?.name?.replaceFirstChar { it.uppercase() } ?: "",
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
 
