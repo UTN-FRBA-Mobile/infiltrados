@@ -2,6 +2,7 @@ package com.example.infiltrados
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -52,10 +53,27 @@ private fun App() {
 
     NavHost(navController = navController, startDestination = "lobby") {
         composable("lobby") {
-            LobbyScreen(navController, onCreateMPGame = { name ->
-                mpViewModel.createGame(name)
-                navController.navigate(route = Destination.OnlineLobby)
-            })
+            LobbyScreen(
+                navController,
+                onCreateMPGame = { name ->
+                    mpViewModel.createGame(name)
+                    navController.navigate(route = Destination.OnlineLobby)
+                },
+                onJoinMPGame = { gameId, name ->
+                    try {
+                        mpViewModel.joinGame(gameId, name)
+                        navController.navigate(route = Destination.OnlineLobby)
+                    } catch (e: Exception) {
+                        Log.e("DEBUG", "Error joining game: $e")
+                        Toast.makeText(
+                            context,
+                            e.message ?: "Error joining game",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+
+                })
         }
 
         // MP

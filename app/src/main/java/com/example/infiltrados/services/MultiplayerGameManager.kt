@@ -1,7 +1,9 @@
 package com.example.infiltrados.services
 
 import android.util.Log
+import com.example.infiltrados.models.GameRecord
 import com.example.infiltrados.models.Player
+import com.example.infiltrados.models.Role
 import com.example.infiltrados.ui.main.Destination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -13,10 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-
-data class GameState(
-    val players: List<Player>
-)
 
 enum class MultiplayerPhase(val destination: Destination) {
     LOBBY(Destination.OnlineLobby),
@@ -34,6 +32,9 @@ class MultiplayerGameManager(
     val isHost: Boolean,
     initialGameRecord: GameRecord,
     val incomingGameRecordFlow: Flow<GameRecord>,
+    var numUndercover: Int = 1,
+    var includeMrWhite: Boolean = true,
+    var players: List<Player> = emptyList(),
     val scope: CoroutineScope
 ) {
     val gameRecordFlow: StateFlow<GameRecord> = incomingGameRecordFlow
@@ -65,7 +66,7 @@ class MultiplayerGameManager(
             return scope.async(Dispatchers.IO) {
                 val createdGame = AppwriteService.createGame(hostName)
                 val gameSuscription = AppwriteService.subscribe(createdGame.id)
-                MultiplayerGameManager(hostName, true, createdGame, gameSuscription, scope)
+                MultiplayerGameManager(hostName, true, createdGame, gameSuscription, scope = scope)
             }
         }
 
@@ -75,19 +76,18 @@ class MultiplayerGameManager(
             scope: CoroutineScope
         ): Deferred<MultiplayerGameManager> {
             return scope.async {
+                AppwriteService.joinGame(gameId, playerName)
                 val game = AppwriteService.getGame(gameId)
                 val gameSuscription = AppwriteService.subscribe(gameId)
-                MultiplayerGameManager(playerName, false, game!!, gameSuscription, scope)
+                MultiplayerGameManager(
+                    playerName, false, game!!, gameSuscription,
+                    scope = scope
+                )
             }
         }
 
     }
-
-
-    fun getPlayers(): List<String> {
-        return game.players
-    }
-
+    
     private fun updateGame(updatedGame: GameRecord): Deferred<GameRecord> {
         return scope.async(Dispatchers.IO) {
             AppwriteService.updateGame(updatedGame)
@@ -95,22 +95,41 @@ class MultiplayerGameManager(
     }
 
     fun kickPlayer(playerName: String): Deferred<GameRecord> {
-        val newPlayers = game.players.filter { it != playerName }
+        val newPlayers = game.players.filter { it.name != playerName }
         val updated = game.copy(players = newPlayers)
         return updateGame(updated)
     }
 
-    suspend fun startGame(): Deferred<GameRecord> {
+    fun canStartGame(): Boolean {
+        val numCitizens = game.players.size - numUndercover - if (includeMrWhite) 1 else 0
+        return game.players.size >= 3 && (numUndercover > 0 || includeMrWhite) && numCitizens >= 2
+    }
+
+    fun startGame(): Deferred<GameRecord> {
         // TODO Validate if it's possible to start the game
-        val updated = game.copy(phase = MultiplayerPhase.REVEAL)
+        if (!canStartGame()) {
+            throw IllegalStateException("Cannot start game")
+        }
+
+        // Barajamos los jugadores
+        val shuffledNames = game.players.shuffled()
+
+        // Asignamos roles según la cantidad de jugadores
+        val roles = mutableListOf<Role>()
+
+        repeat(numUndercover) { roles.add(Role.UNDERCOVER) }
+        if (includeMrWhite) roles.add(Role.MR_WHITE)
+        while (roles.size < game.players.size) roles.add(Role.CIUDADANO)
+        roles.shuffle()
+
+        // Creamos la lista de jugadores con sus roles y palabras
+        players = shuffledNames.mapIndexed { index, player ->
+            Player(player.name, roles[index])
+        }
+
+
+        val updated = game.copy(phase = MultiplayerPhase.REVEAL, players = players)
         return updateGame(updated)
     }
 
-}
-
-object CurrentGame {
-    lateinit var manager: MultiplayerGameManager
-    fun init(gameManager: MultiplayerGameManager) {
-        manager = gameManager
-    }
 }

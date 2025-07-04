@@ -36,7 +36,7 @@ import com.example.infiltrados.ui.main.components.UndercoverButton
 @Composable
 fun PlayerInputScreen(
     navController: NavController,
-    onSubmitPlayers: (List<String>, List<String>, Int, Boolean, Boolean) -> Unit
+    onSubmitPlayers: (List<String>, Int, Boolean, Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val clickSound = remember { MediaPlayer.create(context, R.raw.sonido_boton) }
@@ -125,8 +125,8 @@ fun PlayerInputScreen(
 
             // Jugadores
             Text(
-                text= stringResource(R.string.players_label),
-                style = MaterialTheme.typography.titleMedium,
+                text = stringResource(R.string.players_label),
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -178,7 +178,7 @@ fun PlayerInputScreen(
             // Cantidad de undercovers
             Text(
                 text = stringResource(R.string.undercover_label),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -196,7 +196,7 @@ fun PlayerInputScreen(
                 }
                 Text(
                     text = numUndercover.toString(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 IconButton(onClick = {
@@ -221,12 +221,12 @@ fun PlayerInputScreen(
                 Column {
                     Text(
                         text = stringResource(R.string.include_mr_white),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
 
                     Text(
-                        text = stringResource(R.string.mr_white_description),
+                        text = "Mr. White no conoce la palabra pero intenta adivinarla",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(top = 4.dp)
@@ -247,13 +247,13 @@ fun PlayerInputScreen(
             }
 
 
-           Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             DisabledButton(
                 text = stringResource(R.string.start_game),
                 onClick = {
                     clickSound.start()
-                    onSubmitPlayers(validPlayers, playerAvatars, numUndercover, includeMrWhite, spanish)
+                    onSubmitPlayers(validPlayers, numUndercover, includeMrWhite, spanish)
                     navController.navigate("reveal")
                 },
                 icon = Icons.Default.PlayArrow,
