@@ -1,15 +1,28 @@
 package com.example.infiltrados.ui.main
 
 
+import android.media.MediaPlayer
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.HowToVote
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -21,14 +34,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -36,6 +56,10 @@ import com.example.infiltrados.R
 import com.example.infiltrados.models.Player
 import com.example.infiltrados.models.Role
 import com.example.infiltrados.services.GameManager
+import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.DisabledButton
+import com.example.infiltrados.ui.main.components.UndercoverButton
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,93 +68,135 @@ fun VotationScreen(
     players: List<Player>,
     gameManager: GameManager
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val clickSound = remember { MediaPlayer.create(context, R.raw.sonido_boton) }
+
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
+    val selectedIndex = players.indexOf(selectedPlayer)
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.votation_title)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.rules_back)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        AnimatedBackground()
+
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.votation_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
-                    }
-                },
-                actions = {}
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(24.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.votation_prompt),
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                text = stringResource(R.string.votation_instruction),
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center
-            )
-
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded }
-            ) {
-                TextField(
-                    value = selectedPlayer?.name ?: "",
-                    onValueChange = {},
-                    label = { Text(stringResource(R.string.votation_select_label)) },
-                    readOnly = true,
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                     },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                    modifier = Modifier.menuAnchor()
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.rules_back),
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(24.dp)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.votation_prompt),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
                 )
 
-                ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    players.forEach { player ->
-                        DropdownMenuItem(
-                            text = { Text(player.name) },
-                            onClick = {
-                                selectedPlayer = player
-                                expanded = false
-                            }
-                        )
-                    }
-                }
-            }
+                Text(
+                    text = stringResource(R.string.votation_instruction),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
+                )
 
-            Button(
-                onClick = {
-                    selectedPlayer?.let { player ->
-                        gameManager.lastEliminated = player
-                        if (player.role == Role.MR_WHITE) {
-                            navController.navigate("mr_white_guess")
-                        } else {
-                            navController.navigate("player_eliminated")
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    players.forEachIndexed { index, player ->
+                        val isSelected = selectedIndex == index
+
+                        val scale = remember { Animatable(1f) }
+                        val coroutineScope = rememberCoroutineScope()
+
+                        LaunchedEffect(isSelected) {
+                            if (isSelected) {
+                                coroutineScope.launch {
+                                    scale.animateTo(
+                                        targetValue = 1.1f,
+                                        animationSpec = tween(durationMillis = 100, easing = LinearOutSlowInEasing)
+                                    )
+                                    scale.animateTo(
+                                        targetValue = 1f,
+                                        animationSpec = tween(durationMillis = 100)
+                                    )
+                                }
+                            }
+                        }
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .graphicsLayer(scaleX = scale.value, scaleY = scale.value)
+                                .clickable {
+                                    clickSound.start()
+                                    selectedPlayer = player
+                                },
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = CardDefaults.cardElevation(6.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                                contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "${player.emoji} ${player.name.replaceFirstChar { it.uppercase() }}",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                )
+                            }
                         }
                     }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp)
-            ) {
-                Text(stringResource(R.string.votation_eliminate))
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                DisabledButton(
+                    text = stringResource(R.string.votation_eliminate),
+                    icon = Icons.Default.HowToVote,
+                    enabled = selectedPlayer != null,
+                    onClick = {
+                        selectedPlayer?.let { player ->
+                            gameManager.lastEliminated = player
+                            if (player.role == Role.MR_WHITE) {
+                                navController.navigate("mr_white_guess")
+                            } else {
+                                navController.navigate("player_eliminated")
+                            }
+                        }
+                    }
+                )
             }
         }
     }
 }
+
