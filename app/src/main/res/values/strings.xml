@@ -25,15 +25,16 @@
     <string name="rules_tips_title">Consejos</string>
     <string name="rules_tips_text">No digas tu palabra exacta. Sé estratégico. Mr. White puede ganar si adivina la palabra al ser eliminado.</string>
 
-    <string name="game_setup_title">Configuración del juego</string>
-    <string name="language_label">Idioma</string>
+    <string name="game_setup_title">Configurar partida</string>
+    <string name="language_label">Seleccioná un idioma</string>
     <string name="players_label">Jugadores</string>
-    <string name="add_player">Agregar jugador</string>
-    <string name="undercover_label">Cantidad de Undercover</string>
-    <string name="include_mr_white">¿Incluir a Mr. White?</string>
-    <string name="start_game">Comenzar juego</string>
-    <string name="invalid_config">Debe haber al menos 3 jugadores, con 2 civiles como mínimo.</string>
     <string name="player_hint">Jugador %1$d</string>
+    <string name="add_player">Agregar jugador</string>
+    <string name="undercover_label">Cantidad de infiltrados</string>
+    <string name="include_mr_white">Incluir a Mr. White</string>
+    <string name="mr_white_description">Mr. White no conoce la palabra pero intenta adivinarla</string>
+    <string name="start_game">¡Comenzar juego!</string>
+    <string name="invalid_config">Configuración inválida: se necesitan al menos 3 jugadores y 2 ciudadanos</string>
 
     <string name="discussion_title">Discusión</string>
     <string name="discussion_prompt">¡Hora de describir la palabra!</string>
@@ -45,6 +46,9 @@
     <string name="word_reveal_show">Mostrar palabra</string>
     <string name="word_reveal_empty">No tenés palabra, ¡improvisá!</string>
     <string name="word_reveal_next">Siguiente jugador</string>
+    <string name="reveal_word">Mostrar palabra</string>
+    <string name="next_player">Siguiente jugador</string>
+    <string name="your_word_is">%1$s, esta es tu palabra</string>
 
     <string name="votation_title">Votación</string>
     <string name="votation_prompt">¡Hora de votar!</string>
@@ -59,5 +63,19 @@
     <string name="join">Unirse</string>
     <string name="delete_player">Eliminar</string>
     <string name="waiting_for_host">Esperando a que el anfitrion comience el juego</string>
+
+    <string name="mr_white_title">¡Mr. White fue descubierto!</string>
+    <string name="mr_white_instruction">Si adivinás la palabra de los civiles, ¡ganás la partida!</string>
+    <string name="guess_placeholder">Escribí tu intento de palabra</string>
+    <string name="guess_button">Adivinar</string>
+
+    <string name="end_game_title">¡Fin del juego!</string>
+    <string name="end_game_winners">Ganadores: %1$s</string>
+    <string name="play_again">Jugar de nuevo</string>
+
+    <string name="player_eliminated_title">¡Jugador eliminado!</string>
+    <string name="continue_button">Continuar</string>
+
+
 </resources>
 

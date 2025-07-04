@@ -1,19 +1,23 @@
 package com.example.infiltrados.ui.main
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.HowToVote
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,11 +31,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.infiltrados.R
 import com.example.infiltrados.models.Player
+import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.UndercoverButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,54 +61,71 @@ fun DiscussionScreen(
             )
         }
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .background(MaterialTheme.colorScheme.background)
+                .padding(innerPadding)
         ) {
-            Text(
-                text = stringResource(R.string.discussion_prompt),
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 16.dp)
-            )
+            AnimatedBackground()
 
-            Text(
-                text = stringResource(R.string.discussion_instruction),
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            players.forEachIndexed { index, player ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                ) {
-                    Text(
-                        text = "${index + 1}. ${player.name}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = { navController.navigate("vote") },
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(24.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(stringResource(R.string.start_voting))
+                Text(
+                    text = stringResource(R.string.discussion_prompt),
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
+
+                Text(
+                    text = stringResource(R.string.discussion_instruction),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                players.forEachIndexed { index, player ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                        shape = RoundedCornerShape(24.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)
+                        ) {
+                            Text(
+                                text = "${index + 1}.",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "${player.emoji} ${player.name.replaceFirstChar { it.uppercase() }}",
+                                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                UndercoverButton(
+                    text = stringResource(R.string.start_voting),
+                    icon = Icons.Default.HowToVote,
+                    onClick = { navController.navigate("vote") }
+                )
             }
         }
     }

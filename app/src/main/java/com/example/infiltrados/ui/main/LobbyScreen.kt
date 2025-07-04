@@ -55,7 +55,6 @@ fun LobbyScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // Ícono animado + título dividido
             AnimatedPulsingIcon(
                 painter = painterResource(id = R.drawable.ic_logo),
                 size = 96.dp
@@ -68,7 +67,6 @@ fun LobbyScreen(
                 textAlign = TextAlign.Center
             )
 
-            // Botones
             UndercoverButton(
                 text = stringResource(R.string.begin),
                 backgroundColor = MaterialTheme.colorScheme.primary,
