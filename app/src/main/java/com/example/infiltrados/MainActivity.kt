@@ -94,6 +94,41 @@ private fun App() {
                     onNavigateToPhase
                 )
             }
+
+            composable<Destination.Discussion> {
+                com.example.infiltrados.ui.main.multiplayer.DiscussionScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
+
+            composable<Destination.Vote> {
+                com.example.infiltrados.ui.main.multiplayer.VotationScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
+
+            composable<Destination.PlayerEliminated> {
+                com.example.infiltrados.ui.main.multiplayer.PlayerEliminatedScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
+
+            composable<Destination.MrWhiteGuess> {
+                com.example.infiltrados.ui.main.multiplayer.MrWhiteGuessScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
+
+            composable<Destination.EndGame> {
+                com.example.infiltrados.ui.main.multiplayer.EndGameScreen(
+                    mpViewModel,
+                    onNavigateToPhase
+                )
+            }
         }
 
 

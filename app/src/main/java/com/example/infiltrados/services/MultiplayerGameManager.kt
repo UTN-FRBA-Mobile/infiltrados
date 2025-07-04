@@ -132,4 +132,38 @@ class MultiplayerGameManager(
         return updateGame(updated)
     }
 
+    fun startDiscussion(): Deferred<GameRecord> {
+        val updated = game.copy(phase = MultiplayerPhase.DISCUSSION)
+        return updateGame(updated)
+    }
+
+    fun startVoting(): Deferred<GameRecord> {
+        val updated = game.copy(phase = MultiplayerPhase.VOTE)
+        return updateGame(updated)
+    }
+
+    fun getPlayerFromName(): Player? {
+        return game.players.find { it.name == playerName }
+    }
+
+    fun getActivePlayers(): List<Player> {
+        return game.players.filter { it.role != Role.ELIMINATED }
+    }
+
+    fun isPlayerEliminated(): Boolean{
+        val player = getPlayerFromName() ?: return false
+        return !getActivePlayers().contains(player)
+    }
+
+    fun endGame(): Deferred<GameRecord> {
+        val updated = game.copy(phase = MultiplayerPhase.END_GAME)
+        return updateGame(updated)
+    }
+
+    fun eliminatePlayer(player: Player): Deferred<GameRecord> {
+        //TODO: Agregar logica para eliminar al jugador
+        val updated = game.copy(phase = MultiplayerPhase.PLAYER_ELIMINATED)
+        return updateGame(updated)
+    }
+
 }
