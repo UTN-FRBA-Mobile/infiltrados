@@ -1,5 +1,6 @@
 package com.example.infiltrados.ui.main.multiplayer
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,13 +69,14 @@ class MultiplayerGameViewModel : ViewModel() {
         }
     }
 
-    fun startGame() {
+    fun startGame(context: Context, spanish: Boolean) {
         viewModelScope.launch {
             isLoading = true
-            gameManager!!.startGame().await()
+            gameManager!!.startGame(context, spanish).await()
             isLoading = false
         }
     }
+
 
     fun joinGame(gameId: String, name: String) {
         viewModelScope.launch(Dispatchers.IO) {

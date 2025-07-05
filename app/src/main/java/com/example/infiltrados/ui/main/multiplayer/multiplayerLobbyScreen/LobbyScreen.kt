@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.infiltrados.R
@@ -27,8 +28,11 @@ import com.example.infiltrados.ui.main.multiplayer.ObserveMultiplayerPhase
 fun OnlineLobbyScreen(
     mpViewModel: MultiplayerGameViewModel,
     onBackToLobby: () -> Unit,
-    onNavigateToPhase: (MultiplayerPhase) -> Unit
+    onNavigateToPhase: (MultiplayerPhase) -> Unit,
+    spanish: Boolean // 👈 nuevo parámetro para elegir idioma
 ) {
+    val context = LocalContext.current
+
     if (mpViewModel.gameManager == null && !mpViewModel.isLoading) {
         onBackToLobby()
         return
@@ -41,10 +45,8 @@ fun OnlineLobbyScreen(
 
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
 
-
     val gameRecord by mpViewModel.game.collectAsState()
     val players = gameRecord?.players ?: emptyList()
-
 
     Column(
         modifier = Modifier
@@ -58,13 +60,14 @@ fun OnlineLobbyScreen(
         PlayerList(players.map { it.name }, mpViewModel.isHost) { mpViewModel.removePlayer(it) }
 
         Spacer(Modifier.height(24.dp))
-        //ServerTestPanel(multiplayerGameViewModel)
         Spacer(Modifier.weight(1f))
         if (mpViewModel.isHost) {
             ButtonWithLoading(
                 stringResource(R.string.begin),
                 mpViewModel.isLoading
-            ) { mpViewModel.startGame() }
+            ) {
+                mpViewModel.startGame(context, spanish)
+            }
         } else {
             Text(
                 stringResource(R.string.waiting_for_host),
@@ -72,11 +75,4 @@ fun OnlineLobbyScreen(
             )
         }
     }
-
 }
-
-//@Preview
-//@Composable
-//fun LobbyScreenPreview() {
-//    OnlineLobbyScreen(MultiplayerGameViewModel(),{}, {})
-//}

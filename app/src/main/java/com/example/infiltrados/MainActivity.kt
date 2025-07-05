@@ -81,7 +81,8 @@ private fun App() {
                 OnlineLobbyScreen(
                     mpViewModel,
                     onBackToLobby = { navController.navigate("lobby") },
-                    onNavigateToPhase
+                    onNavigateToPhase,
+                    spanish = true
                 )
             }
 

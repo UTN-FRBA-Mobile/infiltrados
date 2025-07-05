@@ -1,5 +1,6 @@
 package com.example.infiltrados.services
 
+import android.content.Context
 import android.util.Log
 import com.example.infiltrados.models.GameRecord
 import com.example.infiltrados.models.Player
@@ -105,34 +106,32 @@ class MultiplayerGameManager(
         return game.players.size >= 3 && (numUndercover > 0 || includeMrWhite) && numCitizens >= 2
     }
 
-    fun startGame(): Deferred<GameRecord> {
-
-        // TODO Validate if it's possible to start the game
-        /*
-        if (!canStartGame()) {
-            throw IllegalStateException("Cannot start game")
-        }*/
-
-        // Barajamos los jugadores
+    fun startGame(context: Context, spanish: Boolean): Deferred<GameRecord> {
         val shuffledNames = game.players.shuffled()
 
-        // Asignamos roles según la cantidad de jugadores
         val roles = mutableListOf<Role>()
-
         repeat(numUndercover) { roles.add(Role.UNDERCOVER) }
         if (includeMrWhite) roles.add(Role.MR_WHITE)
         while (roles.size < game.players.size) roles.add(Role.CIUDADANO)
         roles.shuffle()
 
-        // Creamos la lista de jugadores con sus roles y palabras
         players = shuffledNames.mapIndexed { index, player ->
             Player(player.name, roles[index])
         }
 
 
-        val updated = game.copy(phase = MultiplayerPhase.REVEAL, players = players, word1 = "x", word2 = "y")
+        val wordPairs = WordLoader.loadWordPairs(context, spanish)
+        val randomPair = wordPairs.random()
+
+        val updated = game.copy(
+            phase = MultiplayerPhase.REVEAL,
+            players = players,
+            word1 = randomPair.word1,
+            word2 = randomPair.word2
+        )
         return updateGame(updated)
     }
+
 
     fun startDiscussion(): Deferred<GameRecord> {
         val updated = game.copy(phase = MultiplayerPhase.DISCUSSION)
