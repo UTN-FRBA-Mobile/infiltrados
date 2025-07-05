@@ -54,7 +54,7 @@ class PlayerAdapter : TypeAdapter<Player>() {
 @JsonAdapter(PlayerAdapter::class)
 data class Player(
     val name: String,         // Nombre del jugador
-    val role: Role,           // Rol asignado (Ciudadano, Undercover, Mr.White)
+    var role: Role,           // Rol asignado (Ciudadano, Undercover, Mr.White)
     var isEliminated: Boolean = false, // Indica si el jugador fue eliminado
     val emoji: String = ""
 )

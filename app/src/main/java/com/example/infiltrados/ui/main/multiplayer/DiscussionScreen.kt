@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,11 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.infiltrados.R
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.WaitingForHost
 
 @Composable
 fun DiscussionScreen(
@@ -70,7 +68,7 @@ fun DiscussionScreen(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            val players = mpViewModel.game.value?.players?.shuffled() ?: emptyList()
+            val players = mpViewModel.gameManager?.getActivePlayers()?.shuffled() ?: emptyList()
 
             players.forEachIndexed { index, player ->
                 Card(
@@ -89,16 +87,21 @@ fun DiscussionScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                //TODO: Hacer que solo el host acepte la votación
-                onClick = { mpViewModel.startVoting() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(24.dp)
-            ) {
-                Text(stringResource(R.string.start_voting))
+            if (mpViewModel.isHost){
+                Button(
+                    onClick = { mpViewModel.startVoting() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    Text(stringResource(R.string.start_voting))
+                }
             }
+            else {
+                WaitingForHost()
+            }
+
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.WaitingForHost
 
 @Composable
 fun EndGameScreen(
@@ -22,6 +24,11 @@ fun EndGameScreen(
     onNavigateToPhase: (MultiplayerPhase) -> Unit
 ) {
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
+
+    if (mpViewModel.isLoading) {
+        CircularProgressIndicator()
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -32,17 +39,22 @@ fun EndGameScreen(
         AnimatedBackground()
         Column {
             Text(
-                text = "Ganadores: ",
+                text = "Ganadores: ${mpViewModel.gameManager?.getWinners()}",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(16.dp)
             )
             Spacer(modifier = Modifier.height(32.dp))
-            Button(
-                //TODO Limpiar el juego
-                onClick = { onNavigateToPhase(MultiplayerPhase.LOBBY) },
-            ) {
-                Text("Jugar de nuevo")
+            if (mpViewModel.isHost) {
+                Button(
+                    //TODO Limpiar el juego
+                    onClick = { mpViewModel.resetGame() },
+                ) {
+                    Text("Jugar de nuevo")
+                }
+            } else {
+                WaitingForHost()
             }
+
         }
     }
 }

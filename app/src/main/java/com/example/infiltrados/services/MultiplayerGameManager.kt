@@ -106,10 +106,12 @@ class MultiplayerGameManager(
     }
 
     fun startGame(): Deferred<GameRecord> {
+
         // TODO Validate if it's possible to start the game
+        /*
         if (!canStartGame()) {
             throw IllegalStateException("Cannot start game")
-        }
+        }*/
 
         // Barajamos los jugadores
         val shuffledNames = game.players.shuffled()
@@ -128,7 +130,7 @@ class MultiplayerGameManager(
         }
 
 
-        val updated = game.copy(phase = MultiplayerPhase.REVEAL, players = players)
+        val updated = game.copy(phase = MultiplayerPhase.REVEAL, players = players, word1 = "x", word2 = "y")
         return updateGame(updated)
     }
 
@@ -142,6 +144,11 @@ class MultiplayerGameManager(
         return updateGame(updated)
     }
 
+    fun startReveal(): Deferred<GameRecord> {
+        val updated = game.copy(phase = MultiplayerPhase.REVEAL)
+        return updateGame(updated)
+    }
+
     fun getPlayerFromName(): Player? {
         return game.players.find { it.name == playerName }
     }
@@ -150,9 +157,12 @@ class MultiplayerGameManager(
         return game.players.filter { it.role != Role.ELIMINATED }
     }
 
-    fun isPlayerEliminated(): Boolean{
-        val player = getPlayerFromName() ?: return false
+    fun isPlayerEliminated(player: Player?): Boolean{
         return !getActivePlayers().contains(player)
+    }
+
+    fun isMrWhiteGuessCorrect(guess: String): Boolean {
+        return game.word1 == guess
     }
 
     fun mrWhiteGuess(): Deferred<GameRecord> {
@@ -160,15 +170,62 @@ class MultiplayerGameManager(
         return updateGame(updated)
     }
 
+    fun mrWhiteWin(mrWhite: Player?): Deferred<GameRecord> {
+        eliminatePlayersExcept(mrWhite)
+
+        val updated = game.copy(phase = MultiplayerPhase.END_GAME, players = players)
+        return updateGame(updated)
+    }
+
+    fun eliminatePlayersExcept(player: Player?) {
+        players.forEach {
+            if (it.name != player?.name) {
+                it.role = Role.ELIMINATED
+            }
+        }
+    }
+
     fun endGame(): Deferred<GameRecord> {
         val updated = game.copy(phase = MultiplayerPhase.END_GAME)
         return updateGame(updated)
     }
 
-    fun eliminatePlayer(player: Player?): Deferred<GameRecord> {
-        //TODO: Agregar logica para eliminar al jugador
-        val updated = game.copy(phase = MultiplayerPhase.PLAYER_ELIMINATED)
+    fun resetGame(): Deferred<GameRecord> {
+        val updated = game.copy(
+            phase = MultiplayerPhase.LOBBY,
+            //players = emptyList()
+        )
         return updateGame(updated)
+    }
+
+    fun eliminatePlayer(player: Player?): Deferred<GameRecord> {
+
+        players.find { it.name == player?.name }?.let {
+             it.role = Role.ELIMINATED
+        }
+
+        val updated = game.copy(phase = MultiplayerPhase.PLAYER_ELIMINATED, players = players)
+        return updateGame(updated)
+    }
+
+    fun getWinners(): String {
+        val activePlayers = getActivePlayers()
+        val activeRoles = activePlayers.map { it.role }
+
+        val mrWhiteAlive = activeRoles.contains(Role.MR_WHITE)
+        val undercoverAlive = activeRoles.contains(Role.UNDERCOVER)
+        val citizensAlive = activeRoles.contains(Role.CIUDADANO)
+
+        return when {
+            activePlayers.size == 1 && activeRoles.contains(Role.MR_WHITE) -> Role.MR_WHITE.toString()
+            undercoverAlive && !mrWhiteAlive && !citizensAlive -> Role.UNDERCOVER.toString()
+            !undercoverAlive && !mrWhiteAlive && citizensAlive -> Role.CIUDADANO.toString()
+            else -> ""
+        }
+    }
+
+    fun gameContinues(): Boolean {
+        return getWinners() == ""
     }
 
 }

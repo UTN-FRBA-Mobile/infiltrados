@@ -108,6 +108,14 @@ class MultiplayerGameViewModel : ViewModel() {
         }
     }
 
+    fun startReveal() {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.startReveal().await()
+            isLoading = false
+        }
+    }
+
     fun eliminatePlayer(player: Player?) {
         viewModelScope.launch {
             isLoading = true
@@ -124,6 +132,14 @@ class MultiplayerGameViewModel : ViewModel() {
         }
     }
 
+    fun mrWhiteWin(mrWhite: Player?){
+        viewModelScope.launch {
+            isLoading = true
+            gameManager!!.mrWhiteWin(mrWhite).await()
+            isLoading = false
+        }
+    }
+
     fun endGame() {
         viewModelScope.launch {
             isLoading = true
@@ -132,12 +148,12 @@ class MultiplayerGameViewModel : ViewModel() {
         }
     }
 
-
-
-    fun gameContinues(): Boolean {
-        //TODO
-        return true
+    fun resetGame() {
+        viewModelScope.launch {
+            isLoading = true
+            gameManager?.resetGame()?.await()
+            isLoading = false
+        }
     }
-
 
 }
