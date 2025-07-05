@@ -58,7 +58,7 @@ fun PlayerEliminatedScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
-                //TODO: Implementar el nombre del jugador eliminado
+                //TODO: Implementar el nombre y rol del jugador eliminado
                 text = "Nombre: \n Rol: ",
                 style = MaterialTheme.typography.titleMedium
             )

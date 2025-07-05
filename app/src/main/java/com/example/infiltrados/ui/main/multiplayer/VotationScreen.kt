@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.infiltrados.models.Player
 import com.example.infiltrados.models.Role
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
@@ -47,7 +48,7 @@ fun VotationScreen(
                 text = "Votación en curso",
                 style = androidx.compose.material3.MaterialTheme.typography.titleLarge,
                 modifier = androidx.compose.ui.Modifier.padding(16.dp)
-                //TODO: Implemetar votación
+                //TODO: Implemetar votación, rervisar si tiene sentido que haya pantalla de eliminado
             )
             Text(
                 text = "Jugador seleccionado: ${playerSelected?.name ?: "Nadie"}",
