@@ -1,5 +1,6 @@
 package com.example.infiltrados.ui.main.multiplayer
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +23,9 @@ import androidx.compose.ui.unit.dp
 import com.example.infiltrados.R
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.WaitingForHost
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun WordRevealScreen(
     mpViewModel: MultiplayerGameViewModel,
@@ -57,15 +60,32 @@ fun WordRevealScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
-            Button(
-                onClick = { mpViewModel.startDiscussion() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(24.dp)
-            ) {
-                Text("Comenzar discusion")
+            val player = mpViewModel.gameManager?.getPlayerFromName()
+            if (mpViewModel.gameManager?.isPlayerEliminated(player) == false){
+                Text(
+                    text = "word1: ${mpViewModel.game.value?.word1}, word2: ${mpViewModel.game.value?.word2}",
+                    //TODO Hacer bien la palabra por rol
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
             }
+
+            if (mpViewModel.isHost){
+                Button(
+                    onClick = { mpViewModel.startDiscussion() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    Text("Comenzar discusion")
+                }
+            }
+            else {
+                WaitingForHost()
+            }
+
         }
     }
 

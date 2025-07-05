@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.infiltrados.models.Role
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.WaitingForHost
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -24,6 +26,11 @@ fun VotationScreen(
 ) {
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
 
+    if (mpViewModel.isLoading) {
+        CircularProgressIndicator()
+        return
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -31,7 +38,10 @@ fun VotationScreen(
             .padding(24.dp)
     ) {
         AnimatedBackground()
-        val player = mpViewModel.game.value?.players?.random()
+
+        val playerSelected = mpViewModel.gameManager?.getActivePlayers()?.random()
+        val player = mpViewModel.gameManager?.getPlayerFromName()
+
         Column {
             Text(
                 text = "Votación en curso",
@@ -39,20 +49,28 @@ fun VotationScreen(
                 modifier = androidx.compose.ui.Modifier.padding(16.dp)
                 //TODO: Implemetar votación
             )
-            Button(
-                onClick = {
-                    if (player?.role == Role.MR_WHITE) {
-                        mpViewModel.mrWhiteGuess()
-                    } else {
-                        mpViewModel.eliminatePlayer(player)
-                    }
-                          },
+            Text(
+                text = "Jugador seleccionado: ${playerSelected?.name ?: "Nadie"}",
+                style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
                 modifier = androidx.compose.ui.Modifier.padding(16.dp)
-            ) {
-                Text(text = "Votar")
+            )
+
+            if (mpViewModel.isHost) {
+                Button(
+                    onClick = {
+                        if (playerSelected?.role == Role.MR_WHITE) {
+                            mpViewModel.mrWhiteGuess()
+                        } else {
+                            mpViewModel.eliminatePlayer(playerSelected)
+                        }
+                    },
+                    modifier = androidx.compose.ui.Modifier.padding(16.dp)
+                ) {
+                    Text(text = "Eliminar")
+                }
+            } else {
+                WaitingForHost()
             }
         }
     }
-
-
 }

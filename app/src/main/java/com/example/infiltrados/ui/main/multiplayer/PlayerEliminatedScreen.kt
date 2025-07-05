@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import com.example.infiltrados.models.Player
 import com.example.infiltrados.services.GameManager
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.WaitingForHost
 
 @Composable
 fun PlayerEliminatedScreen(
@@ -29,6 +31,11 @@ fun PlayerEliminatedScreen(
 )
 {
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
+
+    if (mpViewModel.isLoading) {
+        CircularProgressIndicator()
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -51,19 +58,25 @@ fun PlayerEliminatedScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
+                //TODO: Implementar el nombre del jugador eliminado
                 text = "Nombre: \n Rol: ",
                 style = MaterialTheme.typography.titleMedium
             )
-            Button(
-                onClick = {
-                    if (mpViewModel.gameContinues())
-                        mpViewModel.startDiscussion()
-                    else
-                        mpViewModel.endGame()
+            if (mpViewModel.isHost){
+                Button(
+                    onClick = {
+                        if (mpViewModel.gameManager?.gameContinues() == true)
+                            mpViewModel.startDiscussion()
+                        else
+                            mpViewModel.endGame()
+                    }
+                ) {
+                    Text("Continuar")
                 }
-            ) {
-                Text("Continuar")
+            } else {
+                WaitingForHost()
             }
+
         }
     }
 

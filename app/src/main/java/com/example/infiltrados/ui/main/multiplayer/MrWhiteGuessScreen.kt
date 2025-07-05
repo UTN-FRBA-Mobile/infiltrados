@@ -1,6 +1,5 @@
 package com.example.infiltrados.ui.main.multiplayer
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,6 +32,11 @@ fun MrWhiteGuessScreen(
     onNavigateToPhase: (MultiplayerPhase) -> Unit
 ) {
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
+
+    if (mpViewModel.isLoading) {
+        CircularProgressIndicator()
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -56,7 +61,7 @@ fun MrWhiteGuessScreen(
 
             var word_guess by remember { mutableStateOf("") }
             val player = mpViewModel.gameManager?.getPlayerFromName()
-            if (player?.role== Role.MR_WHITE)
+            if (player?.role== Role.MR_WHITE || mpViewModel.isHost) //TODO Despues sacar al host
             {
                 Text(
                     text = "Adivina la palabra de los civiles",
@@ -70,8 +75,8 @@ fun MrWhiteGuessScreen(
                 )
                 Button(
                     onClick = {
-                        if(mpViewModel.game.value?.word1 == word_guess) {
-                            mpViewModel.endGame()
+                        if(mpViewModel.gameManager?.isMrWhiteGuessCorrect(word_guess) == true) {
+                            mpViewModel.mrWhiteWin(player)
                         } else {
                             mpViewModel.eliminatePlayer(player)
                         }
