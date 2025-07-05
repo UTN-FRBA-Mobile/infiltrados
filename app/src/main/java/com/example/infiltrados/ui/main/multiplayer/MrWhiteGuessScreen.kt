@@ -15,7 +15,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.example.infiltrados.models.Role
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.TimerButton
+import kotlinx.coroutines.delay
 
 @Composable
 fun MrWhiteGuessScreen(
@@ -43,7 +47,7 @@ fun MrWhiteGuessScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(24.dp)
-    ){
+    ) {
         AnimatedBackground()
         Column(
             modifier = Modifier
@@ -61,8 +65,8 @@ fun MrWhiteGuessScreen(
 
             var word_guess by remember { mutableStateOf("") }
             val player = mpViewModel.gameManager?.getPlayerFromName()
-            if (player?.role== Role.MR_WHITE || mpViewModel.isHost) //TODO Despues sacar al host
-            {
+
+            if (player?.role == Role.MR_WHITE) {
                 Text(
                     text = "Adivina la palabra de los civiles",
                     style = MaterialTheme.typography.titleMedium
@@ -75,7 +79,7 @@ fun MrWhiteGuessScreen(
                 )
                 Button(
                     onClick = {
-                        if(mpViewModel.gameManager?.isMrWhiteGuessCorrect(word_guess) == true) {
+                        if (mpViewModel.gameManager?.isMrWhiteGuessCorrect(word_guess) == true) {
                             mpViewModel.mrWhiteWin(player)
                         } else {
                             mpViewModel.eliminatePlayer(player)
@@ -84,8 +88,7 @@ fun MrWhiteGuessScreen(
                 ) {
                     Text("Adivinar")
                 }
-            }
-            else {
+            } else {
                 Text(
                     text = "Esperando a que Mr White adivine la palabra.",
                     style = MaterialTheme.typography.bodyLarge,
@@ -93,10 +96,19 @@ fun MrWhiteGuessScreen(
                 )
             }
 
+            val seconds = 30
+            var secondsRemaining by remember { mutableIntStateOf(seconds) }
+            LaunchedEffect(Unit) {
+                while (secondsRemaining > 0) {
+                    delay(1000L)
+                    secondsRemaining--
+                }
+            }
+            TimerButton(seconds,secondsRemaining)
+
+            if (mpViewModel.isHost && secondsRemaining <= 0) {
+                mpViewModel.eliminatePlayer(player)
+            }
         }
     }
-
-
-
-
 }
