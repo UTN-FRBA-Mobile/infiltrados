@@ -31,6 +31,7 @@ import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
 import com.example.infiltrados.ui.main.getOnNavigateToPhase
 import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
+import com.example.infiltrados.ui.main.multiplayer.ObserveMultiplayerError
 import com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen.OnlineLobbyScreen
 import com.example.infiltrados.ui.theme.UndercoverTheme
 
@@ -50,6 +51,13 @@ private fun App() {
     val context = LocalContext.current
 
     val mpViewModel = viewModel<MultiplayerGameViewModel>()
+    ObserveMultiplayerError(mpViewModel) {
+        Toast.makeText(
+            context,
+            it,
+            Toast.LENGTH_LONG
+        ).show()
+    }
 
     NavHost(navController = navController, startDestination = "lobby") {
         composable("lobby") {
@@ -60,19 +68,8 @@ private fun App() {
                     navController.navigate(route = Destination.OnlineLobby)
                 },
                 onJoinMPGame = { gameId, name ->
-                    try {
-                        mpViewModel.joinGame(gameId, name)
-                        navController.navigate(route = Destination.OnlineLobby)
-                    } catch (e: Exception) {
-                        Log.e("DEBUG", "Error joining game: $e")
-                        Toast.makeText(
-                            context,
-                            e.message ?: "Error joining game",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-
-
+                    mpViewModel.joinGame(gameId, name)
+                    navController.navigate(route = Destination.OnlineLobby)
                 })
         }
 
@@ -84,7 +81,8 @@ private fun App() {
                 OnlineLobbyScreen(
                     mpViewModel,
                     onBackToLobby = { navController.navigate("lobby") },
-                    onNavigateToPhase
+                    onNavigateToPhase,
+                    spanish = true
                 )
             }
 
