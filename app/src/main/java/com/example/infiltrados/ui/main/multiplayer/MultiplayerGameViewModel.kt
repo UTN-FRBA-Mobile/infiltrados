@@ -48,16 +48,71 @@ class MultiplayerGameViewModel : ViewModel() {
     var lastEliminatedPlayer by mutableStateOf<Pair<String, Role>?>(null)
         private set
 
+    // Nueva variable de votos
+    private val votes = mutableMapOf<String, Int>()
 
     private fun getPhaseFromGameRecord(record: GameRecord?): MultiplayerPhase {
         return record?.phase ?: MultiplayerPhase.LOBBY
     }
 
-    // Lambda explícita con tipo
     private val gameUpdateCollector: (GameRecord) -> Unit = { newGameRecord ->
         _game.value = newGameRecord
         viewModelScope.launch(Dispatchers.IO) {
             _phase.send(getPhaseFromGameRecord(newGameRecord))
+        }
+    }
+
+
+    var voteCounts by mutableStateOf<Map<String, Int>>(emptyMap())
+        private set
+
+
+    var votedPlayers by mutableStateOf<Set<String>>(emptySet())
+        private set
+
+    fun voteFor(playerName: String) {
+        val current = voteCounts.toMutableMap()
+        current[playerName] = (current[playerName] ?: 0) + 1
+        voteCounts = current
+
+        votedPlayers = votedPlayers + (gameManager?.playerName ?: "")
+
+
+        val activePlayers = gameManager?.getActivePlayers() ?: emptyList()
+        if (votedPlayers.size == activePlayers.size) {
+            val maxVotes = voteCounts.maxByOrNull { it.value }?.value ?: 0
+            val mostVoted = voteCounts.filter { it.value == maxVotes }.keys.randomOrNull()
+
+            val player = activePlayers.find { it.name == mostVoted }
+
+            if (player?.role == Role.MR_WHITE) {
+                mrWhiteGuess()
+            } else {
+                eliminatePlayer(player)
+            }
+
+
+            voteCounts = emptyMap()
+            votedPlayers = emptySet()
+        }
+    }
+
+    fun eliminatePlayer(player: Player?) {
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                val name = player?.name ?: "Desconocido"
+                val role = player?.role ?: Role.NADA
+                lastEliminatedPlayer = Pair(name, role)
+                val updatedGame = gameManager?.eliminatePlayer(player)?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error eliminando jugador: ${e.message}")
+            } finally {
+                isLoading = false
+            }
         }
     }
 
@@ -161,27 +216,7 @@ class MultiplayerGameViewModel : ViewModel() {
         }
     }
 
-    fun eliminatePlayer(player: Player?) {
-        viewModelScope.launch {
-            try {
-                isLoading = true
 
-
-                val name = player?.name ?: "Desconocido"
-                val role = player?.role ?: Role.NADA //
-                lastEliminatedPlayer = Pair(name, role)
-
-                val updatedGame = gameManager?.eliminatePlayer(player)?.await()
-                if (updatedGame != null) {
-                    gameUpdateCollector(updatedGame)
-                }
-            } catch (e: Exception) {
-                _error.send("Error eliminando jugador: ${e.message}")
-            } finally {
-                isLoading = false
-            }
-        }
-    }
 
 
     fun startDiscussion() {
