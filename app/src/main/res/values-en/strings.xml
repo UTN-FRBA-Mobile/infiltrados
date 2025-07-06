@@ -75,5 +75,6 @@
     <string name="join">Join</string>
     <string name="delete_player">Remove</string>
     <string name="waiting_for_host">Waiting for the host to start the game</string>
+    <string name="waiting_for_host_update">Waiting for the host to continue the game</string>
 </resources>
 
