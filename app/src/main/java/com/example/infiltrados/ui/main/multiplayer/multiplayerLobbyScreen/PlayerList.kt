@@ -1,6 +1,5 @@
 package com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,28 +22,50 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.infiltrados.ui.theme.UndercoverTheme
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerList(players: List<String>, canRemove: Boolean = true, onRemove: (String) -> Unit) {
     Column(Modifier.background(color = MaterialTheme.colorScheme.background)) {
-        players.forEach {
-            PlayerRow(it, canRemove, onClick = { onRemove(it) })
+        players.forEachIndexed { index, name ->
+            PlayerRow(index, name, canRemove, onClick = { onRemove(name) })
         }
     }
 }
 
 @Composable
-fun PlayerRow(name: String, canRemove: Boolean, onClick: () -> Unit) {
+fun PlayerRow(index: Int, name: String, canRemove: Boolean, onClick: () -> Unit) {
+    val avatars = remember {
+        listOf(
+            "😎",
+            "🕵️",
+            "👽",
+            "🤖",
+            "🐵",
+            "🐸",
+            "🦊",
+            "🐼",
+            "🐯",
+            "👻",
+            "🎃",
+            "👾",
+            "🧠",
+            "🐶",
+            "🐱"
+        ).shuffled()
+    }
     // TODO: make a confirm dialog before removing a player
     Surface(
         shape = RectangleShape,
         onClick = { if (canRemove) onClick() },
-        color = MaterialTheme.colorScheme.primaryContainer,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        //border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(0.dp)
+            .padding(1.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -53,9 +74,10 @@ fun PlayerRow(name: String, canRemove: Boolean, onClick: () -> Unit) {
                 .padding(horizontal = 8.dp)
                 .minimumInteractiveComponentSize()
         ) {
-            Icon(Icons.Filled.Person, contentDescription = "Player")
+            Text(avatars[index], fontSize = 20.sp)
             Text(
-                text = name, style = MaterialTheme.typography.displaySmall,
+                text = name,
+                style = MaterialTheme.typography.titleLarge
             )
             Spacer(modifier = Modifier.weight(1f))
             if (canRemove)
@@ -73,7 +95,9 @@ fun PlayerListPreview() {
             "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez"
         )
     }
-    PlayerList(players) {
-        players.remove(it)
+    UndercoverTheme {
+        PlayerList(players) {
+            players.remove(it)
+        }
     }
 }
