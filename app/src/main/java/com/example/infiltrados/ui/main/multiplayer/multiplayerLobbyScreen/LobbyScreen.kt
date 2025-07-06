@@ -33,19 +33,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.infiltrados.R
 import com.example.infiltrados.services.MultiplayerPhase
+import com.example.infiltrados.ui.main.LanguageFlag
 import com.example.infiltrados.ui.main.components.AnimatedBackground
 import com.example.infiltrados.ui.main.components.AnimatedPulsingIcon
 import com.example.infiltrados.ui.main.components.ButtonWithLoading
 import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 import com.example.infiltrados.ui.main.multiplayer.ObserveMultiplayerPhase
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
-import com.example.infiltrados.ui.main.LanguageFlag
 
 
 @Composable
@@ -114,6 +107,13 @@ fun OnlineLobbyScreen(
             Spacer(modifier = Modifier.width(24.dp))
 
             Text(
+                text = stringResource(R.string.game_code, gameRecord?.id ?: ""),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(Modifier.height(16.dp))
+
+            Text(
                 text = stringResource(R.string.players_label),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
@@ -126,44 +126,44 @@ fun OnlineLobbyScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-        if (mpViewModel.isHost) {
-            // Selector de idioma
-            Text(
-                text = stringResource(R.string.language_label),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                LanguageFlag(mpViewModel.spanish, true) {
-                    mpViewModel.spanish = true
-                }
-                LanguageFlag(mpViewModel.spanish, false) {
-                    mpViewModel.spanish = false
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = stringResource(R.string.undercover_label),
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {
-                    if (mpViewModel.numUndercover > 0) mpViewModel.numUndercover--
-                }) {
-                    Icon(Icons.Default.Remove, contentDescription = "Menos")
-                }
+            if (mpViewModel.isHost) {
+                // Selector de idioma
                 Text(
-                    text = mpViewModel.numUndercover.toString(),
+                    text = stringResource(R.string.language_label),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    LanguageFlag(mpViewModel.spanish, true) {
+                        mpViewModel.spanish = true
+                    }
+                    LanguageFlag(mpViewModel.spanish, false) {
+                        mpViewModel.spanish = false
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = stringResource(R.string.undercover_label),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                IconButton(onClick = { mpViewModel.numUndercover++ }) {
-                    Icon(Icons.Default.Add, contentDescription = "Más")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = {
+                        if (mpViewModel.numUndercover > 0) mpViewModel.numUndercover--
+                    }) {
+                        Icon(Icons.Default.Remove, contentDescription = "Menos")
+                    }
+                    Text(
+                        text = mpViewModel.numUndercover.toString(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    IconButton(onClick = { mpViewModel.numUndercover++ }) {
+                        Icon(Icons.Default.Add, contentDescription = "Más")
+                    }
                 }
-            }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
