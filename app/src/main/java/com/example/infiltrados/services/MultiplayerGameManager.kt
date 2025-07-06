@@ -134,7 +134,8 @@ class MultiplayerGameManager(
 
 
     fun startDiscussion(): Deferred<GameRecord> {
-        val updated = game.copy(phase = MultiplayerPhase.DISCUSSION)
+        val playersShuffled = players.shuffled()
+        val updated = game.copy(phase = MultiplayerPhase.DISCUSSION, players = playersShuffled)
         return updateGame(updated)
     }
 

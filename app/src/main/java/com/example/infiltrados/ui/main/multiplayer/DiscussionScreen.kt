@@ -68,7 +68,7 @@ fun DiscussionScreen(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            val players = mpViewModel.gameManager?.getActivePlayers()?.shuffled() ?: emptyList()
+            val players = mpViewModel.gameManager?.getActivePlayers() ?: emptyList()
 
             players.forEachIndexed { index, player ->
                 Card(
