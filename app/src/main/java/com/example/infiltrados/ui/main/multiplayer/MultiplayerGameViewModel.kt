@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.infiltrados.models.GameRecord
 import com.example.infiltrados.models.Player
+import com.example.infiltrados.models.Role
 import com.example.infiltrados.services.MultiplayerGameManager
 import com.example.infiltrados.services.MultiplayerPhase
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,10 @@ class MultiplayerGameViewModel : ViewModel() {
 
     private val _error = Channel<String>()
     val error = _error.receiveAsFlow()
+
+    var lastEliminatedPlayer by mutableStateOf<Pair<String, Role>?>(null)
+        private set
+
 
     private fun getPhaseFromGameRecord(record: GameRecord?): MultiplayerPhase {
         return record?.phase ?: MultiplayerPhase.LOBBY
@@ -158,6 +163,12 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
+
+
+                val name = player?.name ?: "Desconocido"
+                val role = player?.role ?: Role.NADA //
+                lastEliminatedPlayer = Pair(name, role)
+
                 val updatedGame = gameManager?.eliminatePlayer(player)?.await()
                 if (updatedGame != null) {
                     gameUpdateCollector(updatedGame)
@@ -169,6 +180,7 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
 
     fun startDiscussion() {
         viewModelScope.launch {
