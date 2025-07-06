@@ -14,15 +14,17 @@ import kotlinx.serialization.encoding.Encoder
 
 
 fun playerToString(player: Player): String {
-    return "${player.name}:${player.role}"
+    return "${player.name}:${player.role}:${player.votes}"
 }
 
 fun stringToPlayer(str: String): Player {
     val splitted = str.split(":")
     val name = splitted.first()
-    val roleStr = splitted.lastOrNull() ?: ""
+    val roleStr = splitted.getOrNull(1) ?: ""
     val role = if (!roleStr.isEmpty()) Role.valueOf(roleStr) else Role.NADA
-    return Player(name, role)
+    val votes = splitted.getOrNull(2)?.toInt() ?: 0
+    
+    return Player(name, role, votes)
 }
 
 object PlayersSerializer : KSerializer<Player> {
@@ -55,6 +57,7 @@ class PlayerAdapter : TypeAdapter<Player>() {
 data class Player(
     val name: String,         // Nombre del jugador
     var role: Role,           // Rol asignado (Ciudadano, Undercover, Mr.White)
+    var votes: Int = 0,
     var isEliminated: Boolean = false, // Indica si el jugador fue eliminado
     val emoji: String = ""
 )

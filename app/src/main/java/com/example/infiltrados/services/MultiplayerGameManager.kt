@@ -88,7 +88,7 @@ class MultiplayerGameManager(
         }
 
     }
-    
+
     private fun updateGame(updatedGame: GameRecord): Deferred<GameRecord> {
         return scope.async(Dispatchers.IO) {
             AppwriteService.updateGame(updatedGame)
@@ -156,7 +156,7 @@ class MultiplayerGameManager(
         return game.players.filter { it.role != Role.ELIMINATED }
     }
 
-    fun isPlayerEliminated(player: Player?): Boolean{
+    fun isPlayerEliminated(player: Player?): Boolean {
         return !getActivePlayers().contains(player)
     }
 
@@ -200,7 +200,7 @@ class MultiplayerGameManager(
     fun eliminatePlayer(player: Player?): Deferred<GameRecord> {
 
         players.find { it.name == player?.name }?.let {
-             it.role = Role.ELIMINATED
+            it.role = Role.ELIMINATED
         }
 
         val updated = game.copy(phase = MultiplayerPhase.PLAYER_ELIMINATED, players = players)
@@ -228,20 +228,27 @@ class MultiplayerGameManager(
     }
 
     fun voteForPlayer(votedName: String): Deferred<GameRecord> {
-        val updatedVotes = game.votes + votedName
-        val updatedVotedBy = game.votedBy + playerName
+        if (game.phase != MultiplayerPhase.VOTE) {
+            throw IllegalStateException("No se puede votar en este momento")
+        }
+
+        val updatedPlayers =
+            game.players.map { player -> if (player.name === votedName) player.copy(votes = player.votes + 1) else player }
 
         val updated = game.copy(
-            votes = updatedVotes,
-            votedBy = updatedVotedBy
+            players = updatedPlayers
         )
 
         return updateGame(updated)
     }
 
 
-
     fun finishVotingAndEliminate(): Deferred<GameRecord> {
+        if (game.phase != MultiplayerPhase.VOTE) {
+            throw IllegalStateException("No se puede finalizar la votación en este momento")
+        }
+
+        //val totalVoters = game.players.reduce { acc, player -> acc += player.votes }
         val totalVoters = getActivePlayers().size
         if (game.votes.size < totalVoters) {
             throw IllegalStateException("Todavía no votaron todos los jugadores")
@@ -264,7 +271,6 @@ class MultiplayerGameManager(
 
         return updateGame(updated)
     }
-
 
 
 }

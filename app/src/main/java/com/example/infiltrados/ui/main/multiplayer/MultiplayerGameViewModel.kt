@@ -1,7 +1,6 @@
 package com.example.infiltrados.ui.main.multiplayer
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -70,7 +69,6 @@ class MultiplayerGameViewModel : ViewModel() {
         }
 
 
-
         // Verificar si todos votaron
         if (newGameRecord.phase == MultiplayerPhase.VOTE &&
             newGameRecord.votes.size == activeCount &&
@@ -89,7 +87,6 @@ class MultiplayerGameViewModel : ViewModel() {
             _phase.send(getPhaseFromGameRecord(newGameRecord))
         }
     }
-
 
 
     var voteCounts by mutableStateOf<Map<String, Int>>(emptyMap())
@@ -173,7 +170,6 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
 
-
     fun joinGame(gameId: String, name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             isLoading = true
@@ -190,7 +186,6 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
-
 
 
     fun canStartGame(): Boolean {
@@ -214,6 +209,7 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
     fun resetGame() {
         viewModelScope.launch {
             try {
@@ -229,6 +225,7 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
     fun mrWhiteWin(player: Player?) {
         viewModelScope.launch {
             try {
@@ -244,8 +241,6 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
-
-
 
 
     fun startDiscussion() {
@@ -297,6 +292,7 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
     fun voteForPlayer(name: String) {
+        // TODO: Capturar el error
         viewModelScope.launch {
             try {
                 isLoading = true
@@ -329,7 +325,6 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
-
 
 
 }
