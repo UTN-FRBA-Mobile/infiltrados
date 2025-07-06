@@ -132,6 +132,14 @@ class MultiplayerGameManager(
         return updateGame(updated)
     }
 
+    fun getWordForPlayer(player: Player?): String {
+        return when (player?.role) {
+            Role.UNDERCOVER -> game.word2
+            Role.CIUDADANO -> game.word1
+            else -> {""}
+        }
+    }
+
 
     fun startDiscussion(): Deferred<GameRecord> {
         val playersShuffled = players.shuffled()
