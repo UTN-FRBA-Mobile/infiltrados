@@ -267,5 +267,38 @@ class MultiplayerGameViewModel : ViewModel() {
         }
     }
 
+    fun voteForPlayer(name: String) {
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                val updatedGame = gameManager?.voteForPlayer(name)?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error al votar: ${e.message}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun finishVoting() {
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                val updatedGame = gameManager?.finishVotingAndEliminate()?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error al finalizar la votación: ${e.message}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+
 
 }

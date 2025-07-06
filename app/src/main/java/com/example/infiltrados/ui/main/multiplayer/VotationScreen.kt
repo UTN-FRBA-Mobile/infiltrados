@@ -44,10 +44,11 @@ fun VotationScreen(
         return
     }
 
-    val activePlayers = mpViewModel.gameManager?.getActivePlayers().orEmpty()
-    val currentPlayer = mpViewModel.gameManager?.playerName ?: ""
-    val alreadyVoted = mpViewModel.votedPlayers.contains(currentPlayer)
-    var selectedPlayer by remember { mutableStateOf<String?>(null) }
+    val game = mpViewModel.game.value
+    val activePlayers = mpViewModel.gameManager?.getActivePlayers() ?: emptyList()
+    val currentPlayer = mpViewModel.gameManager?.getPlayerFromName()
+
+    var selectedPlayer by remember { mutableStateOf<Player?>(null) }
 
     Box(
         modifier = Modifier
@@ -57,49 +58,46 @@ fun VotationScreen(
     ) {
         AnimatedBackground()
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column {
             Text(
                 text = "Votación en curso",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(16.dp)
             )
 
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(activePlayers) { player ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ) {
-                        RadioButton(
-                            selected = selectedPlayer == player.name,
-                            onClick = {
-                                if (!alreadyVoted) selectedPlayer = player.name
-                            },
-                            enabled = !alreadyVoted
-                        )
-                        Text(
-                            text = player.name,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
+            activePlayers.forEach { player ->
+                Button(
+                    onClick = { selectedPlayer = player },
+                    modifier = Modifier
+                        .padding(vertical = 4.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text("Votar a ${player.name}")
+                }
+            }
+
+            selectedPlayer?.let {
+                Button(
+                    onClick = {
+                        mpViewModel.voteForPlayer(it.name)
+                    },
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text("Confirmar voto para ${it.name}")
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = {
-                    selectedPlayer?.let { mpViewModel.voteFor(it) }
-                },
-                enabled = selectedPlayer != null && !alreadyVoted,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(16.dp)
-            ) {
-                Text("Votar")
+            if (mpViewModel.isHost) {
+                Button(
+                    onClick = { mpViewModel.finishVoting() },
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text("Finalizar votación")
+                }
+            } else {
+                WaitingForHost()
             }
         }
     }

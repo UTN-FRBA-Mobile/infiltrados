@@ -227,4 +227,36 @@ class MultiplayerGameManager(
         return getWinners() == ""
     }
 
+    fun voteForPlayer(votedName: String): Deferred<GameRecord> {
+        val updatedVotes = game.votes + votedName
+
+        val updated = game.copy(votes = updatedVotes)
+
+        return updateGame(updated)
+    }
+
+    fun finishVotingAndEliminate(): Deferred<GameRecord> {
+        val totalVoters = getActivePlayers().size
+        if (game.votes.size < totalVoters) {
+            throw IllegalStateException("Todavía no votaron todos los jugadores")
+        }
+
+        // Conteo de votos
+        val voteCounts = game.votes.groupingBy { it }.eachCount()
+        val maxVotes = voteCounts.values.maxOrNull() ?: 0
+        val mostVoted = voteCounts.filterValues { it == maxVotes }.keys.random()
+
+        val eliminated = players.find { it.name == mostVoted }
+        eliminated?.role = Role.ELIMINATED
+
+        val updated = game.copy(
+            phase = MultiplayerPhase.PLAYER_ELIMINATED,
+            players = players,
+            votes = emptyList() // Reset para la siguiente ronda
+        )
+
+        return updateGame(updated)
+    }
+
+
 }

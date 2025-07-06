@@ -13,5 +13,6 @@ data class GameRecord(
     val phase: MultiplayerPhase,
     val word1: String,
     val word2: String,
-    val state: String
+    val state: String,
+    val votes: List<String> = emptyList()
 )
