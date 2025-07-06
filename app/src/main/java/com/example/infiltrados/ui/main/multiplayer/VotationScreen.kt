@@ -50,6 +50,9 @@ fun VotationScreen(
 
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
 
+    val currentPlayerName = currentPlayer?.name
+    val alreadyVoted = game?.voteBy?.contains(currentPlayerName) == true
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -65,9 +68,9 @@ fun VotationScreen(
                 modifier = Modifier.padding(16.dp)
             )
 
-            if (!mpViewModel.hasVoted) {
+            if (!alreadyVoted) {
                 activePlayers
-                    .filter { it.name != currentPlayer?.name }
+                    .filter { it.name != currentPlayerName }
                     .forEach { player ->
                         Button(
                             onClick = { selectedPlayer = player },
@@ -100,3 +103,4 @@ fun VotationScreen(
         }
     }
 }
+
