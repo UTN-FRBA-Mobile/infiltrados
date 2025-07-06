@@ -61,32 +61,38 @@ class MultiplayerGameViewModel : ViewModel() {
     private val gameUpdateCollector: (GameRecord) -> Unit = { newGameRecord ->
         _game.value = newGameRecord
 
-        val activeCount = gameManager?.getActivePlayers()?.size ?: 0
-
         if (newGameRecord.phase == MultiplayerPhase.VOTE) {
-            val alreadyVoted = newGameRecord.votedBy.contains(gameManager?.playerName)
-            hasVoted = alreadyVoted
-        }
+            val currentName = gameManager?.playerName
 
 
-        // Verificar si todos votaron
-        if (newGameRecord.phase == MultiplayerPhase.VOTE &&
-            newGameRecord.votes.size == activeCount &&
-            isHost // solo el host puede ejecutar la lógica de finalización
-        ) {
-            viewModelScope.launch {
-                try {
-                    finishVoting()
-                } catch (e: Exception) {
-                    _error.send("Error finalizando votación automáticamente: ${e.message}")
+            hasVoted = newGameRecord.players.any { it.voteBy.contains(currentName) }
+
+            if (isHost) {
+                val activeCount = gameManager?.getActivePlayers()?.size ?: 0
+                val totalVotes = newGameRecord.players.sumOf { it.votes }
+
+                if (totalVotes == activeCount) {
+                    viewModelScope.launch {
+                        try {
+                            finishVoting()
+                        } catch (e: Exception) {
+                            _error.send("Error finalizando votación automáticamente: ${e.message}")
+                        }
+                    }
                 }
             }
+        } else {
+
+            hasVoted = false
         }
 
         viewModelScope.launch(Dispatchers.IO) {
             _phase.send(getPhaseFromGameRecord(newGameRecord))
         }
     }
+
+
+
 
 
     var voteCounts by mutableStateOf<Map<String, Int>>(emptyMap())
@@ -298,7 +304,6 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
     fun voteForPlayer(name: String) {
-        // TODO: Capturar el error
         viewModelScope.launch {
             try {
                 isLoading = true
@@ -316,6 +321,8 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
 
+
+
     fun finishVoting() {
         viewModelScope.launch {
             try {
@@ -331,6 +338,7 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
 
 
 }
