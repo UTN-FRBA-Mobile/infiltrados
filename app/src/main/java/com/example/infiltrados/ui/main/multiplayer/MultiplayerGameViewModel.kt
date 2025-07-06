@@ -27,10 +27,12 @@ class MultiplayerGameViewModel : ViewModel() {
 
     var gameManager: MultiplayerGameManager? by mutableStateOf(null)
 
+    var numUndercover by mutableStateOf(1)
+    var includeMrWhite by mutableStateOf(true)
+
     val isHost: Boolean
         get() = gameManager?.isHost == true
 
-    // This is the StateFlow exposed to the UI
     private val _game = MutableStateFlow<GameRecord?>(null)
     val game: StateFlow<GameRecord?> = _game.asStateFlow()
 
@@ -44,22 +46,22 @@ class MultiplayerGameViewModel : ViewModel() {
         return record?.phase ?: MultiplayerPhase.LOBBY
     }
 
-    private val gameUpdateCollector = { newGameRecord: GameRecord ->
-        Log.d("GAMERECORDFLOW", "Game record updated: $newGameRecord")
+    // Lambda explícita con tipo
+    private val gameUpdateCollector: (GameRecord) -> Unit = { newGameRecord ->
         _game.value = newGameRecord
-        viewModelScope.launch(Dispatchers.IO) { _phase.send(getPhaseFromGameRecord(newGameRecord)) }
-        Unit
+        viewModelScope.launch(Dispatchers.IO) {
+            _phase.send(getPhaseFromGameRecord(newGameRecord))
+        }
     }
 
-
     fun createGame(name: String) {
-        Log.d("DEBUG", "Creating online game")
         isLoading = true
         viewModelScope.launch {
-            gameManager =
-                MultiplayerGameManager.Factory.createGame(name, scope = viewModelScope).await()
+            gameManager = MultiplayerGameManager.Factory.createGame(name, viewModelScope).await()
             isLoading = false
-            gameManager!!.gameRecordFlow.onEach(gameUpdateCollector).launchIn(viewModelScope)
+            gameManager!!.gameRecordFlow
+                .onEach { gameUpdateCollector(it) } // ← lambda explícita
+                .launchIn(viewModelScope)
         }
     }
 
@@ -72,10 +74,13 @@ class MultiplayerGameViewModel : ViewModel() {
     fun startGame(context: Context, spanish: Boolean) {
         viewModelScope.launch {
             isLoading = true
+            gameManager?.numUndercover = numUndercover
+            gameManager?.includeMrWhite = includeMrWhite
             gameManager!!.startGame(context, spanish).await()
             isLoading = false
         }
     }
+
 
 
     fun joinGame(gameId: String, name: String) {
@@ -84,10 +89,81 @@ class MultiplayerGameViewModel : ViewModel() {
             try {
                 gameManager =
                     MultiplayerGameManager.Factory.joinGame(gameId, name, viewModelScope).await()
-                gameManager!!.gameRecordFlow.onEach(gameUpdateCollector).launchIn(viewModelScope)
+                gameManager!!.gameRecordFlow
+                    .onEach { gameUpdateCollector(it) } // ← lambda explícita
+                    .launchIn(viewModelScope)
             } catch (e: Exception) {
-                Log.e("MultiplayerGameViewModel", "Error joining game", e)
                 _error.send("Error joining game: ${e.message}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+
+
+    fun canStartGame(): Boolean {
+        val playersCount = gameManager?.game?.players?.size ?: 0
+        val numCitizens = playersCount - numUndercover - if (includeMrWhite) 1 else 0
+        return playersCount >= 3 && (numUndercover > 0 || includeMrWhite) && numCitizens >= 2
+    }
+
+    fun startVoting() {
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                val updatedGame = gameManager?.startVoting()?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error starting voting: ${e.message}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    fun resetGame() {
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                val updatedGame = gameManager?.resetGame()?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error resetting game: ${e.message}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    fun mrWhiteWin(player: Player?) {
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                val updatedGame = gameManager?.mrWhiteWin(player)?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error: Mr. White no pudo ganar. ${e.message}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun eliminatePlayer(player: Player?) {
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                val updatedGame = gameManager?.eliminatePlayer(player)?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error eliminando jugador: ${e.message}")
             } finally {
                 isLoading = false
             }
@@ -96,66 +172,51 @@ class MultiplayerGameViewModel : ViewModel() {
 
     fun startDiscussion() {
         viewModelScope.launch {
-            isLoading = true
-            gameManager!!.startDiscussion().await()
-            isLoading = false
-        }
-    }
-
-    fun startVoting() {
-        viewModelScope.launch {
-            isLoading = true
-            gameManager!!.startVoting().await()
-            isLoading = false
-        }
-    }
-
-    fun startReveal() {
-        viewModelScope.launch {
-            isLoading = true
-            gameManager!!.startReveal().await()
-            isLoading = false
-        }
-    }
-
-    fun eliminatePlayer(player: Player?) {
-        viewModelScope.launch {
-            isLoading = true
-            gameManager!!.eliminatePlayer(player).await()
-            isLoading = false
-        }
-    }
-
-    fun mrWhiteGuess() {
-        viewModelScope.launch {
-            isLoading = true
-            gameManager!!.mrWhiteGuess().await()
-            isLoading = false
-        }
-    }
-
-    fun mrWhiteWin(mrWhite: Player?){
-        viewModelScope.launch {
-            isLoading = true
-            gameManager!!.mrWhiteWin(mrWhite).await()
-            isLoading = false
+            try {
+                isLoading = true
+                val updatedGame = gameManager?.startDiscussion()?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error iniciando discusión: ${e.message}")
+            } finally {
+                isLoading = false
+            }
         }
     }
 
     fun endGame() {
         viewModelScope.launch {
-            isLoading = true
-            gameManager!!.endGame().await()
-            isLoading = false
+            try {
+                isLoading = true
+                val updatedGame = gameManager?.endGame()?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error finalizando el juego: ${e.message}")
+            } finally {
+                isLoading = false
+            }
         }
     }
 
-    fun resetGame() {
+    fun mrWhiteGuess() {
         viewModelScope.launch {
-            isLoading = true
-            gameManager?.resetGame()?.await()
-            isLoading = false
+            try {
+                isLoading = true
+                val updatedGame = gameManager?.mrWhiteGuess()?.await()
+                if (updatedGame != null) {
+                    gameUpdateCollector(updatedGame)
+                }
+            } catch (e: Exception) {
+                _error.send("Error en el intento de adivinanza de Mr. White: ${e.message}")
+            } finally {
+                isLoading = false
+            }
         }
     }
+
 
 }
