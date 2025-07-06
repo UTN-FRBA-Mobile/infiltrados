@@ -28,8 +28,7 @@ import com.example.infiltrados.ui.main.components.WaitingForHost
 fun PlayerEliminatedScreen(
     mpViewModel: MultiplayerGameViewModel,
     onNavigateToPhase: (MultiplayerPhase) -> Unit
-)
-{
+) {
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
 
     if (mpViewModel.isLoading) {
@@ -37,12 +36,14 @@ fun PlayerEliminatedScreen(
         return
     }
 
+    val eliminated = mpViewModel.lastEliminatedPlayer
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(24.dp)
-    ){
+    ) {
         AnimatedBackground()
         Column(
             modifier = Modifier
@@ -52,17 +53,24 @@ fun PlayerEliminatedScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Jugador eliminado!",
+                text = "Jugador eliminado",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
-                //TODO: Implementar el nombre y rol del jugador eliminado
-                text = "Nombre: \n Rol: ",
-                style = MaterialTheme.typography.titleMedium
+                text = if (eliminated != null)
+                    "Nombre: ${eliminated.first}\nRol: ${eliminated.second.name}"
+                else
+                    "Nombre: -\nRol: -",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground
             )
-            if (mpViewModel.isHost){
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            if (mpViewModel.isHost) {
                 Button(
                     onClick = {
                         if (mpViewModel.gameManager?.gameContinues() == true)
@@ -76,8 +84,6 @@ fun PlayerEliminatedScreen(
             } else {
                 WaitingForHost()
             }
-
         }
     }
-
 }

@@ -68,5 +68,105 @@
             "commands": "npm install",
             "path": "functions/game"
         }
+    ],
+    "databases": [
+        {
+            "$id": "682a685b002e2cbbd56b",
+            "name": "infiltrados",
+            "enabled": true
+        }
+    ],
+    "collections": [
+        {
+            "$id": "682a68600026de12cf19",
+            "$permissions": [
+                "create(\"guests\")",
+                "read(\"guests\")",
+                "update(\"guests\")",
+                "delete(\"guests\")"
+            ],
+            "databaseId": "682a685b002e2cbbd56b",
+            "name": "games",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "players",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 32,
+                    "default": null
+                },
+                {
+                    "key": "state",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 255,
+                    "default": "{}"
+                },
+                {
+                    "key": "phase",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 25,
+                    "default": "LOBBY"
+                },
+                {
+                    "key": "word1",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 32,
+                    "default": null
+                },
+                {
+                    "key": "word2",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 32,
+                    "default": null
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "684262f0000c7c588c69",
+            "$permissions": [],
+            "databaseId": "682a685b002e2cbbd56b",
+            "name": "words",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "word1",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 64,
+                    "default": null
+                },
+                {
+                    "key": "word2",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 64,
+                    "default": null
+                },
+                {
+                    "key": "lang",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 2,
+                    "default": "es"
+                }
+            ],
+            "indexes": []
+        }
     ]
 }
