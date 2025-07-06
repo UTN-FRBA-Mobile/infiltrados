@@ -70,7 +70,7 @@
 
     <string name="player_eliminated_title">Player eliminated!</string>
     <string name="continue_button">Continue</string>
-    <string name="game_code">Game Code: %1$</string>
+    <string name="game_code">Game Code: %s</string>
     <string name="join_game">Join game</string>
     <string name="join">Join</string>
     <string name="delete_player">Remove</string>

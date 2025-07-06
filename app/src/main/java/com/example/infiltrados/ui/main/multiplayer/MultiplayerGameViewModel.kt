@@ -1,7 +1,6 @@
 package com.example.infiltrados.ui.main.multiplayer
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -64,11 +63,17 @@ class MultiplayerGameViewModel : ViewModel() {
     fun createGame(name: String) {
         isLoading = true
         viewModelScope.launch {
-            gameManager = MultiplayerGameManager.Factory.createGame(name, viewModelScope).await()
-            isLoading = false
-            gameManager!!.gameRecordFlow
-                .onEach { gameUpdateCollector(it) } // ← lambda explícita
-                .launchIn(viewModelScope)
+            try {
+                gameManager =
+                    MultiplayerGameManager.Factory.createGame(name, viewModelScope).await()
+                gameManager!!.gameRecordFlow
+                    .onEach { gameUpdateCollector(it) } // ← lambda explícita
+                    .launchIn(viewModelScope)
+            } catch (e: Exception) {
+                _error.send("Error creating game: ${e.message}")
+            } finally {
+                isLoading = false
+            }
         }
     }
 
@@ -89,7 +94,6 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
 
-
     fun joinGame(gameId: String, name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             isLoading = true
@@ -106,7 +110,6 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
-
 
 
     fun canStartGame(): Boolean {
@@ -130,6 +133,7 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
     fun resetGame() {
         viewModelScope.launch {
             try {
@@ -145,6 +149,7 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
     fun mrWhiteWin(player: Player?) {
         viewModelScope.launch {
             try {
