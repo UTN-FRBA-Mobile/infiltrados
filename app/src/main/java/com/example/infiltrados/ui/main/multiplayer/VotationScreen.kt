@@ -65,40 +65,38 @@ fun VotationScreen(
                 modifier = Modifier.padding(16.dp)
             )
 
-            activePlayers.forEach { player ->
-                Button(
-                    onClick = { selectedPlayer = player },
-                    modifier = Modifier
-                        .padding(vertical = 4.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text("Votar a ${player.name}")
-                }
-            }
+            if (!mpViewModel.hasVoted) {
+                activePlayers
+                    .filter { it.name != currentPlayer?.name }
+                    .forEach { player ->
+                        Button(
+                            onClick = { selectedPlayer = player },
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text("Votar a ${player.name}")
+                        }
+                    }
 
-            selectedPlayer?.let {
-                Button(
-                    onClick = {
-                        mpViewModel.voteForPlayer(it.name)
-                    },
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text("Confirmar voto para ${it.name}")
+                selectedPlayer?.let {
+                    Button(
+                        onClick = {
+                            mpViewModel.voteForPlayer(it.name)
+                        },
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text("Confirmar voto para ${it.name}")
+                    }
+                }
+            } else {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Esperando que todos voten...")
+                    CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            if (mpViewModel.isHost) {
-                Button(
-                    onClick = { mpViewModel.finishVoting() },
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text("Finalizar votación")
-                }
-            } else {
-                WaitingForHost()
-            }
         }
     }
 }

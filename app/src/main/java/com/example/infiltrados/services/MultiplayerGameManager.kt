@@ -229,11 +229,17 @@ class MultiplayerGameManager(
 
     fun voteForPlayer(votedName: String): Deferred<GameRecord> {
         val updatedVotes = game.votes + votedName
+        val updatedVotedBy = game.votedBy + playerName
 
-        val updated = game.copy(votes = updatedVotes)
+        val updated = game.copy(
+            votes = updatedVotes,
+            votedBy = updatedVotedBy
+        )
 
         return updateGame(updated)
     }
+
+
 
     fun finishVotingAndEliminate(): Deferred<GameRecord> {
         val totalVoters = getActivePlayers().size
@@ -252,11 +258,13 @@ class MultiplayerGameManager(
         val updated = game.copy(
             phase = MultiplayerPhase.PLAYER_ELIMINATED,
             players = players,
-            votes = emptyList() // Reset para la siguiente ronda
+            votes = emptyList(),
+            votedBy = emptyList()
         )
 
         return updateGame(updated)
     }
+
 
 
 }

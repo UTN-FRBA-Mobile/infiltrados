@@ -23,6 +23,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class MultiplayerGameViewModel : ViewModel() {
+
+    var hasVoted by mutableStateOf(false)
+        private set
+
     var isLoading by mutableStateOf(false)
         private set
 
@@ -57,10 +61,35 @@ class MultiplayerGameViewModel : ViewModel() {
 
     private val gameUpdateCollector: (GameRecord) -> Unit = { newGameRecord ->
         _game.value = newGameRecord
+
+        val activeCount = gameManager?.getActivePlayers()?.size ?: 0
+
+        if (newGameRecord.phase == MultiplayerPhase.VOTE) {
+            val alreadyVoted = newGameRecord.votedBy.contains(gameManager?.playerName)
+            hasVoted = alreadyVoted
+        }
+
+
+
+        // Verificar si todos votaron
+        if (newGameRecord.phase == MultiplayerPhase.VOTE &&
+            newGameRecord.votes.size == activeCount &&
+            isHost // solo el host puede ejecutar la lógica de finalización
+        ) {
+            viewModelScope.launch {
+                try {
+                    finishVoting()
+                } catch (e: Exception) {
+                    _error.send("Error finalizando votación automáticamente: ${e.message}")
+                }
+            }
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             _phase.send(getPhaseFromGameRecord(newGameRecord))
         }
     }
+
 
 
     var voteCounts by mutableStateOf<Map<String, Int>>(emptyMap())
@@ -271,6 +300,7 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
+                hasVoted = true
                 val updatedGame = gameManager?.voteForPlayer(name)?.await()
                 if (updatedGame != null) {
                     gameUpdateCollector(updatedGame)
@@ -282,6 +312,7 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
 
     fun finishVoting() {
         viewModelScope.launch {
