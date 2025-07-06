@@ -30,17 +30,14 @@ import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-
-
-
+import com.example.infiltrados.ui.main.LanguageFlag
 
 
 @Composable
 fun OnlineLobbyScreen(
     mpViewModel: MultiplayerGameViewModel,
     onBackToLobby: () -> Unit,
-    onNavigateToPhase: (MultiplayerPhase) -> Unit,
-    spanish: Boolean
+    onNavigateToPhase: (MultiplayerPhase) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -62,7 +59,7 @@ fun OnlineLobbyScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background) // Fondo visible
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -81,6 +78,23 @@ fun OnlineLobbyScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         if (mpViewModel.isHost) {
+            // Selector de idioma
+            Text(
+                text = stringResource(R.string.language_label),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                LanguageFlag(mpViewModel.spanish, true) {
+                    mpViewModel.spanish = true
+                }
+                LanguageFlag(mpViewModel.spanish, false) {
+                    mpViewModel.spanish = false
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             Text(
                 text = stringResource(R.string.undercover_label),
                 style = MaterialTheme.typography.titleLarge,
@@ -135,7 +149,7 @@ fun OnlineLobbyScreen(
                 isLoading = mpViewModel.isLoading,
                 enabled = canStart
             ) {
-                mpViewModel.startGame(context, spanish)
+                mpViewModel.startGame(context, mpViewModel.spanish)
             }
 
             if (!canStart) {

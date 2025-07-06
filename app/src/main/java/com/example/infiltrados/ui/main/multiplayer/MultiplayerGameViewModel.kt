@@ -43,6 +43,8 @@ class MultiplayerGameViewModel : ViewModel() {
     private val _error = Channel<String>()
     val error = _error.receiveAsFlow()
 
+    var spanish by mutableStateOf(true)
+
     var lastEliminatedPlayer by mutableStateOf<Pair<String, Role>?>(null)
         private set
 
