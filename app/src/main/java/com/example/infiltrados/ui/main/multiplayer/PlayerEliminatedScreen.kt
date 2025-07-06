@@ -53,7 +53,7 @@ fun PlayerEliminatedScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Jugador eliminado!",
+                text = "Jugador eliminado",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(16.dp),
                 color = MaterialTheme.colorScheme.onBackground
