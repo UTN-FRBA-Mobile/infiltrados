@@ -39,68 +39,66 @@ fun VotationScreen(
         return
     }
 
-    val game = mpViewModel.game.value
-    val activePlayers = mpViewModel.gameManager?.getActivePlayers() ?: emptyList()
-    val currentPlayer = mpViewModel.gameManager?.getPlayerFromName()
+    EliminationLobby(mpViewModel = mpViewModel) {
+        val game = mpViewModel.game.value
+        val activePlayers = mpViewModel.gameManager?.getActivePlayers() ?: emptyList()
+        val currentPlayer = mpViewModel.gameManager?.getPlayerFromName()
 
-    var selectedPlayer by remember { mutableStateOf<Player?>(null) }
+        var selectedPlayer by remember { mutableStateOf<Player?>(null) }
 
-    val currentPlayerName = currentPlayer?.name
-    val alreadyVoted = game?.voteBy?.contains(currentPlayerName) == true
+        val currentPlayerName = currentPlayer?.name
+        val alreadyVoted = game?.voteBy?.contains(currentPlayerName) == true
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        AnimatedBackground()
 
-        Column(
+        Box(
             modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(24.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Text(
-                text = stringResource(R.string.votation_prompt),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
+            AnimatedBackground()
 
-            Text(
-                text = stringResource(R.string.votation_instruction),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
+            Column {
+                Text(
+                    text = "Votación en curso",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(16.dp)
+                )
 
-            if (!alreadyVoted) {
-                activePlayers
-                    .filter { it.name != currentPlayerName }
-                    .forEach { player ->
-                        UndercoverButton(
-                            text = player.name,
-                            onClick = { selectedPlayer = player }
-                        )
+                if (!alreadyVoted) {
+                    activePlayers
+                        .filter { it.name != currentPlayerName }
+                        .forEach { player ->
+                            Button(
+                                onClick = { selectedPlayer = player },
+                                modifier = Modifier
+                                    .padding(vertical = 4.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                Text("Votar a ${player.name}")
+                            }
+                        }
+
+                    selectedPlayer?.let {
+                        Button(
+                            onClick = {
+                                mpViewModel.voteForPlayer(it.name)
+                            },
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text("Confirmar voto para ${it.name}")
+                        }
                     }
+                } else {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Esperando que todos voten...")
+                        CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
+                    }
+                }
 
-                selectedPlayer?.let {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    UndercoverButton(
-                        text = stringResource(R.string.votation_confirm_vote) + ":\n${it.name}",
-                        onClick = {mpViewModel.voteForPlayer(it.name)}
-                    )
-                }
-            } else {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(stringResource(R.string.votation_waiting_vote))
-                    CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
-                }
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
