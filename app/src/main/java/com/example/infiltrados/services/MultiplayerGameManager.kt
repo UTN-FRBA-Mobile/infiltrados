@@ -249,16 +249,22 @@ class MultiplayerGameManager(
         val activeRoles = activePlayers.map { it.role }
 
         val mrWhiteAlive = activeRoles.contains(Role.MR_WHITE)
-        val undercoverAlive = activeRoles.contains(Role.UNDERCOVER)
-        val citizensAlive = activeRoles.contains(Role.CIUDADANO)
+        val undercoverCount = activeRoles.count { it == Role.UNDERCOVER }
+        val citizenCount = activeRoles.count { it == Role.CIUDADANO }
 
         return when {
             activePlayers.size == 1 && activeRoles.contains(Role.MR_WHITE) -> Role.MR_WHITE.toString()
-            undercoverAlive && !mrWhiteAlive && !citizensAlive -> Role.UNDERCOVER.toString()
-            !undercoverAlive && !mrWhiteAlive && citizensAlive -> Role.CIUDADANO.toString()
+
+            !mrWhiteAlive && undercoverCount > 0 && citizenCount <= undercoverCount ->
+                Role.UNDERCOVER.toString()
+
+            !mrWhiteAlive && undercoverCount == 0 && citizenCount > 0 ->
+                Role.CIUDADANO.toString()
+
             else -> ""
         }
     }
+
 
     fun gameContinues(): Boolean {
         return getWinners() == ""
