@@ -123,6 +123,8 @@ fun WordRevealScreen(
                     onClick = { revealed = true }
                 )
 
+                Spacer(modifier = Modifier.height(40.dp))
+
                 if (mpViewModel.isHost) {
                     UndercoverButton(
                         onClick = { mpViewModel.startDiscussion() },
