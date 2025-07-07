@@ -90,9 +90,6 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
 
-
-
-
     var voteCounts by mutableStateOf<Map<String, Int>>(emptyMap())
         private set
 
@@ -131,6 +128,7 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
+
                 val updatedGame = gameManager?.eliminatePlayer(player)?.await()
                 if (updatedGame != null) {
                     gameUpdateCollector(updatedGame)
@@ -168,12 +166,17 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
     fun startGame(context: Context, spanish: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             isLoading = true
-            gameManager?.numUndercover = numUndercover
-            gameManager?.includeMrWhite = includeMrWhite
-            gameManager!!.startGame(context, spanish).await()
-            isLoading = false
+            try {
+                gameManager?.numUndercover = numUndercover
+                gameManager?.includeMrWhite = includeMrWhite
+                gameManager!!.startGame(context, spanish).await()
+            } catch (e: Exception) {
+                _error.send("Error starting game: ${e.message}")
+            } finally {
+                isLoading = false
+            }
         }
     }
 
@@ -203,13 +206,10 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
     fun startVoting() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 isLoading = true
-                val updatedGame = gameManager?.startVoting()?.await()
-                if (updatedGame != null) {
-                    gameUpdateCollector(updatedGame)
-                }
+                gameManager?.startVoting()?.await()
             } catch (e: Exception) {
                 _error.send("Error starting voting: ${e.message}")
             } finally {
@@ -219,13 +219,10 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
     fun resetGame() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 isLoading = true
-                val updatedGame = gameManager?.resetGame()?.await()
-                if (updatedGame != null) {
-                    gameUpdateCollector(updatedGame)
-                }
+                gameManager?.resetGame()?.await()
             } catch (e: Exception) {
                 _error.send("Error resetting game: ${e.message}")
             } finally {
@@ -238,10 +235,7 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                val updatedGame = gameManager?.mrWhiteWin(player)?.await()
-                if (updatedGame != null) {
-                    gameUpdateCollector(updatedGame)
-                }
+                gameManager?.mrWhiteWin(player)?.await()
             } catch (e: Exception) {
                 _error.send("Error: Mr. White no pudo ganar. ${e.message}")
             } finally {
@@ -255,10 +249,7 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                val updatedGame = gameManager?.startDiscussion()?.await()
-                if (updatedGame != null) {
-                    gameUpdateCollector(updatedGame)
-                }
+                gameManager?.startDiscussion()?.await()
             } catch (e: Exception) {
                 _error.send("Error iniciando discusión: ${e.message}")
             } finally {
@@ -271,10 +262,7 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                val updatedGame = gameManager?.endGame()?.await()
-                if (updatedGame != null) {
-                    gameUpdateCollector(updatedGame)
-                }
+                gameManager?.endGame()?.await()
             } catch (e: Exception) {
                 _error.send("Error finalizando el juego: ${e.message}")
             } finally {
@@ -287,10 +275,7 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                val updatedGame = gameManager?.mrWhiteGuess()?.await()
-                if (updatedGame != null) {
-                    gameUpdateCollector(updatedGame)
-                }
+                gameManager?.mrWhiteGuess()?.await()
             } catch (e: Exception) {
                 _error.send("Error en el intento de adivinanza de Mr. White: ${e.message}")
             } finally {
@@ -304,10 +289,7 @@ class MultiplayerGameViewModel : ViewModel() {
             try {
                 isLoading = true
                 hasVoted = true
-                val updatedGame = gameManager?.voteForPlayer(name)?.await()
-                if (updatedGame != null) {
-                    gameUpdateCollector(updatedGame)
-                }
+                gameManager?.voteForPlayer(name)?.await()
             } catch (e: Exception) {
                 _error.send("Error al votar: ${e.message}")
             } finally {
@@ -317,16 +299,11 @@ class MultiplayerGameViewModel : ViewModel() {
     }
 
 
-
-
     fun finishVoting() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                val updatedGame = gameManager?.finishVotingAndEliminate()?.await()
-                if (updatedGame != null) {
-                    gameUpdateCollector(updatedGame)
-                }
+                gameManager?.finishVotingAndEliminate()?.await()
             } catch (e: Exception) {
                 _error.send("Error al finalizar la votación: ${e.message}")
             } finally {
@@ -344,7 +321,6 @@ class MultiplayerGameViewModel : ViewModel() {
                 null
             }
         }
-
 
 
 

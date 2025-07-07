@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 fun WaitingForHost(){
     Column{
         Text(
-            text = stringResource(R.string.waiting_for_host),
+            text = stringResource(R.string.waiting_for_host_update),
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(16.dp)
         )
