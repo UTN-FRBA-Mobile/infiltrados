@@ -79,6 +79,7 @@ private fun App() {
 
             composable<Destination.OnlineLobby> {
                 OnlineLobbyScreen(
+                    navController = navController,
                     mpViewModel,
                     onBackToLobby = { navController.navigate("lobby") },
                     onNavigateToPhase
