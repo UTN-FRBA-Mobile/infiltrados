@@ -74,7 +74,6 @@ fun VotationScreen(
         val currentPlayer = mpViewModel.gameManager?.getPlayerFromName()
 
         var selectedPlayer by remember { mutableStateOf<Player?>(null) }
-        val selectedIndex = activePlayers.indexOf(selectedPlayer)
         val currentPlayerName = currentPlayer?.name
         val alreadyVoted = game?.voteBy?.contains(currentPlayerName) == true
         val context = LocalContext.current
@@ -105,27 +104,12 @@ fun VotationScreen(
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         activePlayers
                             .filter { it.name != currentPlayerName }
-                            .forEachIndexed { index, player ->
-                                val isSelected = selectedIndex == index
-                                val scale = remember { Animatable(1f) }
-                                val coroutineScope = rememberCoroutineScope()
-
-                                LaunchedEffect(isSelected) {
-                                    if (isSelected) {
-                                        coroutineScope.launch {
-                                            scale.animateTo(
-                                                targetValue = 1.1f,
-                                                animationSpec = tween(100, easing = LinearOutSlowInEasing)
-                                            )
-                                            scale.animateTo(1f, tween(100))
-                                        }
-                                    }
-                                }
+                            .forEach { player ->
+                                val isSelected = selectedPlayer == player
 
                                 Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .graphicsLayer(scaleX = scale.value, scaleY = scale.value)
                                         .clickable {
                                             clickSound.start()
                                             selectedPlayer = player
