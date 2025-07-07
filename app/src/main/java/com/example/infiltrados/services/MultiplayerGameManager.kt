@@ -7,6 +7,7 @@ import com.example.infiltrados.models.Player
 import com.example.infiltrados.models.Role
 import com.example.infiltrados.ui.main.Destination
 import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -59,8 +60,6 @@ class MultiplayerGameManager(
 
     val game: GameRecord
         get() = gameRecordFlow.value
-
-
 
 
     companion object Factory {
@@ -120,6 +119,9 @@ class MultiplayerGameManager(
     }
 
     fun kickPlayer(playerName: String): Deferred<GameRecord> {
+        if (!isHost || playerName == this.playerName)
+            return CompletableDeferred(game)
+        
         val newPlayers = game.players.filter { it.name != playerName }
         val updated = game.copy(players = newPlayers)
         return updateGame(updated)
@@ -269,8 +271,6 @@ class MultiplayerGameManager(
     }
 
 
-
-
     fun getWinners(): String {
         val activePlayers = getActivePlayers()
         val activeRoles = activePlayers.map { it.role }
@@ -354,6 +354,7 @@ class MultiplayerGameManager(
                     role = Role.ELIMINATED,
                     votes = 0
                 )
+
                 else -> player.copy(votes = 0)
             }
         }
@@ -371,10 +372,6 @@ class MultiplayerGameManager(
 
         return@async updatedGame
     }
-
-
-
-
 
 
 }

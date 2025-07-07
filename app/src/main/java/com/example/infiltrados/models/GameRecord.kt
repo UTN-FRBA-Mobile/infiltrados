@@ -16,5 +16,5 @@ data class GameRecord(
     val state: String,
     val votes: List<String> = emptyList(),
     val voteBy: List<String> = emptyList(),
-    val lastEliminated: Player
+    val lastEliminated: Player?
 )
