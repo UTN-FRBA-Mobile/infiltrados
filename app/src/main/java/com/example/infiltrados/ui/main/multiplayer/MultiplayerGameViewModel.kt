@@ -106,22 +106,23 @@ class MultiplayerGameViewModel : ViewModel() {
 
 
 
-    fun eliminatePlayer(player: Player?) {
+    fun eliminateMrWhite() {
         viewModelScope.launch {
             try {
                 isLoading = true
 
-                val updatedGame = gameManager?.eliminatePlayer(player)?.await()
+                val updatedGame = gameManager?.eliminateMrWhite()?.await()
                 if (updatedGame != null) {
                     gameUpdateCollector(updatedGame)
                 }
             } catch (e: Exception) {
-                _error.send("Error eliminando jugador: ${e.message}")
+                _error.send("Error eliminando a Mr. White: ${e.message}")
             } finally {
                 isLoading = false
             }
         }
     }
+
 
 
     fun createGame(name: String) {

@@ -234,15 +234,39 @@ class MultiplayerGameManager(
         return updateGame(updated)
     }
 
-    fun eliminatePlayer(player: Player?): Deferred<GameRecord> {
+    fun eliminateMrWhite(): Deferred<GameRecord> = scope.async {
 
-        players.find { it.name == player?.name }?.let {
-            it.role = Role.ELIMINATED
+        val mrWhitePlayer = getActivePlayers().find { it.role == Role.MR_WHITE }
+            ?: throw IllegalStateException("No se encontró al jugador Mr. White")
+
+
+        val originalMrWhite = mrWhitePlayer
+
+
+        val newPlayers = players.map { player ->
+            if (player.name == mrWhitePlayer.name) {
+                player.copy(
+                    isEliminated = true,
+                    role = Role.ELIMINATED,
+                    votes = 0
+                )
+            } else {
+                player
+            }
         }
 
-        val updated = game.copy(phase = MultiplayerPhase.PLAYER_ELIMINATED, players = players)
-        return updateGame(updated)
+        val updatedGame = game.copy(
+            phase = MultiplayerPhase.PLAYER_ELIMINATED,
+            players = newPlayers,
+            lastEliminated = originalMrWhite
+        )
+
+        players = newPlayers
+
+        return@async updateGame(updatedGame).await()
     }
+
+
 
     fun getWinners(): String {
         val activePlayers = getActivePlayers()
@@ -309,13 +333,20 @@ class MultiplayerGameManager(
         val maxVotes = game.players.maxOfOrNull { it.votes } ?: 0
         val candidates = game.players.filter { it.votes == maxVotes && !it.isEliminated }
         val eliminated = candidates.randomOrNull()
+            ?: throw IllegalStateException("No se pudo determinar al eliminado")
 
+        // 🔍 Guardamos su rol original antes de modificarlo
+        val originalRole = eliminated.role
 
-        val originalEliminated = eliminated ?: throw IllegalStateException("No se pudo determinar al eliminado")
+        // Si era MR.WHITE, cambiamos de fase a su guess antes de eliminar
+        if (originalRole == Role.MR_WHITE) {
+            return@async mrWhiteGuess().await()
+        }
 
+        // 🔁 Continuar con eliminación normal
         val newPlayers = game.players.map { player ->
             when (player.name) {
-                originalEliminated.name -> player.copy(
+                eliminated.name -> player.copy(
                     isEliminated = true,
                     role = Role.ELIMINATED,
                     votes = 0
@@ -328,7 +359,7 @@ class MultiplayerGameManager(
             phase = MultiplayerPhase.PLAYER_ELIMINATED,
             players = newPlayers,
             voteBy = emptyList(),
-            lastEliminated = originalEliminated
+            lastEliminated = eliminated
         )
 
         val updatedGame = updateGame(updated).await()
@@ -337,6 +368,7 @@ class MultiplayerGameManager(
 
         return@async updatedGame
     }
+
 
 
 
