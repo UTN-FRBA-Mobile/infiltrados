@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.MaterialTheme
@@ -36,11 +37,9 @@ import com.example.infiltrados.ui.main.components.UndercoverButton
 @Composable
 fun LobbyScreen(
     navController: NavController,
-    onCreateMPGame: (name: String) -> Unit,
-    onJoinMPGame: (gameId: String, name: String) -> Unit
+    onCreateMPGame: (name: String) -> Unit
 ) {
     var isNameDialogOpen by remember { mutableStateOf(false) }
-    var gameId by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -80,16 +79,18 @@ fun LobbyScreen(
                 backgroundColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 onClick = {
-                    gameId = ""
                     isNameDialogOpen = true
                 },
                 icon = Icons.Default.Cloud
             )
 
-            JoinGameWidget { gId ->
-                gameId = gId
-                isNameDialogOpen = true
-            }
+            UndercoverButton(
+                text = stringResource(R.string.join_game_title),
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                onClick = { navController.navigate("join_game") },
+                icon = Icons.Default.GroupAdd
+            )
 
             UndercoverButton(
                 text = stringResource(R.string.view_rules),
@@ -100,39 +101,29 @@ fun LobbyScreen(
             )
         }
     }
-
     if (isNameDialogOpen) {
         PickNameDialog(
             onDismissRequest = { isNameDialogOpen = false },
             onConfirmation = { name ->
                 isNameDialogOpen = false
-                if (gameId.isNotEmpty()) {
-                    onJoinMPGame(gameId, name)
-                } else {
-                    onCreateMPGame(name)
-                }
+                onCreateMPGame(name)
             }
         )
     }
+
 }
 
 
 @Preview(name = "Lobby Screen - Default View", showBackground = true)
 @Composable
 fun LobbyScreenPreview_Default() {
-    // For previews, you often don't need a fully functional NavController,
-    // but rememberNavController can provide a basic one if your Composable relies on it.
-    // However, since LobbyScreen itself doesn't observe NavController state for its UI,
-    // a simpler fake would also work. For this example, rememberNavController is fine.
     val navController = rememberNavController()
 
     LobbyScreen(
         navController = navController,
         onCreateMPGame = { name ->
             println("Preview: onCreateMPGame called with name: $name")
-        },
-        onJoinMPGame = { gameId, name ->
-            println("Preview: onJoinMPGame called with gameId: $gameId, name: $name")
         }
     )
 }
+

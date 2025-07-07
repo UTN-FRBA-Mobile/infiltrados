@@ -30,6 +30,7 @@ import com.example.infiltrados.ui.main.RulesScreen
 import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
 import com.example.infiltrados.ui.main.getOnNavigateToPhase
+import com.example.infiltrados.ui.main.multiplayer.JoinGameScreen
 import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 import com.example.infiltrados.ui.main.multiplayer.ObserveMultiplayerError
 import com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen.OnlineLobbyScreen
@@ -65,10 +66,6 @@ private fun App() {
                 navController,
                 onCreateMPGame = { name ->
                     mpViewModel.createGame(name)
-                    navController.navigate(route = Destination.OnlineLobby)
-                },
-                onJoinMPGame = { gameId, name ->
-                    mpViewModel.joinGame(gameId, name)
                     navController.navigate(route = Destination.OnlineLobby)
                 })
         }
@@ -197,6 +194,18 @@ private fun App() {
         composable("rules") {
             RulesScreen(navController)
         }
+
+        composable("join_game") {
+            JoinGameScreen(
+                navController = navController,
+                onJoinMPGame = { gameId, name ->
+                    mpViewModel.joinGame(gameId, name)
+                    navController.navigate(route = Destination.OnlineLobby)
+                }
+            )
+        }
+
+
 
     }
 }

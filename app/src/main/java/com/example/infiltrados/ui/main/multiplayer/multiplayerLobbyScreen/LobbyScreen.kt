@@ -1,5 +1,6 @@
 package com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +31,11 @@ import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.text.style.TextAlign
 import com.example.infiltrados.ui.main.LanguageFlag
+import com.example.infiltrados.utils.generateQRCodeBitmap
 
 
 @Composable
@@ -78,6 +83,11 @@ fun OnlineLobbyScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         if (mpViewModel.isHost) {
+            // Mostrar QR para compartir el gameId
+            gameRecord?.let { record ->
+                GameQRCode(record.id)
+            }
+            Spacer(modifier = Modifier.height(32.dp))
             // Selector de idioma
             Text(
                 text = stringResource(R.string.language_label),
@@ -166,5 +176,33 @@ fun OnlineLobbyScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
+    }
+}
+
+@Composable
+fun GameQRCode(gameId: String) {
+    val qrBitmap = remember(gameId) { generateQRCodeBitmap(gameId) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.share_game_qr),
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center
+        )
+
+        Image(
+            bitmap = qrBitmap.asImageBitmap(),
+            contentDescription = "Código QR para unirse",
+            modifier = Modifier.size(200.dp)
+        )
+
+        Text(
+            text = gameId,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }

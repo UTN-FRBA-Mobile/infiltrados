@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.infiltrados"
-        minSdk = 35
+        minSdk = 30
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -65,5 +65,8 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.6.0")
 
     implementation("io.appwrite:sdk-for-android:7.0.1")
+
+    implementation("com.google.zxing:core:3.5.3")
+
     testImplementation(kotlin("test"))
 }

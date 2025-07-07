@@ -75,5 +75,15 @@
     <string name="join">Join</string>
     <string name="delete_player">Remove</string>
     <string name="waiting_for_host">Waiting for the host to start the game</string>
+
+    <string name="join_game_title">Join a Game</string>
+    <string name="enter_game_code">Enter game code</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="or_scan_qr">Or scan a QR code</string>
+    <string name="scan_qr_code">Scan QR Code</string>
+
+    <!-- res/values-en/strings.xml -->
+    <string name="share_game_qr">Show this QR so others can join the game</string>
+
 </resources>
 
