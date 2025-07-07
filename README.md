@@ -23,3 +23,6 @@ Infiltrados es un juego casual para grupos de 3 a 15 personas. A cada jugador se
 🕵️ ¡Descargalo y empezá a jugar!
 
 
+|   |   |   |   |   |
+|------------|------------|------------|------------|------------|
+| <img src="screenshots/screenshot_1.jpeg" width="150"/> | <img src="screenshots/screenshot_2.jpeg" width="150"/> | <img src="screenshots/screenshot_3.jpeg" width="150"/> | <img src="screenshots/screenshot_4.jpeg" width="150"/> | <img src="screenshots/screenshot_5.jpeg" width="150"/> |
