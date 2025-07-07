@@ -1,32 +1,25 @@
-# Mr. White 
+# 🕵️ Infiltrados - Juego de Roles Secretos
 
-**Mr. White** es un juego de roles ocultos pensado para jugar en grupo. Cada partida ofrece una experiencia de deducción, engaño y estrategia, donde los jugadores deben usar su ingenio para descubrir quiénes mienten... o para ocultar su verdadera identidad.
+## 🧑‍💻 Descripción breve:
+> Un juego de roles ocultos para adivinar quién miente. ¡Perfecto para jugar en grupo!
 
-## ¿En qué consiste el juego?
+## 📄 Descripción completa:
+🎉 ¡Reuní a tus amigos y descubrí quién es el infiltrado!
 
-Al comenzar una partida, a cada jugador se le asigna un rol secreto:
+Infiltrados es un juego casual para grupos de 3 a 15 personas. A cada jugador se le asigna una palabra... pero uno o más de ellos recibirán una palabra diferente. Mediante charlas, preguntas y deducción, ¡deberás identificar al infiltrado antes de que te descubran!
 
-- **Ciudadano**: recibe una palabra secreta, compartida con otros ciudadanos.
-- **Undercover**: recibe una palabra similar, pero no idéntica a la de los ciudadanos.
-- **Mr. White**: no recibe ninguna palabra.
+🎮 Modos de juego:
+- 👥 Offline: todos juegan desde un solo celular
+- 📱 Online: conectate escaneando un código QR entre dispositivos
 
-En cada ronda, los jugadores dan una pista relacionada con su palabra, tratando de no ser descubiertos. Luego se vota para eliminar a alguien que parezca sospechoso. El juego avanza hasta que se cumpla alguna de las condiciones de victoria.
+🔑 Características:
+- Animaciones divertidas al revelar tu palabra
+- Flujo intuitivo para unirse a partidas
+- Pantalla QR generada automáticamente para compartir
+- Sistema de nombres personalizados
 
-## Condiciones de victoria
+¿Tenés lo necesario para ocultar tu palabra... o descubrir al impostor?
 
-- **Gana Mr. White** si:
-  - Es eliminado y adivina correctamente la palabra secreta.
-  - Queda como el único jugador en pie.
-
-- **Ganan los Undercover** si:
-  - Son los únicos jugadores restantes (sin ciudadanos ni Mr. White).
-
-- **Ganan los Ciudadanos** si:
-  - Eliminan a todos los Undercover y a Mr. White.
-  - Al menos un ciudadano sigue en juego.
-
-## Sobre el proyecto
-
-Este proyecto recrea digitalmente el clásico juego de mesa adaptado al entorno móvil. El objetivo fue crear una experiencia fluida, entretenida y accesible para disfrutar partidas rápidas entre amigos.
+🕵️ ¡Descargalo y empezá a jugar!
 
 
