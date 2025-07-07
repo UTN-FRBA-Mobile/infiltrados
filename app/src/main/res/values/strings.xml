@@ -76,6 +76,8 @@
 
     <string name="end_game_title">¡Fin del juego!</string>
     <string name="end_game_winners">Ganadores: %1$s</string>
+    <string name="end_game_win">Ganaste!</string>
+    <string name="end_game_loss">Perdiste!</string>
     <string name="play_again">Jugar de nuevo</string>
 
     <string name="player_eliminated_title">¡Jugador eliminado!</string>

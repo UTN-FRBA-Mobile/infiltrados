@@ -59,9 +59,25 @@ fun EndGameScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            val winners = mpViewModel.gameManager?.getWinners().toString()
             Text(
-                text = stringResource(R.string.end_game_winners, mpViewModel.gameManager?.getWinners().toString()),
+                text = stringResource(R.string.end_game_winners, winners),
                 style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            val playerRole = mpViewModel.gameManager?.getPlayerFromName()?.role.toString()
+            var result = if (playerRole == winners) {
+                stringResource(R.string.end_game_win)
+            } else {
+                stringResource(R.string.end_game_loss)
+            }
+
+            Text(
+                text = result /* + "\n" + playerRole*/,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
 

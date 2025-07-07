@@ -70,6 +70,8 @@
 
     <string name="end_game_title">Game Over!</string>
     <string name="end_game_winners">Winners: %1$s</string>
+    <string name="end_game_win">You Win!</string>
+    <string name="end_game_loss">You Loose!</string>
     <string name="play_again">Play again</string>
 
     <string name="player_eliminated_title">Player eliminated!</string>
