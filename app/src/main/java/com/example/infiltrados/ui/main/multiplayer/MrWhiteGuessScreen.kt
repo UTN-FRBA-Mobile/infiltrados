@@ -110,7 +110,7 @@ fun MrWhiteGuessScreen(
                         if (mpViewModel.gameManager?.isMrWhiteGuessCorrect(word_guess) == true) {
                             mpViewModel.mrWhiteWin(player)
                         } else {
-                            mpViewModel.eliminatePlayer(player)
+                            mpViewModel.eliminateMrWhite()
                         }
                     },
                     text = stringResource(R.string.guess_button),
@@ -134,7 +134,7 @@ fun MrWhiteGuessScreen(
             TimerButton(seconds,secondsRemaining)
 
             if (mpViewModel.isHost && secondsRemaining <= 0) {
-                mpViewModel.eliminatePlayer(player)
+                mpViewModel.eliminateMrWhite()
             }
         }
     }
