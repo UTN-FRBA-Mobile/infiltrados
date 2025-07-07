@@ -99,7 +99,7 @@ fun VotationScreen(
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
                 )
-
+//n
                 if (!alreadyVoted) {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         activePlayers
