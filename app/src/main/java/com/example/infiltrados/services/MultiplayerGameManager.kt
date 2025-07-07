@@ -91,7 +91,13 @@ class MultiplayerGameManager(
 
     private fun updateGame(updatedGame: GameRecord): Deferred<GameRecord> {
         return scope.async(Dispatchers.IO) {
-            AppwriteService.updateGame(updatedGame)
+            try {
+                AppwriteService.updateGame(updatedGame)
+            } catch (e: Exception) {
+                Log.e("MultiplayerGameManager", "Error updating game", e)
+                throw e
+            }
+
         }
     }
 
