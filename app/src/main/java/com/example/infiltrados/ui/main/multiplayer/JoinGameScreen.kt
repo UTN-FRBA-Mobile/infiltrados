@@ -1,10 +1,10 @@
 package com.example.infiltrados.ui.main.multiplayer
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,21 +15,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,35 +36,41 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.infiltrados.R
-import com.example.infiltrados.ui.main.components.AnimatedBackground
 import com.example.infiltrados.ui.main.components.DisabledButton
+import com.example.infiltrados.ui.main.components.PickNameDialog
 import com.example.infiltrados.ui.main.components.UndercoverButton
 
 @Composable
 fun JoinGameScreen(
     navController: NavController,
-    onJoinMPGame: (code: String, name: String) -> Unit
+    onJoinMPGame: (String, String) -> Unit,
+    prefilledCode: String = ""
 ) {
     val context = LocalContext.current
-    var name by remember { mutableStateOf("") }
-    var code by remember { mutableStateOf("") }
-    val avatar = "😎" // TODO: generarlo random
+    var gameCode by rememberSaveable { mutableStateOf("") }
+    var showNameDialog by remember { mutableStateOf(false) }
+
+    // 👉 Si viene el código escaneado, lo cargamos automáticamente
+    LaunchedEffect(prefilledCode) {
+        if (prefilledCode.isNotBlank()) {
+            Log.d("JOIN_DEBUG", "Código recibido desde QR: $prefilledCode")
+            gameCode = prefilledCode
+            showNameDialog = true
+        }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        AnimatedBackground()
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 32.dp),
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -87,10 +92,10 @@ fun JoinGameScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             TextField(
-                value = code,
-                onValueChange = { code = it },
+                value = gameCode,
+                onValueChange = { gameCode = it },
+                label = { Text(stringResource(R.string.enter_game_code)) },
                 singleLine = true,
-                placeholder = { Text(stringResource(R.string.enter_game_code)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp)),
@@ -105,58 +110,41 @@ fun JoinGameScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text(stringResource(R.string.enter_your_name)) },
-                leadingIcon = {
-                    Text(avatar, fontSize = 20.sp)
-                },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    focusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-                    unfocusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-                    focusedTextColor = MaterialTheme.colorScheme.onBackground
-                )
-            )
-
             Spacer(modifier = Modifier.height(24.dp))
 
             DisabledButton(
                 text = stringResource(R.string.join),
                 icon = Icons.Default.Check,
-                onClick = { onJoinMPGame(code.trim(), name.trim()) },
-                enabled = code.isNotBlank() && name.isNotBlank()
+                onClick = { showNameDialog = true },
+                enabled = gameCode.isNotBlank()
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             Text(
                 text = stringResource(R.string.or_scan_qr),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             UndercoverButton(
-                text = stringResource(R.string.scan_qr_code),
+                onClick = { navController.navigate("qr_scanner") },
                 icon = Icons.Default.QrCodeScanner,
-                onClick = {
-                    navController.navigate("qr_scanner")
+                text = stringResource(R.string.scan_qr_code)
+            )
+        }
+
+        // 👉 Diálogo para ingresar nombre después del QR o botón
+        if (showNameDialog) {
+            PickNameDialog(
+                onDismissRequest = { showNameDialog = false },
+                onConfirmation = { name ->
+                    showNameDialog = false
+                    onJoinMPGame(gameCode.trim(), name.trim())
                 }
             )
         }
     }
 }
-

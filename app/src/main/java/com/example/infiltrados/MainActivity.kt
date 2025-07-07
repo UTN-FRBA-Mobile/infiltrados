@@ -12,10 +12,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.infiltrados.services.GameManager
 import com.example.infiltrados.services.WordLoader
 import com.example.infiltrados.ui.main.Destination
@@ -26,6 +28,7 @@ import com.example.infiltrados.ui.main.MrWhiteGuessScreen
 import com.example.infiltrados.ui.main.MultiplayerRoutes
 import com.example.infiltrados.ui.main.PlayerEliminatedScreen
 import com.example.infiltrados.ui.main.PlayerInputScreen
+import com.example.infiltrados.ui.main.QrScannerScreen
 import com.example.infiltrados.ui.main.RulesScreen
 import com.example.infiltrados.ui.main.VotationScreen
 import com.example.infiltrados.ui.main.WordRevealScreen
@@ -200,7 +203,30 @@ private fun App() {
                 navController = navController,
                 onJoinMPGame = { gameId, name ->
                     mpViewModel.joinGame(gameId, name)
-                    navController.navigate(route = Destination.OnlineLobby)
+                    navController.navigate(Destination.OnlineLobby)
+                }
+            )
+        }
+
+        composable("qr_scanner") {
+            QrScannerScreen(navController = navController) { scannedGameId ->
+                navController.navigate("join_game_with_code/$scannedGameId") {
+                    popUpTo("join_game") { inclusive = true } // Limpia la pila si querés evitar volver atrás
+                }
+            }
+        }
+
+        composable(
+            "join_game_with_code/{gameId}",
+            arguments = listOf(navArgument("gameId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val scannedCode = backStackEntry.arguments?.getString("gameId") ?: ""
+            JoinGameScreen(
+                navController = navController,
+                prefilledCode = scannedCode,
+                onJoinMPGame = { gameId, name ->
+                    mpViewModel.joinGame(gameId, name)
+                    navController.navigate(Destination.OnlineLobby)
                 }
             )
         }
