@@ -102,9 +102,12 @@ object AppwriteService {
                         "databases.$databaseId.collections.$gamesColId.documents.$id",
                         payloadType = GameRecord::class.java,
                         callback = { it ->
-                            // Callback will be executed on all account events.
                             Log.d("Realtime", it.payload.toString())
-                            trySend(it.payload)
+                            val result = trySend(it.payload)
+                            if (result.isFailure) Log.d(
+                                "Appwrite",
+                                "error emiting update: $result"
+                            )
                         })
                 awaitClose {
                     Log.d("Realtime", "Closing subscription")
@@ -119,6 +122,7 @@ object AppwriteService {
 
     suspend fun updateGame(game: GameRecord): GameRecord {
         Log.d("Appwrite", "Updating game with ID: ${game.id}")
+        Log.d("Appwrite", "$game")
         val updated = databases.updateDocument(
             databaseId,
             gamesColId,

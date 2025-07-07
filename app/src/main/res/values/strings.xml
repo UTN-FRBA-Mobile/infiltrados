@@ -58,11 +58,12 @@
     <string name="create_online">Crear juego online</string>
     <string name="ready">Listo</string>
     <string name="pick_name">Ingresa tu nombre</string>
-    <string name="game_code">Codigo del juego</string>
+    <string name="game_code">Codigo del juego:</string>
     <string name="join_game">Unirse a un juego</string>
     <string name="join">Unirse</string>
     <string name="delete_player">Eliminar</string>
     <string name="waiting_for_host">Esperando a que el anfitrion comience el juego</string>
+    <string name="waiting_for_host_update">Esperando a que el anfitrion avance con el juego</string>
 
     <string name="mr_white_title">¡Mr. White fue descubierto!</string>
     <string name="mr_white_instruction">Si adivinás la palabra de los civiles, ¡ganás la partida!</string>
@@ -75,6 +76,8 @@
 
     <string name="player_eliminated_title">¡Jugador eliminado!</string>
     <string name="continue_button">Continuar</string>
+    <string name="share_game_code">Enviar codigo del juego</string>
+    <string name="join_my_game">¡Unete a mi juego de Infiltrados! El codigo es: %s</string>
 
     <string name="join_game_title">Unirse a un juego</string>
     <string name="enter_game_code">Ingresá el código de juego</string>

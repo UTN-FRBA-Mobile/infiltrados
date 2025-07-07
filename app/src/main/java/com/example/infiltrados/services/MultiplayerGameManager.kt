@@ -91,7 +91,13 @@ class MultiplayerGameManager(
 
     private fun updateGame(updatedGame: GameRecord): Deferred<GameRecord> {
         return scope.async(Dispatchers.IO) {
-            AppwriteService.updateGame(updatedGame)
+            try {
+                AppwriteService.updateGame(updatedGame)
+            } catch (e: Exception) {
+                Log.e("MultiplayerGameManager", "Error updating game", e)
+                throw e
+            }
+
         }
     }
 
@@ -127,14 +133,27 @@ class MultiplayerGameManager(
             phase = MultiplayerPhase.REVEAL,
             players = players,
             word1 = randomPair.word1,
-            word2 = randomPair.word2
+            word2 = randomPair.word2,
+            voteBy = emptyList(),
+            lastEliminated = Player("", Role.CIUDADANO)
         )
         return updateGame(updated)
     }
 
+    fun getWordForPlayer(player: Player?): String {
+        return when (player?.role) {
+            Role.UNDERCOVER -> game.word2
+            Role.CIUDADANO -> game.word1
+            else -> {
+                ""
+            }
+        }
+    }
+
 
     fun startDiscussion(): Deferred<GameRecord> {
-        val updated = game.copy(phase = MultiplayerPhase.DISCUSSION)
+        val playersShuffled = players.shuffled()
+        val updated = game.copy(phase = MultiplayerPhase.DISCUSSION, players = playersShuffled)
         return updateGame(updated)
     }
 
@@ -232,11 +251,19 @@ class MultiplayerGameManager(
             throw IllegalStateException("No se puede votar en este momento")
         }
 
-        val updatedPlayers =
-            game.players.map { player -> if (player.name === votedName) player.copy(votes = player.votes + 1) else player }
+        val voterName = playerName
+
+        val updatedPlayers = game.players.map { player ->
+            if (player.name == votedName) {
+                player.copy(votes = player.votes + 1)
+            } else {
+                player
+            }
+        }
 
         val updated = game.copy(
-            players = updatedPlayers
+            players = updatedPlayers,
+            voteBy = game.voteBy + voterName
         )
 
         return updateGame(updated)
@@ -248,25 +275,34 @@ class MultiplayerGameManager(
             throw IllegalStateException("No se puede finalizar la votación en este momento")
         }
 
-        //val totalVoters = game.players.reduce { acc, player -> acc += player.votes }
-        val totalVoters = getActivePlayers().size
-        if (game.votes.size < totalVoters) {
+        val activePlayers = getActivePlayers()
+        val totalVotes = game.players.sumOf { it.votes }
+
+        if (totalVotes < activePlayers.size) {
             throw IllegalStateException("Todavía no votaron todos los jugadores")
         }
 
-        // Conteo de votos
-        val voteCounts = game.votes.groupingBy { it }.eachCount()
-        val maxVotes = voteCounts.values.maxOrNull() ?: 0
-        val mostVoted = voteCounts.filterValues { it == maxVotes }.keys.random()
+        val maxVotes = game.players.maxOfOrNull { it.votes } ?: 0
+        val candidates = game.players.filter { it.votes == maxVotes && !it.isEliminated }
+        val eliminated = candidates.randomOrNull()
 
-        val eliminated = players.find { it.name == mostVoted }
-        eliminated?.role = Role.ELIMINATED
+        val newPlayers = game.players.map { player ->
+            when (player.name) {
+                eliminated?.name -> player.copy(
+                    isEliminated = true,
+                    role = Role.ELIMINATED,
+                    votes = 0
+                )
+
+                else -> player.copy(votes = 0)
+            }
+        }
 
         val updated = game.copy(
             phase = MultiplayerPhase.PLAYER_ELIMINATED,
-            players = players,
-            votes = emptyList(),
-            votedBy = emptyList()
+            players = newPlayers,
+            voteBy = emptyList(),
+            lastEliminated = eliminated ?: throw IllegalStateException("No se pudo determinar al eliminado")
         )
 
         return updateGame(updated)

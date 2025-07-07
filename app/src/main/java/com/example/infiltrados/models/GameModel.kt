@@ -59,7 +59,8 @@ data class Player(
     var role: Role,           // Rol asignado (Ciudadano, Undercover, Mr.White)
     var votes: Int = 0,
     var isEliminated: Boolean = false, // Indica si el jugador fue eliminado
-    val emoji: String = ""
+    val emoji: String = "",
+    val voteBy : List<String> = emptyList()
 )
 
 // Posibles roles de los jugadores

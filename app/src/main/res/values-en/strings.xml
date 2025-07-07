@@ -75,6 +75,9 @@
     <string name="join">Join</string>
     <string name="delete_player">Remove</string>
     <string name="waiting_for_host">Waiting for the host to start the game</string>
+    <string name="waiting_for_host_update">Waiting for the host to continue the game</string>
+    <string name="share_game_code">Share game code</string>
+    <string name="join_my_game">Join my Undercover game! The code is: %s</string>
 
     <string name="join_game_title">Join a Game</string>
     <string name="enter_game_code">Enter game code</string>

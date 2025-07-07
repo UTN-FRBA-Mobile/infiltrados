@@ -58,12 +58,13 @@ fun PlayerEliminatedScreen(
                 modifier = Modifier.padding(16.dp),
                 color = MaterialTheme.colorScheme.onBackground
             )
+
             Spacer(modifier = Modifier.height(32.dp))
+
             Text(
-                text = if (eliminated != null)
-                    "Nombre: ${eliminated.first}\nRol: ${eliminated.second.name}"
-                else
-                    "Nombre: -\nRol: -",
+                text = eliminated?.let {
+                    "Nombre: ${it.first}\nRol: ${it.second.name}"
+                } ?: "Nombre: -\nRol: -",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
