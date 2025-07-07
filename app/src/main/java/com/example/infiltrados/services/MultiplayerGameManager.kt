@@ -76,7 +76,7 @@ class MultiplayerGameManager(
             playerName: String,
             scope: CoroutineScope
         ): Deferred<MultiplayerGameManager> {
-            return scope.async {
+            return scope.async(Dispatchers.IO) {
                 AppwriteService.joinGame(gameId, playerName)
                 val game = AppwriteService.getGame(gameId)
                 val gameSuscription = AppwriteService.subscribe(gameId)
@@ -137,7 +137,9 @@ class MultiplayerGameManager(
         return when (player?.role) {
             Role.UNDERCOVER -> game.word2
             Role.CIUDADANO -> game.word1
-            else -> {""}
+            else -> {
+                ""
+            }
         }
     }
 
@@ -261,12 +263,6 @@ class MultiplayerGameManager(
     }
 
 
-
-
-
-
-
-
     fun finishVotingAndEliminate(): Deferred<GameRecord> {
         if (game.phase != MultiplayerPhase.VOTE) {
             throw IllegalStateException("No se puede finalizar la votación en este momento")
@@ -290,6 +286,7 @@ class MultiplayerGameManager(
                     role = Role.ELIMINATED,
                     votes = 0
                 )
+
                 else -> player.copy(votes = 0)
             }
         }
@@ -302,9 +299,6 @@ class MultiplayerGameManager(
 
         return updateGame(updated)
     }
-
-
-
 
 
 }
