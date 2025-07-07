@@ -79,6 +79,15 @@
     <string name="share_game_code">Enviar codigo del juego</string>
     <string name="join_my_game">¡Unete a mi juego de Infiltrados! El codigo es: %s</string>
 
+    <string name="join_game_title">Unirse a un juego</string>
+    <string name="enter_game_code">Ingresá el código de juego</string>
+    <string name="enter_your_name">Ingresá tu nombre</string>
+    <string name="or_scan_qr">O escaneá un código QR</string>
+    <string name="scan_qr_code">Escanear código QR</string>
+
+    <!-- res/values/strings.xml -->
+    <string name="share_game_qr">Mostrá este QR para que otros jugadores se unan</string>
+
 
 </resources>
 
