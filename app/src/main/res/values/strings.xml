@@ -88,6 +88,7 @@
     <string name="enter_your_name">Ingresá tu nombre</string>
     <string name="or_scan_qr">O escaneá un código QR</string>
     <string name="scan_qr_code">Escanear código QR</string>
+    <string name="join_qr_code">Código QR para unirse</string>
 
     <!-- res/values/strings.xml -->
     <string name="share_game_qr">Mostrá este QR para que otros jugadores se unan</string>
