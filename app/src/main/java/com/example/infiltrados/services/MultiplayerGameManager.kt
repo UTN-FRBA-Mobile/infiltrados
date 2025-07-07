@@ -233,38 +233,41 @@ class MultiplayerGameManager(
         )
         return updateGame(updated)
     }
-//MR WHITE GUESS
-    fun eliminateMrWhite(): Deferred<GameRecord> = scope.async {
 
-        val mrWhitePlayer = getActivePlayers().find { it.role == Role.MR_WHITE }
+    fun eliminateMrWhite(): Deferred<GameRecord> {
+        val mrWhitePlayer = game.players.find { it.role == Role.MR_WHITE }
             ?: throw IllegalStateException("No se encontró al jugador Mr. White")
 
-
-        val originalMrWhite = mrWhitePlayer
-
-
-        val newPlayers = players.map { player ->
+        val updatedPlayers = game.players.map { player ->
             if (player.name == mrWhitePlayer.name) {
                 player.copy(
                     isEliminated = true,
                     role = Role.ELIMINATED,
-                    votes = 0
+                    votes = 0,
+                    voteBy = emptyList()
                 )
             } else {
-                player
+                player.copy(
+                    votes = 0,
+                    voteBy = emptyList()
+                )
             }
         }
 
         val updatedGame = game.copy(
-            phase = MultiplayerPhase.PLAYER_ELIMINATED,
-            players = newPlayers,
-            lastEliminated = originalMrWhite
+            players = updatedPlayers,
+            lastEliminated = mrWhitePlayer.copy(
+                isEliminated = true,
+                role = Role.ELIMINATED,
+                votes = 0,
+                voteBy = emptyList()
+            ),
+            phase = MultiplayerPhase.PLAYER_ELIMINATED
         )
 
-        players = newPlayers
-
-        return@async updateGame(updatedGame).await()
+        return updateGame(updatedGame)
     }
+
 
 
 

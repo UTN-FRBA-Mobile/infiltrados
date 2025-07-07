@@ -77,6 +77,7 @@ fun MrWhiteGuessScreen(
             var word_guess by remember { mutableStateOf("") }
             val player = mpViewModel.gameManager?.getPlayerFromName()
 
+
             if (player?.role == Role.MR_WHITE) {
                 Text(
                     text = stringResource(R.string.mr_white_instruction),
