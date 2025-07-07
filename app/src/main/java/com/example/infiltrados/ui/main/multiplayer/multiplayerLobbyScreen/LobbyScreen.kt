@@ -37,6 +37,7 @@ import com.example.infiltrados.ui.main.LanguageFlag
 import com.example.infiltrados.ui.main.components.AnimatedBackground
 import com.example.infiltrados.ui.main.components.AnimatedPulsingIcon
 import com.example.infiltrados.ui.main.components.ButtonWithLoading
+import com.example.infiltrados.ui.main.components.GameCodeWidget
 import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 import com.example.infiltrados.ui.main.multiplayer.ObserveMultiplayerPhase
 
@@ -104,13 +105,9 @@ fun OnlineLobbyScreen(
                 }
 
             }
-            Spacer(modifier = Modifier.width(24.dp))
 
-            Text(
-                text = stringResource(R.string.game_code, gameRecord?.id ?: ""),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Spacer(modifier = Modifier.width(24.dp))
+            GameCodeWidget(gameRecord?.id ?: "")
             Spacer(Modifier.height(16.dp))
 
             Text(
@@ -189,7 +186,7 @@ fun OnlineLobbyScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.weight(1f))
 
                 val canStart = mpViewModel.canStartGame()
 
