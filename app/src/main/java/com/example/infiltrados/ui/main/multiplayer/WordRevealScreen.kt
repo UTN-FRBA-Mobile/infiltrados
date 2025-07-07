@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.example.infiltrados.R
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.AnimatedPulsingIcon
 import com.example.infiltrados.ui.main.components.UndercoverButton
 import com.example.infiltrados.ui.main.components.WaitingForHost
 
@@ -48,7 +51,15 @@ fun WordRevealScreen(
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
 
     if (mpViewModel.isLoading) {
-        CircularProgressIndicator()
+        Box(
+            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedPulsingIcon(
+                painter = painterResource(id = R.drawable.ic_logo),
+                size = 96.dp
+            )
+        }
         return
     }
 
@@ -72,14 +83,7 @@ fun WordRevealScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = stringResource(R.string.word_reveal_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
-
-                Text(
-                    text = player?.emoji ?: "",
+                    text = player?.emoji.toString(),
                     fontSize = 48.sp,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -130,7 +134,8 @@ fun WordRevealScreen(
                 if (mpViewModel.isHost) {
                     UndercoverButton(
                         onClick = { mpViewModel.startDiscussion() },
-                        text = stringResource(R.string.continue_button)
+                        text = stringResource(R.string.continue_button),
+                        icon = Icons.Default.PlayArrow
                     )
                 } else {
                     WaitingForHost()

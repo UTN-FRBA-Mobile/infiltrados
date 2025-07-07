@@ -1,12 +1,15 @@
 package com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,19 +22,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.infiltrados.R
 import com.example.infiltrados.ui.theme.UndercoverTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerList(players: List<String>, canRemove: Boolean = true, onRemove: (String) -> Unit) {
-    Column(Modifier.background(color = MaterialTheme.colorScheme.background)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         players.forEachIndexed { index, name ->
-            PlayerRow(index, name, canRemove, onClick = { onRemove(name) })
+            PlayerRow(index, name, canRemove) {
+                onRemove(name)
+            }
         }
     }
 }
@@ -40,51 +53,49 @@ fun PlayerList(players: List<String>, canRemove: Boolean = true, onRemove: (Stri
 fun PlayerRow(index: Int, name: String, canRemove: Boolean, onClick: () -> Unit) {
     val avatars = remember {
         listOf(
-            "😎",
-            "🕵️",
-            "👽",
-            "🤖",
-            "🐵",
-            "🐸",
-            "🦊",
-            "🐼",
-            "🐯",
-            "👻",
-            "🎃",
-            "👾",
-            "🧠",
-            "🐶",
-            "🐱"
+            "😎", "🕵️", "👽", "🤖", "🐵", "🐸",
+            "🦊", "🐼", "🐯", "👻", "🎃", "👾",
+            "🧠", "🐶", "🐱"
         ).shuffled()
     }
-    // TODO: make a confirm dialog before removing a player
+
     Surface(
-        shape = RectangleShape,
-        onClick = { if (canRemove) onClick() },
-        contentColor = MaterialTheme.colorScheme.onBackground,
-        //border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        shape = RoundedCornerShape(16.dp),
+        tonalElevation = 2.dp,
+        color = MaterialTheme.colorScheme.surface,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(1.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(enabled = canRemove, onClick = onClick)
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .minimumInteractiveComponentSize()
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(avatars[index], fontSize = 20.sp)
+            Text(
+                text = avatars.getOrElse(index) { "🙂" },
+                fontSize = 20.sp
+            )
+            Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = name,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.weight(1f))
-            if (canRemove)
-                Icon(Icons.Default.Delete, contentDescription = "Remove")
+            if (canRemove) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = stringResource(R.string.delete_player),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 }
+
 
 
 @Preview

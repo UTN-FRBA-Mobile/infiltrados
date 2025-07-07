@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import com.example.infiltrados.R
 import com.example.infiltrados.models.Role
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.AnimatedPulsingIcon
 import com.example.infiltrados.ui.main.components.TimerButton
 import com.example.infiltrados.ui.main.components.UndercoverButton
 import kotlinx.coroutines.delay
@@ -47,7 +49,17 @@ fun MrWhiteGuessScreen(
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
 
     if (mpViewModel.isLoading) {
-        CircularProgressIndicator()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedPulsingIcon(
+                painter = painterResource(id = R.drawable.ic_logo),
+                size = 96.dp
+            )
+        }
         return
     }
 

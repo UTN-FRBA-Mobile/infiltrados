@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -24,6 +25,7 @@ import com.example.infiltrados.models.Player
 import com.example.infiltrados.services.GameManager
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
+import com.example.infiltrados.ui.main.components.AnimatedPulsingIcon
 import com.example.infiltrados.ui.main.components.UndercoverButton
 import com.example.infiltrados.ui.main.components.WaitingForHost
 
@@ -35,7 +37,17 @@ fun PlayerEliminatedScreen(
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
 
     if (mpViewModel.isLoading) {
-        CircularProgressIndicator()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedPulsingIcon(
+                painter = painterResource(id = R.drawable.ic_logo),
+                size = 96.dp
+            )
+        }
         return
     }
 
