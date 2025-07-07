@@ -128,7 +128,8 @@ class MultiplayerGameManager(
             players = players,
             word1 = randomPair.word1,
             word2 = randomPair.word2,
-            voteBy = emptyList()
+            voteBy = emptyList(),
+            lastEliminated = Player("", Role.CIUDADANO)
         )
         return updateGame(updated)
     }
@@ -289,11 +290,13 @@ class MultiplayerGameManager(
         val updated = game.copy(
             phase = MultiplayerPhase.PLAYER_ELIMINATED,
             players = newPlayers,
-            voteBy = emptyList()
+            voteBy = emptyList(),
+            lastEliminated = eliminated ?: throw IllegalStateException("No se pudo determinar al eliminado")
         )
 
         return updateGame(updated)
     }
+
 
 
 

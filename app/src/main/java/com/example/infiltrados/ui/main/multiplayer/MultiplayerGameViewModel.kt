@@ -48,8 +48,6 @@ class MultiplayerGameViewModel : ViewModel() {
 
     var spanish by mutableStateOf(true)
 
-    var lastEliminatedPlayer by mutableStateOf<Pair<String, Role>?>(null)
-        private set
 
     // Nueva variable de votos
     private val votes = mutableMapOf<String, Int>()
@@ -133,9 +131,6 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                val name = player?.name ?: "Desconocido"
-                val role = player?.role ?: Role.NADA
-                lastEliminatedPlayer = Pair(name, role)
                 val updatedGame = gameManager?.eliminatePlayer(player)?.await()
                 if (updatedGame != null) {
                     gameUpdateCollector(updatedGame)
@@ -147,6 +142,7 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
 
     fun createGame(name: String) {
         isLoading = true
@@ -338,6 +334,18 @@ class MultiplayerGameViewModel : ViewModel() {
             }
         }
     }
+
+    val lastEliminatedPlayer: Pair<String, Role>?
+        get() {
+            val eliminated = game.value?.lastEliminated
+            return if (eliminated != null && eliminated.name.isNotBlank()) {
+                Pair(eliminated.name, eliminated.role)
+            } else {
+                null
+            }
+        }
+
+
 
 
 
