@@ -16,17 +16,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.HowToVote
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +35,7 @@ import com.example.infiltrados.R
 import com.example.infiltrados.models.Player
 import com.example.infiltrados.ui.main.components.AnimatedBackground
 import com.example.infiltrados.ui.main.components.UndercoverButton
+import com.example.infiltrados.ui.main.components.UndercoverTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,16 +45,9 @@ fun DiscussionScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.discussion_title)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.rules_back)
-                        )
-                    }
-                }
+            UndercoverTopBar(
+                navController = navController,
+                title = stringResource(R.string.discussion_title)
             )
         }
     ) { innerPadding ->

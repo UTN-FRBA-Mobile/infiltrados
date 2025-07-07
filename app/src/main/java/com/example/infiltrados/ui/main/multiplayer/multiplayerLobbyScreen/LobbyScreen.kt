@@ -1,5 +1,6 @@
 package com.example.infiltrados.ui.main.multiplayer.multiplayerLobbyScreen
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,21 +13,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -49,13 +48,16 @@ import com.example.infiltrados.ui.main.components.AnimatedBackground
 import com.example.infiltrados.ui.main.components.AnimatedPulsingIcon
 import com.example.infiltrados.ui.main.components.ButtonWithLoading
 import com.example.infiltrados.ui.main.components.GameCodeWidget
+import com.example.infiltrados.ui.main.components.UndercoverTopBar
 import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 import com.example.infiltrados.ui.main.multiplayer.ObserveMultiplayerPhase
 import com.example.infiltrados.utils.generateQRCodeBitmap
-
+import androidx.navigation.NavController
+import com.example.infiltrados.ui.main.components.UndercoverButton
 
 @Composable
 fun OnlineLobbyScreen(
+    navController: NavController,
     mpViewModel: MultiplayerGameViewModel,
     onBackToLobby: () -> Unit,
     onNavigateToPhase: (MultiplayerPhase) -> Unit
@@ -63,6 +65,7 @@ fun OnlineLobbyScreen(
     val context = LocalContext.current
     val gameRecord by mpViewModel.game.collectAsState()
     val players = gameRecord?.players ?: emptyList()
+    val clickSound = remember { MediaPlayer.create(context, R.raw.sonido_boton) }
 
     var showQR by remember { mutableStateOf(false) }
 
@@ -72,213 +75,204 @@ fun OnlineLobbyScreen(
     }
 
     if (mpViewModel.isLoading) {
-        CircularProgressIndicator()
+        Box(
+            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedPulsingIcon(
+                painter = painterResource(id = R.drawable.ic_logo),
+                size = 96.dp
+            )
+        }
         return
     }
 
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
-    ) {
-        AnimatedBackground()
-
-        if (mpViewModel.isLoading) {
-            AnimatedPulsingIcon(
-                modifier = Modifier.align(Alignment.Center),
-                painter = painterResource(id = R.drawable.ic_logo),
-                size = 96.dp
+    Scaffold(
+        topBar = {
+            UndercoverTopBar(
+                navController = navController,
+                title = stringResource(R.string.game_setup_title),
+                onBack = onBackToLobby
             )
-            return
         }
-
-        Column(
+    ) { innerPadding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Top Bar
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onBackToLobby) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.rules_back),
-                            tint = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(R.string.game_setup_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-            }
+            AnimatedBackground()
 
-            Spacer(modifier = Modifier.width(24.dp))
-            GameCodeWidget(gameRecord?.id ?: "")
-            Spacer(Modifier.height(16.dp))
-
-            Text(
-                text = stringResource(R.string.players_label),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(Modifier.height(16.dp))
-
-            PlayerList(players.map { it.name }, mpViewModel.isHost) {
-                mpViewModel.removePlayer(it)
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            if (mpViewModel.isHost) {
-                // Botón para mostrar QR
-                Button(
-                    onClick = { showQR = !showQR },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.QrCode,
-                        contentDescription = "QR Icon",
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Text(if (showQR) "Ocultar QR" else "Mostrar QR")
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                if (showQR) {
-                    gameRecord?.id?.let { gameId ->
-                        val qrBitmap = remember(gameId) { generateQRCodeBitmap(gameId) }
-
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.share_game_qr),
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center
-                            )
-
-                            Image(
-                                bitmap = qrBitmap.asImageBitmap(),
-                                contentDescription = "Código QR para unirse",
-                                modifier = Modifier.size(200.dp)
-                            )
-
-                            Text(
-                                text = gameId,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(32.dp))
-                    }
-                }
-
-                // Selector de idioma
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // --- Lista de jugadores ---
                 Text(
-                    text = stringResource(R.string.language_label),
+                    text = stringResource(R.string.players_label),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    LanguageFlag(mpViewModel.spanish, true) {
-                        mpViewModel.spanish = true
-                    }
-                    LanguageFlag(mpViewModel.spanish, false) {
-                        mpViewModel.spanish = false
-                    }
+                Spacer(Modifier.height(16.dp))
+
+                PlayerList(players.map { it.name }, mpViewModel.isHost) {
+                    mpViewModel.removePlayer(it)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Configuración de cantidad de Undercover
-                Text(
-                    text = stringResource(R.string.undercover_label),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = {
-                        if (mpViewModel.numUndercover > 0) mpViewModel.numUndercover--
-                    }) {
-                        Icon(Icons.Default.Remove, contentDescription = "Menos")
-                    }
+                if (mpViewModel.isHost) {
+                    // --- Selector de idioma ---
                     Text(
-                        text = mpViewModel.numUndercover.toString(),
-                        style = MaterialTheme.typography.titleLarge,
+                        text = stringResource(R.string.language_label),
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-                    IconButton(onClick = { mpViewModel.numUndercover++ }) {
-                        Icon(Icons.Default.Add, contentDescription = "Más")
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        LanguageFlag(mpViewModel.spanish, true) {
+                            mpViewModel.spanish = true
+                        }
+                        LanguageFlag(mpViewModel.spanish, false) {
+                            mpViewModel.spanish = false
+                        }
                     }
-                }
 
-                // Switch para incluir Mr. White
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column {
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // --- Configuración de cantidad de Undercover ---
+                    Text(
+                        text = stringResource(R.string.undercover_label),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = {
+                            if (mpViewModel.numUndercover > 0) {
+                                clickSound.start()
+                                mpViewModel.numUndercover--
+                            }
+                        }) {
+                            Icon(Icons.Default.Remove, contentDescription = stringResource(R.string.decrease), tint = MaterialTheme.colorScheme.onBackground)
+                        }
                         Text(
-                            text = stringResource(R.string.include_mr_white),
+                            text = mpViewModel.numUndercover.toString(),
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onBackground
                         )
-                        Text(
-                            text = "Mr. White no conoce la palabra pero intenta adivinarla",
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(top = 4.dp),
-                            color = MaterialTheme.colorScheme.onBackground
+                        IconButton(onClick = {
+                            clickSound.start()
+                            mpViewModel.numUndercover++
+                        }) {
+                            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.increase), tint = MaterialTheme.colorScheme.onBackground)
+                        }
+                    }
+
+                    // --- Switch para incluir Mr. White ---
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column {
+                            Text(
+                                text = stringResource(R.string.include_mr_white),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Text(
+                                text = stringResource(R.string.mr_white_instruction),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
+                        Switch(
+                            checked = mpViewModel.includeMrWhite,
+                            onCheckedChange = {
+                                clickSound.start()
+                                mpViewModel.includeMrWhite = it
+                            },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                checkedTrackColor = MaterialTheme.colorScheme.primary
+                            )
                         )
                     }
-                    Switch(
-                        checked = mpViewModel.includeMrWhite,
-                        onCheckedChange = { mpViewModel.includeMrWhite = it }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // --- Botón de iniciar partida ---
+                    val canStart = mpViewModel.canStartGame()
+                    ButtonWithLoading(
+                        text = stringResource(R.string.begin),
+                        isLoading = mpViewModel.isLoading,
+                        enabled = canStart,
+                        onClick = { mpViewModel.startGame(context, mpViewModel.spanish) },
+                        icon = Icons.Default.PlayArrow
                     )
-                }
+                    if (!canStart) {
+                        Text(
+                            text = stringResource(R.string.cannot_start_message),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
 
-                Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.height(32.dp))
 
-                // Botón de iniciar partida
-                val canStart = mpViewModel.canStartGame()
+                    // --- Sección de QR y código de juego ---
+                    UndercoverButton(
+                        text = if (showQR) stringResource(R.string.hide_qr) else stringResource(R.string.show_qr),
+                        onClick = { showQR = !showQR },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        icon = Icons.Default.QrCode,
+                        backgroundColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    )
 
-                ButtonWithLoading(
-                    text = stringResource(R.string.begin),
-                    isLoading = mpViewModel.isLoading,
-                    enabled = canStart
-                ) {
-                    mpViewModel.startGame(context, mpViewModel.spanish)
-                }
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                if (!canStart) {
+                    if (showQR) {
+                        gameRecord?.id?.let { gameId ->
+                            val qrBitmap = remember(gameId) { generateQRCodeBitmap(gameId) }
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.share_game_qr),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Image(
+                                    bitmap = qrBitmap.asImageBitmap(),
+                                    contentDescription = stringResource(R.string.qr_code_description),
+                                    modifier = Modifier.size(200.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+
+                    GameCodeWidget(gameRecord?.id ?: "")
+                } else {
                     Text(
-                        text = "No se puede iniciar la partida: faltan jugadores o roles.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error
+                        text = stringResource(R.string.waiting_for_host),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
-            } else {
-                Text(
-                    text = stringResource(R.string.waiting_for_host),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
             }
         }
     }

@@ -95,5 +95,12 @@
     <!-- res/values-en/strings.xml -->
     <string name="share_game_qr">Show this QR so others can join the game</string>
 
+    <string name="show_qr">Show QR</string>
+    <string name="hide_qr">Hide QR</string>
+    <string name="decrease">Decrease</string>
+    <string name="increase">Increase</string>
+    <string name="cannot_start_message">Cannot start game: missing players or roles.</string>
+    <string name="qr_code_description">QR Code to join</string>
+
 </resources>
 
