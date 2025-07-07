@@ -97,32 +97,14 @@ class MultiplayerGameViewModel : ViewModel() {
     var votedPlayers by mutableStateOf<Set<String>>(emptySet())
         private set
 
-    fun voteFor(playerName: String) {
-        val current = voteCounts.toMutableMap()
-        current[playerName] = (current[playerName] ?: 0) + 1
-        voteCounts = current
+    var currentPlayerName: String? = null
+        private set
 
-        votedPlayers = votedPlayers + (gameManager?.playerName ?: "")
-
-
-        val activePlayers = gameManager?.getActivePlayers() ?: emptyList()
-        if (votedPlayers.size == activePlayers.size) {
-            val maxVotes = voteCounts.maxByOrNull { it.value }?.value ?: 0
-            val mostVoted = voteCounts.filter { it.value == maxVotes }.keys.randomOrNull()
-
-            val player = activePlayers.find { it.name == mostVoted }
-
-            if (player?.role == Role.MR_WHITE) {
-                mrWhiteGuess()
-            } else {
-                eliminatePlayer(player)
-            }
-
-
-            voteCounts = emptyMap()
-            votedPlayers = emptySet()
-        }
+    fun setCurrentPlayerName(name: String) {
+        currentPlayerName = name
     }
+
+
 
     fun eliminatePlayer(player: Player?) {
         viewModelScope.launch {
@@ -147,7 +129,7 @@ class MultiplayerGameViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 gameManager =
-                    MultiplayerGameManager.Factory.createGame(name, viewModelScope).await()
+                    MultiplayerGameManager.Factory.createGame(name, viewModelScope,this@MultiplayerGameViewModel).await()
                 gameManager!!.gameRecordFlow
                     .onEach { gameUpdateCollector(it) } // ← lambda explícita
                     .launchIn(viewModelScope)
@@ -186,7 +168,7 @@ class MultiplayerGameViewModel : ViewModel() {
             isLoading = true
             try {
                 gameManager =
-                    MultiplayerGameManager.Factory.joinGame(gameId, name, viewModelScope).await()
+                    MultiplayerGameManager.Factory.joinGame(gameId, name, viewModelScope,this@MultiplayerGameViewModel).await()
                 gameManager!!.gameRecordFlow
                     .onEach { gameUpdateCollector(it) } // ← lambda explícita
                     .launchIn(viewModelScope)

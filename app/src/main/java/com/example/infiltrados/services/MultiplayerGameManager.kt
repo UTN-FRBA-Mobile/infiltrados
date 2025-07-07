@@ -6,6 +6,7 @@ import com.example.infiltrados.models.GameRecord
 import com.example.infiltrados.models.Player
 import com.example.infiltrados.models.Role
 import com.example.infiltrados.ui.main.Destination
+import com.example.infiltrados.ui.main.multiplayer.MultiplayerGameViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -59,34 +60,51 @@ class MultiplayerGameManager(
     val game: GameRecord
         get() = gameRecordFlow.value
 
+
+
+
     companion object Factory {
         fun createGame(
             hostName: String,
-            scope: CoroutineScope
+            scope: CoroutineScope,
+            viewModel: MultiplayerGameViewModel
         ): Deferred<MultiplayerGameManager> {
             return scope.async(Dispatchers.IO) {
                 val createdGame = AppwriteService.createGame(hostName)
                 val gameSuscription = AppwriteService.subscribe(createdGame.id)
-                MultiplayerGameManager(hostName, true, createdGame, gameSuscription, scope = scope)
+                val manager = MultiplayerGameManager(
+                    hostName,
+                    true,
+                    createdGame,
+                    gameSuscription,
+                    scope = scope
+                )
+                viewModel.setCurrentPlayerName(hostName)
+                manager
             }
         }
 
         fun joinGame(
             gameId: String,
             playerName: String,
-            scope: CoroutineScope
+            scope: CoroutineScope,
+            viewModel: MultiplayerGameViewModel
         ): Deferred<MultiplayerGameManager> {
             return scope.async {
                 AppwriteService.joinGame(gameId, playerName)
                 val game = AppwriteService.getGame(gameId)
                 val gameSuscription = AppwriteService.subscribe(gameId)
-                MultiplayerGameManager(
-                    playerName, false, game!!, gameSuscription,
+                val manager = MultiplayerGameManager(
+                    playerName,
+                    false,
+                    game!!,
+                    gameSuscription,
                     scope = scope
                 )
+                viewModel.setCurrentPlayerName(playerName)
+                manager
             }
         }
-
     }
 
     private fun updateGame(updatedGame: GameRecord): Deferred<GameRecord> {
@@ -270,7 +288,7 @@ class MultiplayerGameManager(
     }
 
 
-    fun finishVotingAndEliminate(): Deferred<GameRecord> {
+    fun finishVotingAndEliminate(): Deferred<GameRecord> = scope.async {
         if (game.phase != MultiplayerPhase.VOTE) {
             throw IllegalStateException("No se puede finalizar la votación en este momento")
         }
@@ -286,14 +304,16 @@ class MultiplayerGameManager(
         val candidates = game.players.filter { it.votes == maxVotes && !it.isEliminated }
         val eliminated = candidates.randomOrNull()
 
+
+        val originalEliminated = eliminated ?: throw IllegalStateException("No se pudo determinar al eliminado")
+
         val newPlayers = game.players.map { player ->
             when (player.name) {
-                eliminated?.name -> player.copy(
+                originalEliminated.name -> player.copy(
                     isEliminated = true,
                     role = Role.ELIMINATED,
                     votes = 0
                 )
-
                 else -> player.copy(votes = 0)
             }
         }
@@ -302,11 +322,18 @@ class MultiplayerGameManager(
             phase = MultiplayerPhase.PLAYER_ELIMINATED,
             players = newPlayers,
             voteBy = emptyList(),
-            lastEliminated = eliminated ?: throw IllegalStateException("No se pudo determinar al eliminado")
+            lastEliminated = originalEliminated
         )
 
-        return updateGame(updated)
+        val updatedGame = updateGame(updated).await()
+
+        players = updatedGame.players
+
+        return@async updatedGame
     }
+
+
+
 
 
 }

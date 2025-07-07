@@ -52,41 +52,43 @@ fun WordRevealScreen(
         return
     }
 
-    val player = mpViewModel.gameManager?.getPlayerFromName()
-    val word = mpViewModel.gameManager?.getWordForPlayer(player)
-    val wordToShow = if (word == "") "🤫" else word
-    var revealed by remember { mutableStateOf(false) }
+    EliminationLobby(mpViewModel = mpViewModel) {
+        val player = mpViewModel.gameManager?.getPlayerFromName()
+        val word = mpViewModel.gameManager?.getWordForPlayer(player)
+        val wordToShow = if (word == "") "🤫" else word
+        var revealed by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
-    ) {
-        AnimatedBackground()
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(24.dp)
         ) {
-            Text(
-                text = stringResource(R.string.word_reveal_title),
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 16.dp)
-            )
+            AnimatedBackground()
 
-            if (mpViewModel.gameManager?.isPlayerEliminated(player) == false) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.word_reveal_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
+
                 Text(
                     text = player?.emoji ?: "",
                     fontSize = 48.sp,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
+
                 Text(
                     text = stringResource(
                         R.string.your_word_is,
-                        player?.name?.replaceFirstChar { it.uppercase() } ?: ""),
+                        player?.name?.replaceFirstChar { it.uppercase() } ?: ""
+                    ),
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground
@@ -133,7 +135,6 @@ fun WordRevealScreen(
                 } else {
                     WaitingForHost()
                 }
-
             }
         }
     }
