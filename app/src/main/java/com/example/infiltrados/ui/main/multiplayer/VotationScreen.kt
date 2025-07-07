@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,7 +19,11 @@ import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import com.example.infiltrados.R
+import com.example.infiltrados.ui.main.components.UndercoverButton
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -49,44 +52,50 @@ fun VotationScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
     ) {
         AnimatedBackground()
 
-        Column {
+        Column(
+            modifier = Modifier
+                .padding(24.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
             Text(
-                text = "Votación en curso",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(16.dp)
+                text = stringResource(R.string.votation_prompt),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = stringResource(R.string.votation_instruction),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
             )
 
             if (!alreadyVoted) {
                 activePlayers
                     .filter { it.name != currentPlayerName }
                     .forEach { player ->
-                        Button(
-                            onClick = { selectedPlayer = player },
-                            modifier = Modifier
-                                .padding(vertical = 4.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text("Votar a ${player.name}")
-                        }
+                        UndercoverButton(
+                            text = player.name,
+                            onClick = { selectedPlayer = player }
+                        )
                     }
 
                 selectedPlayer?.let {
-                    Button(
-                        onClick = {
-                            mpViewModel.voteForPlayer(it.name)
-                        },
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text("Confirmar voto para ${it.name}")
-                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    UndercoverButton(
+                        text = stringResource(R.string.votation_confirm_vote) + ":\n${it.name}",
+                        onClick = {mpViewModel.voteForPlayer(it.name)}
+                    )
                 }
             } else {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Esperando que todos voten...")
+                    Text(stringResource(R.string.votation_waiting_vote))
                     CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
                 }
             }
