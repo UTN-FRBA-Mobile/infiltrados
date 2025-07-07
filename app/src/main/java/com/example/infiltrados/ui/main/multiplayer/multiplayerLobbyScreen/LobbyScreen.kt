@@ -128,7 +128,7 @@ fun OnlineLobbyScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 if (mpViewModel.isHost) {
-                    // --- Selector de idioma ---
+                    // Idioma
                     Text(
                         text = stringResource(R.string.language_label),
                         style = MaterialTheme.typography.titleMedium,
@@ -136,9 +136,11 @@ fun OnlineLobbyScreen(
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         LanguageFlag(mpViewModel.spanish, true) {
+                            clickSound.start()
                             mpViewModel.spanish = true
                         }
                         LanguageFlag(mpViewModel.spanish, false) {
+                            clickSound.start()
                             mpViewModel.spanish = false
                         }
                     }
@@ -267,11 +269,23 @@ fun OnlineLobbyScreen(
 
                     GameCodeWidget(gameRecord?.id ?: "")
                 } else {
-                    Text(
-                        text = stringResource(R.string.waiting_for_host),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        AnimatedPulsingIcon(
+                            painter = painterResource(id = R.drawable.ic_logo),
+                            size = 64.dp
+                        )
+
+                        Text(
+                            text = stringResource(R.string.waiting_for_host),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        )
+                    }
                 }
             }
         }
