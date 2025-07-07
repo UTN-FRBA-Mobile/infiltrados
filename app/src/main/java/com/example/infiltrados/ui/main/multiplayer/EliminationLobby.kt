@@ -48,7 +48,7 @@ fun EliminationLobby(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Esperá al final de la partida para conocer el resultado.",
+                    text = "Los jugadores están votando...\nEsperá al final de la votación para conocer el resultado.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center

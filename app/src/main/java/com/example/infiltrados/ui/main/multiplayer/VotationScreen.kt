@@ -36,62 +36,64 @@ fun VotationScreen(
         return
     }
 
-    val game = mpViewModel.game.value
-    val activePlayers = mpViewModel.gameManager?.getActivePlayers() ?: emptyList()
-    val currentPlayer = mpViewModel.gameManager?.getPlayerFromName()
+    EliminationLobby(mpViewModel = mpViewModel) {
+        val game = mpViewModel.game.value
+        val activePlayers = mpViewModel.gameManager?.getActivePlayers() ?: emptyList()
+        val currentPlayer = mpViewModel.gameManager?.getPlayerFromName()
 
-    var selectedPlayer by remember { mutableStateOf<Player?>(null) }
+        var selectedPlayer by remember { mutableStateOf<Player?>(null) }
 
-    val currentPlayerName = currentPlayer?.name
-    val alreadyVoted = game?.voteBy?.contains(currentPlayerName) == true
+        val currentPlayerName = currentPlayer?.name
+        val alreadyVoted = game?.voteBy?.contains(currentPlayerName) == true
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
-    ) {
-        AnimatedBackground()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(24.dp)
+        ) {
+            AnimatedBackground()
 
-        Column {
-            Text(
-                text = "Votación en curso",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(16.dp)
-            )
+            Column {
+                Text(
+                    text = "Votación en curso",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(16.dp)
+                )
 
-            if (!alreadyVoted) {
-                activePlayers
-                    .filter { it.name != currentPlayerName }
-                    .forEach { player ->
+                if (!alreadyVoted) {
+                    activePlayers
+                        .filter { it.name != currentPlayerName }
+                        .forEach { player ->
+                            Button(
+                                onClick = { selectedPlayer = player },
+                                modifier = Modifier
+                                    .padding(vertical = 4.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                Text("Votar a ${player.name}")
+                            }
+                        }
+
+                    selectedPlayer?.let {
                         Button(
-                            onClick = { selectedPlayer = player },
-                            modifier = Modifier
-                                .padding(vertical = 4.dp)
-                                .fillMaxWidth()
+                            onClick = {
+                                mpViewModel.voteForPlayer(it.name)
+                            },
+                            modifier = Modifier.padding(16.dp)
                         ) {
-                            Text("Votar a ${player.name}")
+                            Text("Confirmar voto para ${it.name}")
                         }
                     }
-
-                selectedPlayer?.let {
-                    Button(
-                        onClick = {
-                            mpViewModel.voteForPlayer(it.name)
-                        },
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text("Confirmar voto para ${it.name}")
+                } else {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Esperando que todos voten...")
+                        CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
                     }
                 }
-            } else {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Esperando que todos voten...")
-                    CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
-                }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }

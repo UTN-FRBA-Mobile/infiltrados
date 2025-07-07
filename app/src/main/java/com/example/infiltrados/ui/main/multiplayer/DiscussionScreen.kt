@@ -39,73 +39,70 @@ fun DiscussionScreen(
         return
     }
 
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(24.dp)
+    ){
+        AnimatedBackground()
 
-    EliminationLobby(mpViewModel = mpViewModel) {
-
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(24.dp)
+                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            AnimatedBackground()
+            Text(
+                text = stringResource(R.string.discussion_prompt),
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
 
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.discussion_prompt),
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
+            Text(
+                text = stringResource(R.string.discussion_instruction),
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
 
-                Text(
-                    text = stringResource(R.string.discussion_instruction),
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+            val players = mpViewModel.gameManager?.getActivePlayers() ?: emptyList()
 
-                val players = mpViewModel.gameManager?.getActivePlayers() ?: emptyList()
-
-                players.forEachIndexed { index, player ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                    ) {
-                        Text(
-                            text = "${index + 1}. ${player.name}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
+            players.forEachIndexed { index, player ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    Text(
+                        text = "${index + 1}. ${player.name}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                if (mpViewModel.isHost) {
-                    Button(
-                        onClick = { mpViewModel.startVoting() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        shape = RoundedCornerShape(24.dp)
-                    ) {
-                        Text(stringResource(R.string.start_voting))
-                    }
-                } else {
-                    WaitingForHost()
-                }
-
             }
-        }
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            if (mpViewModel.isHost){
+                Button(
+                    onClick = { mpViewModel.startVoting() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    Text(stringResource(R.string.start_voting))
+                }
+            }
+            else {
+                WaitingForHost()
+            }
+
+        }
     }
+
 }
