@@ -2,7 +2,6 @@ package com.example.infiltrados.ui.main.multiplayer
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,17 +16,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.infiltrados.models.Player
-import com.example.infiltrados.models.Role
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
-import com.example.infiltrados.ui.main.components.WaitingForHost
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-
 
 
 
@@ -97,12 +89,9 @@ fun VotationScreen(
                     Text("Esperando que todos voten...")
                     CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
                 }
-            } else {
-                WaitingForHost()
             }
 
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
-

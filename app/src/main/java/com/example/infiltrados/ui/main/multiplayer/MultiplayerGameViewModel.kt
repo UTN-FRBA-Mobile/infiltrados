@@ -1,7 +1,6 @@
 package com.example.infiltrados.ui.main.multiplayer
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -49,8 +48,6 @@ class MultiplayerGameViewModel : ViewModel() {
 
     var spanish by mutableStateOf(true)
 
-    var lastEliminatedPlayer by mutableStateOf<Pair<String, Role>?>(null)
-        private set
 
     // Nueva variable de votos
     private val votes = mutableMapOf<String, Int>()
@@ -59,7 +56,6 @@ class MultiplayerGameViewModel : ViewModel() {
         return record?.phase ?: MultiplayerPhase.LOBBY
     }
 
-    // Lambda explícita con tipo
     private val gameUpdateCollector: (GameRecord) -> Unit = { newGameRecord ->
         _game.value = newGameRecord
 
