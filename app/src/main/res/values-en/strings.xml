@@ -102,5 +102,8 @@
     <string name="cannot_start_message">Cannot start game: missing players or roles.</string>
     <string name="qr_code_description">QR Code to join</string>
 
+    <string name="in_progress_votation">In progress votation</string>
+    <string name="vote_to">Vote to</string>
+
 </resources>
 

@@ -1,7 +1,12 @@
 package com.example.infiltrados.ui.main.multiplayer
 
 import android.annotation.SuppressLint
+import android.media.MediaPlayer
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,13 +23,26 @@ import com.example.infiltrados.models.Player
 import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.HowToVote
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.infiltrados.R
+import com.example.infiltrados.ui.main.components.AnimatedPulsingIcon
+import com.example.infiltrados.ui.main.components.DisabledButton
 import com.example.infiltrados.ui.main.components.UndercoverButton
+import com.example.infiltrados.ui.main.components.WaitingForHost
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -36,7 +54,17 @@ fun VotationScreen(
     ObserveMultiplayerPhase(mpViewModel, onNavigateToPhase)
 
     if (mpViewModel.isLoading) {
-        CircularProgressIndicator()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            AnimatedPulsingIcon(
+                painter = painterResource(id = R.drawable.ic_logo),
+                size = 96.dp
+            )
+        }
         return
     }
 
@@ -46,59 +74,96 @@ fun VotationScreen(
         val currentPlayer = mpViewModel.gameManager?.getPlayerFromName()
 
         var selectedPlayer by remember { mutableStateOf<Player?>(null) }
-
+        val selectedIndex = activePlayers.indexOf(selectedPlayer)
         val currentPlayerName = currentPlayer?.name
         val alreadyVoted = game?.voteBy?.contains(currentPlayerName) == true
-
+        val context = LocalContext.current
+        val clickSound = remember { MediaPlayer.create(context, R.raw.sonido_boton) }
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(24.dp)
         ) {
             AnimatedBackground()
 
-            Column {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
                 Text(
-                    text = "Votación en curso",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp)
+                    text = stringResource(R.string.votation_prompt),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
                 )
 
                 if (!alreadyVoted) {
-                    activePlayers
-                        .filter { it.name != currentPlayerName }
-                        .forEach { player ->
-                            Button(
-                                onClick = { selectedPlayer = player },
-                                modifier = Modifier
-                                    .padding(vertical = 4.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                Text("Votar a ${player.name}")
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        activePlayers
+                            .filter { it.name != currentPlayerName }
+                            .forEachIndexed { index, player ->
+                                val isSelected = selectedIndex == index
+                                val scale = remember { Animatable(1f) }
+                                val coroutineScope = rememberCoroutineScope()
+
+                                LaunchedEffect(isSelected) {
+                                    if (isSelected) {
+                                        coroutineScope.launch {
+                                            scale.animateTo(
+                                                targetValue = 1.1f,
+                                                animationSpec = tween(100, easing = LinearOutSlowInEasing)
+                                            )
+                                            scale.animateTo(1f, tween(100))
+                                        }
+                                    }
+                                }
+
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .graphicsLayer(scaleX = scale.value, scaleY = scale.value)
+                                        .clickable {
+                                            clickSound.start()
+                                            selectedPlayer = player
+                                        },
+                                    shape = RoundedCornerShape(16.dp),
+                                    elevation = CardDefaults.cardElevation(6.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                                        contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                                    )
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "${player.emoji} ${player.name.replaceFirstChar { it.uppercase() }}",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                        )
+                                    }
+                                }
                             }
-                        }
-
-                    selectedPlayer?.let {
-                        Button(
-                            onClick = {
-                                mpViewModel.voteForPlayer(it.name)
-                            },
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            Text("Confirmar voto para ${it.name}")
-                        }
                     }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    DisabledButton(
+                        text = stringResource(R.string.votation_eliminate),
+                        icon = Icons.Default.HowToVote,
+                        enabled = selectedPlayer != null,
+                        onClick = {
+                            selectedPlayer?.let { mpViewModel.voteForPlayer(it.name) }
+                        }
+                    )
                 } else {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Esperando que todos voten...")
-                        CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
-                    }
+                    WaitingForHost()
                 }
-
-
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

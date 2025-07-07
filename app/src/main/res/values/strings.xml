@@ -101,6 +101,8 @@
     <string name="increase">Aumentar</string>
     <string name="cannot_start_message">No se puede iniciar la partida: faltan jugadores o roles.</string>
     <string name="qr_code_description">Código QR para unirse</string>
+    <string name="in_progress_votation">Votación en curso</string>
+    <string name="vote_to">Votar a</string>
 
 
 </resources>

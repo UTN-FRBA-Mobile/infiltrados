@@ -87,7 +87,7 @@ fun DiscussionScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)
-                    ){
+                    ) {
                         Text(
                             text = "${index + 1}.",
                             style = MaterialTheme.typography.bodyLarge.copy(
@@ -101,7 +101,6 @@ fun DiscussionScreen(
                             style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface)
                         )
                     }
-
                 }
             }
 
