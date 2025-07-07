@@ -55,6 +55,9 @@
     <string name="votation_instruction">Votá al jugador que creés que es el infiltrado</string>
     <string name="votation_select_label">Seleccionar jugador</string>
     <string name="votation_eliminate">Eliminar</string>
+    <string name="votation_confirm_vote">Confirmar voto</string>
+    <string name="votation_waiting_vote">Esperando a que todos voten</string>
+
     <string name="create_online">Crear juego online</string>
     <string name="ready">Listo</string>
     <string name="pick_name">Ingresa tu nombre</string>
@@ -67,6 +70,7 @@
 
     <string name="mr_white_title">¡Mr. White fue descubierto!</string>
     <string name="mr_white_instruction">Si adivinás la palabra de los civiles, ¡ganás la partida!</string>
+    <string name="mr_white_guess_waiting">Espeando que Mr White adivine la palabra de los civiles</string>
     <string name="guess_placeholder">Escribí tu intento de palabra</string>
     <string name="guess_button">Adivinar</string>
 
