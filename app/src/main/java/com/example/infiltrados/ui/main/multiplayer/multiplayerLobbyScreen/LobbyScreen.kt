@@ -191,7 +191,7 @@ fun OnlineLobbyScreen(
                             color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
-                            text = "Mr. White no conoce la palabra pero intenta adivinarla",
+                            text = stringResource(R.string.mr_white_instruction),
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(top = 4.dp),
                             color = MaterialTheme.colorScheme.onBackground
@@ -217,7 +217,7 @@ fun OnlineLobbyScreen(
 
                 if (!canStart) {
                     Text(
-                        text = "No se puede iniciar la partida: faltan jugadores o roles.",
+                        text = stringResource(R.string.invalid_config),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error
                     )
@@ -249,7 +249,7 @@ fun GameQRCode(gameId: String) {
 
         Image(
             bitmap = qrBitmap.asImageBitmap(),
-            contentDescription = "Código QR para unirse",
+            contentDescription = stringResource(R.string.join_qr_code),
             modifier = Modifier.size(200.dp)
         )
 

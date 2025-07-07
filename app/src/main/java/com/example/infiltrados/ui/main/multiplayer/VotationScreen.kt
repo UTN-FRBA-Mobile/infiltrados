@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,7 +19,11 @@ import com.example.infiltrados.services.MultiplayerPhase
 import com.example.infiltrados.ui.main.components.AnimatedBackground
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import com.example.infiltrados.R
+import com.example.infiltrados.ui.main.components.UndercoverButton
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -45,6 +48,7 @@ fun VotationScreen(
 
         val currentPlayerName = currentPlayer?.name
         val alreadyVoted = game?.voteBy?.contains(currentPlayerName) == true
+
 
         Box(
             modifier = Modifier
@@ -91,6 +95,7 @@ fun VotationScreen(
                         CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
                     }
                 }
+
 
                 Spacer(modifier = Modifier.height(16.dp))
             }

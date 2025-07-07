@@ -55,17 +55,23 @@
     <string name="votation_instruction">Vote for the player you think is the undercover</string>
     <string name="votation_select_label">Select player</string>
     <string name="votation_eliminate">Eliminate</string>
+    <string name="votation_confirm_vote">Confirm vote</string>
+    <string name="votation_waiting_vote">Waiting for players to vote</string>
+
     <string name="create_online">Create online game</string>
     <string name="ready">Ready</string>
     <string name="pick_name">Input your name</string>
 
     <string name="mr_white_title">Mr. White has been discovered!</string>
     <string name="mr_white_instruction">If you guess the word of the civilians, you win the game!</string>
+    <string name="mr_white_guess_waiting">Waiting for Mr White to guess the civilians word</string>
     <string name="guess_placeholder">Type your word guess</string>
     <string name="guess_button">Guess</string>
 
     <string name="end_game_title">Game Over!</string>
     <string name="end_game_winners">Winners: %1$s</string>
+    <string name="end_game_win">You Win!</string>
+    <string name="end_game_loss">You Loose!</string>
     <string name="play_again">Play again</string>
 
     <string name="player_eliminated_title">Player eliminated!</string>
@@ -84,6 +90,7 @@
     <string name="enter_your_name">Enter your name</string>
     <string name="or_scan_qr">Or scan a QR code</string>
     <string name="scan_qr_code">Scan QR Code</string>
+    <string name="join_qr_code">QR Code to join game</string>
 
     <!-- res/values-en/strings.xml -->
     <string name="share_game_qr">Show this QR so others can join the game</string>
