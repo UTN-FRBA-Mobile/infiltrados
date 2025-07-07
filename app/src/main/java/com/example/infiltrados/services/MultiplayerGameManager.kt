@@ -233,7 +233,7 @@ class MultiplayerGameManager(
         )
         return updateGame(updated)
     }
-
+//MR WHITE GUESS
     fun eliminateMrWhite(): Deferred<GameRecord> = scope.async {
 
         val mrWhitePlayer = getActivePlayers().find { it.role == Role.MR_WHITE }
